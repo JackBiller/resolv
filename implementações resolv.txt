@@ -1,0 +1,58 @@
+
+Melhorias da abstração resolv:
+	- Implementar função de parametros obrigatórios, para dar uma mensagem na tela e não resolver objeto
+		ex: // função informa que o parametro id é obrigatorio para resolver objeto do tipo input
+			function checkInput(){ return [ 'id' ]; }
+			// no resolvConfig, se for resolver parametro input e não tiver o ID, da mensagem
+	- ResolvVal aceitar o objeto de configuração para retorna o valor
+	- ResolvSelect, resolver objeto do tipo select
+	- ResolvInput, type hidden opção de informa-los como grade dentro de um obj só
+	- ResolvFocus funcão tipo a resolvVal e ResolvDisabled só que para focar no campo
+	- ResolvGrid, parametro para comportar ajax e montagem de grades dinamicamente
+		- conter os parametros do ajax
+		- pensar no esquema de funções separadas uma para buscar dados e outra para montar a grade
+		- opções para tratamento dos dados, criar parametros, fazer calculos etc. (similar ao que vi ter que ter no grafico)
+		- opção de vincular com legenda para fazer filtros
+		- O que da para automatizar?
+			- registros de evetos para uma fila, caso use ajax
+			- tela de loading e controle de visualização
+			- se tem que esperar algum evento
+			- se começa com texto generico, e voltar para ele no sirealize
+		OBS: Objetivo diminuir o arquivo script.js
+	- ResolvLayout, trazer configurações prontas de layout das telas, montar um template com links de referencias
+		- link para setar dependencias
+			Ex: // libHead -- conmentario a ser substituidos pelos links das bibliotecas que a tela for usar 
+		- gerar arquivo dinamicamente
+		- opções globais, (salvar, cancelar, encerrar, reabrir, imprimir, exportar, autorizar, novo)
+	- Opções de backend, montar roteiro de funções e querys com regras a serem seguidas
+		- cogitar opção  de usar Node.js , PHP ou até C#
+		- vai trabalhar com arquivos gerados automaticamente
+	OK - ResolvInput, opção para lança data, teria que ser um objeto (chave / valor)
+	OK - Permitir o parametro paramReq (serealize) aceitar array
+	OK - Inserir modal de consulta global assim que perceber que possui um componete CodigoConsulta para resolver
+	OK - Melhorar visulização dos checkbox e radio
+	OK - Parametro especial radio, quando input for do tipo radio, permitir informar array de opções
+	OK - Colocar o modal em um arquivo separado .html e parameterizar ele dinamicamente para o javascript
+	OK - Ao limpar formulario, verificar se possui uma div com valor padrão, ou seja, se o atributo text está preenchido
+	OK - Ao focar no campos, verificar se tem menu no caminho e clicar no link correspondente para depois focar no campo
+	OK - Legenda interativa, ao clicar poder mostrar ou ocutar dados de uma grade por exemplo
+	OK - Vincular uma div ao input tendo que passar somente a class da div 
+		ex: { input: { classDiv: 'col-md-3' } }
+
+
+Projetos de Interesse
+	- Sanhidrel e todo o ecocistema
+	- Casa Duarte 
+		- Aplicativo com React
+		- Aplicação com mapa 
+		- Geração de Imagens dinamicamente 
+
+
+
+Referencia funções de acoplamento: 
+	resolvVal 
+	resolvEl 
+	resolvDisabled 
+	? focusInput 
+
+
