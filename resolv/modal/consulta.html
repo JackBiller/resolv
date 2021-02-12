@@ -1,0 +1,51 @@
+<!-- ********************************************************************************************** -->
+<!-- * Modal Consulta Global -->
+<!-- ********************************************************************************************** -->
+<div class="modal fade" id="modalConsulta" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" id="closeModaBuscaAtendimento" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Consultar <spam></spam>:</h4>
+			</div>
+			<div class="modal-body">
+				<table width="100%" style="display:none;">
+					<tr>
+						<td>
+							Pesquisar: 
+							<input class="form-control" style="resize:vertical;">
+						</td>
+						<td>
+							<spam style='color:white'>.</spam>
+							<button class="btn btn-block btn-search">
+								<i class="fa fa-search"></i>
+							</button>
+						</td>
+					</tr>
+				</table>
+				<br>
+				<div class="conteudo"></div>
+			</div>
+			<div class="modal-footer" style="margin: 0;">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					Fechar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$('#modalConsulta').on('shown.bs.modal', function () {
+	// $('#modalConsulta').find('input').trigger('focus');
+	$(".btn-search")[0].click();
+});
+$('#modalConsulta').on('hidden.bs.modal', function () {
+	$('#modalConsulta').find('input').val('');
+	$('#modalConsulta').find('.conteudo').html('');
+});
+
+function abrirModalConsulta(options) { 
+	$("#modalConsulta").modal('show').find('spam').html((options.search || '')).parent('.modal-body')
+	$("#modalConsulta").find('.btn-search')[0].onclick = options.click
+}
+</script>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bot Resolv Doc</title>
+
+	<link rel="stylesheet" href="../qualidade/lb/bootstrap3.4.1/css/bootstrap.min.css">
+
+	<script type="text/javascript" src="../qualidade/lb/jQuery.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="../qualidade/lb/bootstrap3.4.1/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="../qualidade/lb/moment.js"></script>
+</head>
+<body>
+
+	<button onclick="startBot();"> 	Gerar Documentação </button>
+
+	<div id="logs" style="height: 500px;overflow-y: scroll;"></div>
+
+<script>
+	var files_Global = [], indiceFiles_Global = -1, documentacao_Global = [];
+
+	function startBot() { 
+		$.ajax({
+			url: 'controller.php',
+			type: 'POST',
+			dataType: 'text',
+			data: { 
+				'listarDiretorio': true,
+				'path': './resolv',
+			},
+			error: function(){ $('#lastUpdate').val('Falha ao fazer a requisição!'); }
+		}).done(function(data) { 
+			console.log(data);
+			data = JSON.parse(data);
+			console.log(data);
+
+			files_Global = data.branchs.filter(({ isFile }) => isFile == 1);
+			indiceFiles_Global = 0;
+			readFileDoc();
+		});
+	}
+
+	function readFileDoc() { 
+		if (indiceFiles_Global >= files_Global.length-1) { 
+			console.log('final')
+			montarDocumentacao();
+			return;
+		}
+
+		const file = files_Global[indiceFiles_Global];
+
+		$.ajax({
+			url: file.path,
+			type: 'GET',
+			dataType: 'text',
+			error: () => { alert('Falha ao fazer a requisição!'); }
+		}).done(source => { 
+			let doc = '', indiceFunc = source.indexOf(file.name.split('.')[0]);
+
+			if (indiceFunc >= 0) { 
+				doc = source.substring(indiceFunc, source.length);
+
+				indiceFunc = doc.indexOf('/*');
+
+				if (indiceFunc >= 0) { 
+					doc = doc.substring(indiceFunc + '/*'.length, source.length);
+					doc = doc.substring(0, doc.indexOf('*/'));
+					tratarDoc(doc);
+				}
+			}
+		});
+	}
+
+	function tratarDoc(doc) { 
+		doc = doc.replace(/\r/g,'');
+		doc = doc.replace(/\t/g,'    ');
+
+		let linhas = doc.split('\n'), minTab = -1;
+
+		linhas.forEach((linha, i) => { 
+			linhas[i] = removeLastCharSpace(linha);
+
+			let tabs = calcTab(linha);
+			if ((minTab == -1 || minTab > tabs) && tabs >= 0) minTab = tabs;
+		});
+
+		let linhasUteis = linhas.filter(l => l != '');
+
+		for (let i = 0; i < linhasUteis.length; i++) { 
+			linhasUteis[i] = linhasUteis[i].substring(minTab, linhasUteis[i].length);
+			linhasUteis[i] = linhasUteis[i].split('--');
+			linhasUteis[i][0] = removeLastCharSpace(linhasUteis[i][0]);
+		}
+
+		let documentacao = ''
+			+ '<table>'
+			+ linhasUteis.map(linha => { 
+				return ''
+					+ '<tr>'
+					+ 		'<td style="padding-right:15px;">'
+					+ 			linha[0].replace(/ /g, '&nbsp;')
+					+ 		'</td>'
+					+ 		'<td style="padding-left:15px;border-left:solid black 1px;">'
+					+ 			(linha[1] || '').replace(/ /g, '&nbsp;')
+					+ 		'</td>'
+					+ '</tr>'
+			}).join('')
+			+ '</table>'
+
+		console.log(documentacao);
+		documentacao_Global.push({
+			documentacao,
+			file: files_Global[indiceFiles_Global].name.split('.')[0].replace('resolv',''),
+			path: files_Global[indiceFiles_Global].path
+		});
+		indiceFiles_Global++;
+		readFileDoc();
+	}
+
+	function removeLastCharSpace(text='') { 
+		while(text.substring(text.length-1,text.length) == ' ') 
+			text = text.substring(0,text.length-1);
+		return text;
+	}
+
+	function calcTab(text) { 
+		text = text.split('');
+		let tabs = 0;
+		while(text[0] == ' ') { 
+			text.splice(0,1);
+			tabs++;
+		}
+		return text.length == 0 ? -1 : tabs;
+	}
+
+	function montarDocumentacao() { 
+		console.log('documentacao_Global');
+		console.log(documentacao_Global);
+
+		// let links = documentacao_Global.map(({ file }) => file);
+
+		let docHtml = ``
+			+t(0) 	+ 	`<html>`
+			+t(0) 	+ 	`<head>`
+			+t(1) 	+ 		`<title>Documentação Resolv</title>`
+			+t(1) 	+ 		`<meta charset="utf-8">`
+			+t(1) 	+ 		`<meta name="viewport" content="width=device-width, initial-scale=1">`
+			+t(1) 	+ 		`<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">`
+			+t(1) 	+ 		`<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></`+`script>`
+			+t(1) 	+ 		`<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"><</`+`script>`
+			+t(0) 	+ 	`</head>`
+			+t(0) 	+ 	`<body>`
+			+t(1) 	+ 		`<div class="container">`
+			+t(2) 	+ 			`<div class="row">`
+			+t(3) 	+ 				`<div class="col-md-4">`
+					+ documentacao_Global.map(({ file }) => ''
+						+t(4) 	+ `<li onclick='abrirPag("${file}");'>${file}</li>`
+					).join('')
+			+t(3) 	+ 				`</div>`
+			+t(3) 	+ 				`<div class="col-md-8" id="conteudoPagina">`
+			+t(3) 	+ 				`</div>`
+			+t(2) 	+ 			`</div>`
+			+t(1) 	+ 		`</div>`
+			+t(0) 	+ 	`</body>`
+			+t(0) 	+ 	`<script>`
+			+t(0) 	+ 	`function abrirPag(desc) {`
+					+ documentacao_Global.map(({ file, documentacao }) => ''
+						+t(1) 	+ `let ${file} = \`${documentacao}\`;`
+					).join('')
+			+t(1) 	+ 		`eval(\`$("#conteudoPagina").html("<h1>" + desc + "</h1>" + \${desc});\`);`
+			+t(0) 	+ 	`}`
+			+t(0) 	+ 	`</`+`script>` 
+			+t(0) 	+ 	`</html>`
+	}
+
+	function t() { 
+		var num = arguments.length > 0 ? arguments[0] : 1, html = "\n";
+		for (var i = 0; i < num; i++) html += "\t";
+		return html;
+	}
+
+</script>
+
+</body>
+</html>

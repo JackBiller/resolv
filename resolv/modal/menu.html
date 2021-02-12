@@ -1,0 +1,12 @@
+<script>
+function mudarPagina(el, divId, name, nameDiv) {
+	var elementoMenu = document.getElementsByName(name);
+	var elementoContMenu = document.getElementsByName(nameDiv);
+	for (var i = 0; i < elementoMenu.length; i++) {
+		$(elementoMenu[i]).attr('class','');
+		$(elementoContMenu[i]).css('display','none');
+	}
+	$(el).attr('class','active');
+	$("#" + divId).css('display','block');
+}
+</script>

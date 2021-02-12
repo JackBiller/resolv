@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bot Resolv File</title>
+
+	<link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.min.css">
+
+	<!-- <script type="text/javascript" src="../qualidade/lb/jQuery.js"></script> -->
+	<script src="../jquery/dist/jquery.min.js"></script>
+	<script src="../bootstrap/dist/js/bootstrap.min.js"></script>
+
+	<script src="../moment/moment.js"></script>
+</head>
+<body>
+
+	<button onclick="runBot = true;"> 	Iniciar </button>
+	<button onclick="runBot = false;"> 	Parar 	</button>
+	<br>
+	<label for="lastUpdate">Última atualização</label>
+	<input type="text" disabled id="lastUpdate">
+
+	<div id="logs" style="height: 500px;overflow-y: scroll;"></div>
+
+<script>
+	var runBot = false;
+	function startBot() {
+		if (!runBot) {
+			setTimeout(() => { startBot() }, 100);
+			return ;
+		}
+		$.ajax({
+			url: 'controller.php',
+			type: 'POST',
+			dataType: 'text',
+			data: {
+				'atualizarArquivoConfig': true
+			},
+			error: function(){ $('#lastUpdate').val('Falha ao fazer a requisição!'); }
+		}).done(function(data){
+			console.log(data);
+
+			data = data + "<br>" + $("#logs").html()
+			if (data.length > 1000) data = data.substring(0,1000);
+
+			$("#logs").html( data );
+			$('#lastUpdate').val(moment().format('DD/MM/Y HH:mm'));
+
+			if (runBot) setTimeout(() => { startBot() }, 100);
+		});
+	}
+	startBot();
+</script>
+
+</body>
+</html>
