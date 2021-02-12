@@ -58,8 +58,7 @@ function resolvHr(options) {
 	return resolvBr( $.extend({}, options, { hr: true }) ,(arguments[1] || 0));
 }
 
-function resolvBr(options) { 
-	var tab = (arguments[1] || 0);
+function resolvBr(options, tab=0) { 
 	/*
 		options: {
 			num: 1 			-- Numero de br que vai montar
@@ -80,8 +79,7 @@ function resolvBr(options) {
 	return html;
 }
 
-function resolvButton(options) { 
-	var tab = (arguments[1] || 0);
+function resolvButton(options, tab=0) { 
 	/*
 		options: {
 			class: ''					-- Classe do botao
@@ -94,6 +92,7 @@ function resolvButton(options) {
 			compensador: (0|1) 			-- Cria um compensador para alinha o botão
 			title: '' 					-- Texto que aparece quando passa o mouse emcima
 			style: objStyle 			-- Resolve o estilo do botão
+			name: '' 					-- Atributo Name do Button
 		}
 	*/
 
@@ -111,8 +110,10 @@ function resolvButton(options) {
 			+ 	"<label><spam style='color: white;'>.</spam></label>"
 		)
 		+t(tab)		+ 	"<button"
+					+ 		((options.name  || '') == '' ? '' : " name='"  + options.name  + "'")
 					+ 		((options.class || '') == '' ? '' : " class='" + options.class + "'")
 					+ 		((options.title || '') == '' ? '' : " title='" + options.title + "'")
+					+ 		((options.id 	|| '') == '' ? '' : " id='"    + options.id    + "'")
 					+ 		((options.style || '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
 					// + 		((options.click || '') == '' ? '' : " onclick='" + options.class + "'")
 
@@ -176,6 +177,7 @@ function resolvCodigoConsulta(options, tab=0) {
 			value: '' 				-- campo com o valor desejado
 			desc: '' 				-- campo para mostrar a descrição por onde vai pesquisar
 			onchange: function(el) 	-- função disparando quando muda o valor do select
+			onload: function() 		-- função disparando quando carrega os dados do select
 		}
 		descForm: 					-- identificador
 		id: '' 						-- campo de id para acessar externo, caso seja omitido será usado o this.codigo.input
@@ -204,7 +206,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		... 						-- 		D = Descrição
 		... 						-- 		X = Botão para limpar
 		... 						-- 		S = Select2 para montar combo
-		... 						-- 		R = Recarregar (futura opção para offline)
+		... 						-- 		R = Recarregar
 		... 						-- 	)
 		xs / sm / md / lg: '3-1-8' 	-- Class do bootstrap para referenciar a disposição dos componetes
 	}
@@ -217,6 +219,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		ajax: 'ajax',
 	}, options);
 
+	var isOffline = options.dist.indexOf('R') >= 0;
 	var param = resolvParamAjax(options);
 	var descRef = '';
 	if ((options.accesskey || '') != '') { descRef = options.dist.indexOf('C') != -1 ? 'C' : 'D'; }
@@ -251,8 +254,7 @@ function resolvCodigoConsulta(options, tab=0) {
 
 
 	var elemtents = [
-		{
-			codigo: 'C',
+		{ codigo: 'C',
 			class: 'codigo',
 			complemento: ` style="padding:0;padding-left:15px;"`,
 			// text: descRef == 'C' ? returnDescAccesskey(options.codigo.text, options) : (options.codigo.text || ''),
@@ -282,8 +284,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ 		`;registerInputFocus.push(resolvEl('${options.descForm}','codigo'));`
 				+t(tab+2)	+ 	`</`+`script>`
 		},
-		{
-			codigo: 'B',
+		{ codigo: 'B',
 			class: 'text-center',
 			complemento: ` style="padding:0;padding-right:15px;"`,
 			resolv: ''
@@ -300,8 +301,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ 		`<i class="fa fa-search"></i>`
 				+t(tab+2)	+ 	`</button>`
 		},
-		{
-			codigo: 'D',
+		{ codigo: 'D',
 			class: 'desc',
 			// text: ((options.desc.text || '') == '' ? '<spam style="color:white;">.</spam>' : options.desc.text),
 			// text: ((options.desc.text || '') == '' ? '<spam style="color:white;">.</spam>' : (
@@ -312,8 +312,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				// + 	((options.desc.text || '') == '' ? '<spam style="color:white;">.</spam>' : options.desc.text)
 				+t(tab+2)	+ 	`<input type="text" class="form-control" disabled>`
 		},
-		{
-			codigo: 'X',
+		{ codigo: 'X',
 			class: 'text-center clear',
 			complemento: ` style="padding:0;padding-right:15px;"`,
 			resolv: ''
@@ -328,28 +327,36 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+2)	+ 	`>`
 				+t(tab+3)	+ 		`<i class="fa fa-times"></i>`
 				+t(tab+2)	+ 	`</button>`
-		},{
-			codigo: 'S',
+		},
+		{ codigo: 'S',
 			class: 'select',
 			complemento: ` style="padding:0;padding-left:15px;"`,
 			text: funcAxu.resolvLabel('select'),
 			resolv: ''
-				// +t(tab+2)	+ 	`<div id="loadSelectLoading">`
-				// +t(tab+3)	+ 		`Carregando...`
-				// +t(tab+2)	+ 	`</div>`
 				+t(tab+2)	+ 	`<div id="loadSelect${capitalize(options.descForm)}">`
 				+t(tab+3)	+ 		`Carregando...`
-				// +t(tab+3)	+ 		`<select class="form-control codigoConsulta"`
-				// +t(tab+4)	+ 			` data-ref='${capitalize(options.descForm)}'`
-				// +t(tab+3)	+ 		`>`
-				// +t(tab+4)	+ 			`<option value=""></option>`
-				// +t(tab+3)	+ 		`</select>`
 				+t(tab+2)	+ 	`</div>`
 				+t(tab+2)	+ 	`<script>`
 				+t(tab+3)	+ 		`setTimeout(function() { `
 				+t(tab+4)	+ 			`buscar${capitalize(options.descForm)}Select();`
 				+t(tab+3)	+ 		`}, 100);`
 				+t(tab+2)	+ 	`</`+`script>`
+		},
+		{ codigo: 'R',
+			class: 'text-center',
+			complemento: ` style="padding:0;padding-right:15px;"`,
+			resolv: ''
+				+t(tab+2)	+ 	`<label`
+							+ 		` style=${resolvStyle(styleLabel)}`
+							+ 	`>`
+				+t(tab+3)	+ 		`<spam style="color:white">.</spam>`
+				+t(tab+2)	+ 	`</label>`
+				+t(tab+2)	+ 	`<br>`
+				+t(tab+2)	+ 	`<button class="btn btn-info btn-block"`
+				+t(tab+3)	+ 		` onclick=\"recarregar${capitalize(options.descForm)}();"`
+				+t(tab+2)	+ 	`>`
+				+t(tab+3)	+ 		`<i class="fa fa-refresh"></i>`
+				+t(tab+2)	+ 	`</button>`
 		},
 	];
 
@@ -363,8 +370,7 @@ function resolvCodigoConsulta(options, tab=0) {
 
 			for (var i = 0; i < dist.length; i++) { 
 				for (var j = 0; j < el.length; j++) { 
-					if (dist[i] == el[j].codigo) {
-
+					if (dist[i] == el[j].codigo) { 
 						html += ``
 						+t(tab+1)	+ 	`<div`
 									+ 		` class="${(el[j].class || '')}`
@@ -391,6 +397,13 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab)		+ 	`<script>`
 		+t(tab)		+ 		`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab)		+ 		`function buscar${capitalize(options.descForm)}Select() { `
+		+(!isOffline ? '' : ''
+			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) { `
+			+t(tab+2)	+ 			`${capitalize(options.descForm)}Select_Global = JSON.parse(localStorage.getItem("offline${capitalize(options.descForm)}"));`
+			+t(tab+2)	+ 			`montar${capitalize(options.descForm)}Select();`
+			+t(tab+2)	+ 			`return;`
+			+t(tab+1)	+ 		`}`
+		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
 		+t(tab+1)	+ (typeof(options.ajax) == 'string' 
 						? options.ajax 
@@ -403,6 +416,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`data = JSON.parse(data);`
 		+t(tab+3)	+ 					`console.log(data);`
+		+t(tab+3)	+ 					`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`if (data.length != 0 && data[0].debug == "OK") { `
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = data;`
 		+t(tab+4)	+ 						`var grade = ''`
@@ -419,11 +433,40 @@ function resolvCodigoConsulta(options, tab=0) {
 					+ 							`\`; });`
 		+t(tab+5)	+ 							`+ 	\`</select>\``
 		+t(tab+4)	+ 						`$("#loadSelect${capitalize(options.descForm)}").html(grade).find('select').select2();`
+		+t(tab+4)	+ 						`console.log("onload");`
+		+t(tab+4)	+ 						`var func = ${String((options.select || {}).onload || function(){})};`
+		+t(tab+4)	+ 						`func();`
 		+t(tab+3)	+ 					`} else { `
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`}`
+		+(!isOffline ? '' : ''
+			+t(tab+3)	+ 				`localStorage.setItem(`
+						+ 					`"offline${capitalize(options.descForm)}",`
+						+ 					`JSON.stringify(${capitalize(options.descForm)}Select_Global)`
+						+ 				`);`
+		)
+		+t(tab+3)	+ 					`montar${capitalize(options.descForm)}Select();`
 		+t(tab+2)	+ 				`}`
 		+t(tab+1)	+ 			`});`
+		+t(tab)		+ 		`}`
+		+t(tab)		+ 		`function montar${capitalize(options.descForm)}Select() { `
+		+t(tab+1)	+ 			`var data = ${capitalize(options.descForm)}Select_Global;`
+		+t(tab+1)	+ 			`if (data.length != 0 && data[0].debug == "OK") { `
+		+t(tab+2)	+ 				`var grade = ''`
+		+t(tab+3)	+ 					`+ 	\`<select class="form-control codigoConsulta"\``
+		+t(tab+3)	+ 					`+ 		\` data-ref='${capitalize(options.descForm)}'\``
+		+t(tab+3)	+ 					`+ 		\` style='width:100%'\``
+		+t(tab+3)	+ 					`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
+		+t(tab+3)	+ 					`+ 	\`>\``
+		+t(tab+3)	+ 					`+ 		\`<option value=""></option>\`` 
+		+t(tab+3)	+ 					`+ data.map(function(dt) { return \``
+					+ 						`<option value="\${dt.${(options.select || {}).value}}">`
+					+ 							`\${dt.${(options.select || {}).desc}}`
+					+ 						`</option>`
+					+ 					`\`; });`
+		+t(tab+3)	+ 					`+ 	\`</select>\``
+		+t(tab+2)	+ 				`$("#loadSelect${capitalize(options.descForm)}").html(grade).find('select').select2();`
+		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
 		+t(tab)		+ 		`function onchange${capitalize(options.descForm)}Select(el) { `
 		+t(tab+1)	+ 			`resolvVal("${options.descForm}","id",resolvVal("${options.descForm}","select"));`
@@ -440,6 +483,15 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+1)	+ 			`if(resolvVal("${options.descForm}",'codigo') == ${capitalize(options.descForm)}Selected_Global) { `
 		+t(tab+2)	+ 				`return false;`
 		+t(tab+1)	+ 			`}`
+		+ (!isOffline ? '' : ''
+			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) { `
+			+t(tab+2)	+ 			`var data = JSON.parse(localStorage.getItem("offline${capitalize(options.descForm)}"));`
+			+t(tab+2)	+ 			`var indice = data.map(function(dt) { return dt["${((options.codigo || {}).input || '')}"]; })`
+						+ 				`.indexOf(resolvVal('${options.descForm}','codigo'));`
+			+t(tab+2)	+ 			`resolvValCodigo${capitalize(options.descForm)}(indice >= 0 ? [data[indice]] : []);`
+			+t(tab+2)	+ 			`return;`
+			+t(tab+1)	+ 		`}`
+		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
 		+t(tab+1)	+ (typeof(options.ajax) == 'string' 
 						? options.ajax 
@@ -454,23 +506,26 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`data = JSON.parse(data);`
 		+t(tab+3)	+ 					`console.log(data);`
-		+t(tab+3)	+ 					`if (data.length != 0 && data[0].debug == "OK") { `
-		+t(tab+4)	+ 						`set${capitalize(options.descForm)}Val(data[0],'codigo');`
-		+t(tab+3)	+ 					`}`
-		+t(tab+3)	+ 					`else { `
-		+t(tab+4)	+ 						`clear${capitalize(options.descForm)}();`
-		// +t(tab+4)	+ 						`var teste = { codigoConsulta: resolvEl("${options.descForm}",'codigo').obj };`
-		// +t(tab+4)	+ 						`var teste.codigoConsulta = resolvEl("${options.descForm}",'codigo').obj;`
-		// +t(tab+4)	+ 						`serealizeForm(teste);`
-		+t(tab+4)	+ 						`if (data.length > 0 && (data[0].debug || '') != '') alert(data[0].debug);`
-		+t(tab+4)	+ 						`resolvEl("${options.descForm}",'codigo').el[0].focus();`
-					+ ((options.onFalseDebug || '') == '' ? '' : ''
-						+t(tab+4) + 		`var func = ${String(options.onFalseDebug)};`
-						+t(tab+4) + 		`func(data);`
-					)
-		+t(tab+3)	+ 					`}`
+		+t(tab+3)	+ 					`resolvValCodigo${capitalize(options.descForm)}(data);`
 		+t(tab+2)	+ 				`}`
 		+t(tab+1)	+ 			`});`
+		+t(tab)		+ 		`}`
+		+t(tab)		+ 		`function resolvValCodigo${capitalize(options.descForm)}(data) { ` // função usada para setar valores sem chamar trigger
+		+t(tab+1)	+ 			`if (data.length != 0 && data[0].debug == "OK") { `
+		+t(tab+2)	+ 				`set${capitalize(options.descForm)}Val(data[0],'codigo');`
+		+t(tab+1)	+ 			`}`
+		+t(tab+1)	+ 			`else { `
+		+t(tab+2)	+ 				`clear${capitalize(options.descForm)}();`
+		// +t(tab+2)	+ 				`var teste = { codigoConsulta: resolvEl("${options.descForm}",'codigo').obj };`
+		// +t(tab+2)	+ 				`var teste.codigoConsulta = resolvEl("${options.descForm}",'codigo').obj;`
+		// +t(tab+2)	+ 				`serealizeForm(teste);`
+		+t(tab+2)	+ 				`if (data.length > 0 && (data[0].debug || '') != '') alert(data[0].debug);`
+		+t(tab+2)	+ 				`resolvEl("${options.descForm}",'codigo').el[0].focus();`
+		+ ((options.onFalseDebug || '') == '' ? '' : ''
+			+t(tab+2)	+ 			 `var func = ${String(options.onFalseDebug)};`
+			+t(tab+2)	+ 			 `func(data);`
+		)
+		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
 		+t(tab)		+ 		`function set${capitalize(options.descForm)}(data) { ` // função usada para setar valores sem chamar trigger
 		+t(tab+1)	+ 			`if (!resolvEl("${options.descForm}",'codigo').el.is(":focus"))`
@@ -487,10 +542,10 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+1)	+ 			`${capitalize(options.descForm)}Selected_Global = data.${(options.codigo || {}).input} || '';`
 		+t(tab+1)	+ 			`$("#${options.descForm}").find('.desc').find('input').val(data.${(options.desc || {}).input} || '');`
 		+t(tab+1)	+ 			`$("#${options.descForm}").find('.id').find('input').val(data.${(options.id || (options.codigo || {}).input)} || '');`
-					+ ((options.trigger || '') == '' ? '' : ''
-						+t(tab+1)+ 	`var func = ${String(options.trigger)};`
-						+t(tab+1)+ 	`func(data);`
-					)
+		+ ((options.trigger || '') == '' ? '' : ''
+			+t(tab+1)	+ 		`var func = ${String(options.trigger)};`
+			+t(tab+1)	+ 		`func(data);`
+		)
 		+t(tab+1)	+ 			`console.log('resolvVal: ' + (resolvVal('${options.descForm}','id') != ''));`
 		+t(tab+1)	+ 			`if (`
 		+t(tab+2)	+ 				`(arguments[1] || '') != 'codigo' && `
@@ -519,6 +574,13 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`});`
 		+t(tab+2)	+ 				`return false;`
 		+t(tab+1)	+ 			`}`
+		+(!isOffline ? '' : ''
+			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) { `
+			+t(tab+2)	+ 			`${capitalize(options.descForm)}List_Global = JSON.parse(localStorage.getItem("offline${capitalize(options.descForm)}"));`
+			+t(tab+2)	+ 			`montaGradePesquisa${capitalize(options.descForm)}();`
+			+t(tab+2)	+ 			`return;`
+			+t(tab+1)	+ 		`}`
+		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
 		+t(tab+1)	+ (typeof(options.ajax) == 'string' 
 						? options.ajax 
@@ -532,18 +594,28 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`data = JSON.parse(data);`
 		+t(tab+3)	+ 					`console.log(data);`
-		+t(tab+3)	+ 					`var grade = data[0].debug;`
-		+t(tab+3)	+ 					`${capitalize(options.descForm)}List_Global = [];`
-		+t(tab+3)	+ 					`if (grade == 'OK') { `
-		+t(tab+4)	+ 						`${capitalize(options.descForm)}List_Global = data;`
-		+t(tab+4)	+ 						`grade = resolvGrade(data, `
+		+t(tab+3)	+ 					`${capitalize(options.descForm)}List_Global = data[0].debug == 'OK' ? data : [];`
+		+(!isOffline ? '' : ''
+			+t(tab+3)	+ 				`localStorage.setItem(`
+						+ 					`"offline${capitalize(options.descForm)}",`
+						+ 					`JSON.stringify(${capitalize(options.descForm)}List_Global)`
+						+ 				`);`
+		)
+		+t(tab+3)	+ 					`montaGradePesquisa${capitalize(options.descForm)}();`
+		+t(tab+2)	+ 				`}`
+		+t(tab+1)	+ 			`});`
+		+t(tab)		+ 		`}`
+		+t(tab)		+ 		`function montaGradePesquisa${capitalize(options.descForm)}() { `
+		+t(tab+1)	+ 			`var data = ${capitalize(options.descForm)}List_Global;`
+		+t(tab+1)	+ 			`var grade = data[0].debug;`
+		+t(tab+1)	+ 			`if (grade == 'OK') { `
+		+t(tab+2)	+ 				`${capitalize(options.descForm)}List_Global = data;`
+		+t(tab+2)	+ 				`grade = resolvGrade(data, `
 					+ jsonToString($.extend({},{ 
 						languageJson: '../qualidade/lb/DataTables-1.10.18/Portuguese.json'
 						, class: { tbody: { td: 'celB' } }
 						, defaultAlignHead: 'center'
-						, objParamGrade: objParamGrade_Global
 						, descForm: `tabela${options.descForm}`
-						, returnHTML: true
 						, trClick: {
 							desc: `set${capitalize(options.descForm)}Val(${capitalize(options.descForm)}List_Global[%0%]);`,
 							val: [{index:1}]
@@ -552,13 +624,11 @@ function resolvCodigoConsulta(options, tab=0) {
 							$("#modalConsulta").find('input')[1].focus();
 						}
 						// , no_dataTable: true
-					},(options.grade || {}) ))
-		+t(tab+4)	+ 						`);`
-		+t(tab+3)	+ 					`}`
-		+t(tab+3)	+ 					`$("#modalConsulta").find('.conteudo').html(grade);`
-		// +t(tab+3)	+ 					`setTimeout( function() { $("#modalConsulta").find('input')[1].focus(); }, 500);`
-		+t(tab+2)	+ 				`}`
-		+t(tab+1)	+ 			`})`
+					},(options.grade || {}) ), tab+2, true)
+		+t(tab+2)	+ 				`);`
+		+t(tab+1)	+ 			`}`
+		+t(tab+1)	+ 			`$("#modalConsulta").find('.conteudo').html(grade);`
+		// +t(tab+1)	+ 			`setTimeout( function() { $("#modalConsulta").find('input')[1].focus(); }, 500);`
 		+t(tab)		+ 		`}`
 		+t(tab)		+ 		`function clear${capitalize(options.descForm)}(setTrigger=false) { `
 		+t(tab+1)	+ 			`if (setTrigger) { `
@@ -567,6 +637,12 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`$("#${options.descForm}").find('input').val('');`
 		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
+		+ (!isOffline ? '' : ''
+			+t(tab)		+ 	`function recarregar${capitalize(options.descForm)}() { `
+			+t(tab+1)	+ 		`localStorage.removeItem("offline${capitalize(options.descForm)}");`
+			+t(tab+1)	+ 		``
+			+t(tab)		+ 	`}`
+		)
 		+ (((options.codigo || {}).mask || '') == '' ? '' : ''
 			+t(tab)	+ `$("#${options.descForm}").find('.codigo').find('input').mask('${options.codigo.mask}');`
 		)
@@ -580,14 +656,14 @@ function resolvCodigoConsulta(options, tab=0) {
 	return html;
 }
 
-function resolvDiv(options) { 
-	var tab = (arguments[1] || 0);
+function resolvDiv(options, tab=0) { 
 	/*
 		options: {
 			class: '' 		-- Class da div
 			id: '' 			-- Id da div
 			ctx: '' 		-- Conteudo div
 			style: obj 		-- Objeto CSS
+			text: '' 		-- Conteudo Padrão
 		}
 	*/
 	var html = ''
@@ -603,8 +679,7 @@ function resolvDiv(options) {
 	return html;
 }
 
-function resolvFotos(options) { 
-	var tab = (arguments[1] || 0);
+function resolvFotos(options, tab=0) { 
 	/*
 		options: { 
 			descForm: ''					-- Parametro de identificação
@@ -640,12 +715,12 @@ function resolvFotos(options) {
 	var param = resolvParamAjax(options);
 
 	var input = {};
-	if ((options.ck_upload || '') != '') {
-		input = { input: {
+	if ((options.ck_upload || '') != '') { 
+		input = { input: { 
 			type: 'file', 
 			id: 'inputFotos' + options.descForm, 
 			fileType: 'img',
-			upload: {
+			upload: { 
 				ajax: (options.ajax || 'ajax'),
 				param: (options.ck_upload.param || {})
 			}
@@ -777,8 +852,7 @@ function resolvH3(options){ return resolvH($.extend({}, options, { num: 3 }),(ar
 function resolvH4(options){ return resolvH($.extend({}, options, { num: 4 }),(arguments[1] || 0)); }
 function resolvH5(options){ return resolvH($.extend({}, options, { num: 5 }),(arguments[1] || 0)); }
 function resolvH6(options){ return resolvH($.extend({}, options, { num: 6 }),(arguments[1] || 0)); }
-function resolvH(options){
-	var tab = (arguments[1] || 0);
+function resolvH(options, tab=0) { 
 	/*
 		options: {
 			text: '' 		-- Descricao da Tag HN
@@ -858,14 +932,22 @@ function resolvInput(options,tab=0) {
 			enum: { 							-- Indica que o campo será um select com opções pré-definidas
 				value: desc 					-- Ex: <option value="value">desc</option>
 			}
+			mask: '' 							-- Usar Mascara no campo
+			maskOption: {} 						-- Opções para usar com a mescara
 		}
 	*/
 
 	var html = '';
 
-	if (options.type == 'radio' && (options.radio || '') != '') {
+	if (options.type == 'radio' && (options.radio || '') != '') { 
 		var isCheck = options.radio.map(function(e) { return e.checked; }).indexOf(true);
 		if(isCheck < 0) isCheck = 0;
+
+		for (var i = 0; i < options.radio.length; i++) { 
+			if (options.radio[i].checked) {
+				options.value = options.radio[i].value || '';
+			}
+		}
 
 		for (var i = 0; i < options.radio.length; i++) 
 			html += resolvInputIn( $.extend({}, options, { checked: (isCheck == i ? true : '') }, options.radio[i]) , tab);
@@ -1043,7 +1125,7 @@ function resolvInputIn(options,tab=0) {
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+1)	+ 		`</tr>`
 					+ t(tab)	+ 	`</table>`
-				: (options.type == 'file'
+				: (options.type == 'file' && (options.upload || '') != ''
 					? ''
 						+ t(tab)	+ 	`<table width="100%">`
 						+ t(tab+1)	+ 		`<tr>`
@@ -1244,14 +1326,21 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+2)	+ 		`});`
 			+ t(tab+1)	+ 	`}, 500);`
 		)
+
+
+
+		// ****  verificar se o campo tem mascara ****
+		+ ((options.mask || '') == '' || (options.id || '') == '' ? '' : ''
+			+ t(tab+1)	+ 	`$("#${options.id}")`
+						+ 		`.mask("${options.mask}",${jsonToString(options.maskOption || {})});`
+		)
 		+t(tab)	+ 	`</`+`script>`
 		// ***************************************************************************
 
 	return html;
 }
 
-function resolvLabel(options) { 
-	var tab = (arguments[1] || 0);
+function resolvLabel(options, tab=0) { 
 	/*
 		options: {
 			text: '' 		-- Conteudo da label
@@ -1264,8 +1353,7 @@ function resolvLabel(options) {
 	return html;
 }
 
-function resolvLegenda(options) { 
-	var tab = (arguments[1] || 0);
+function resolvLegenda(options, tab=0) { 
 	/*
 		height: '20px' 				-- Altura do bloco da legenda
 		width: 	'40px' 				-- Largura do bloco da legenda
@@ -1289,12 +1377,10 @@ function resolvLegenda(options) {
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
 
-	var click = ((options.click) || '') == '' ? '' : options.click;
+	var click = options.click || '';
 	var onClick = click == '' ? '' : " class='cursorClick' onclick='legedaClick" + random + "(%0%);'";
 
-
 	var html = ''
-
 		+ (function(info) { 
 			var cels = ''
 				+t(tab)		+ 	`<table width=''>`
@@ -1345,9 +1431,7 @@ function resolvLegenda(options) {
 	return html;
 }
 
-function resolvMenu(options) { 
-	var tab = (arguments[1] || 0)
-	options = options || {};
+function resolvMenu(options={}, tab=0) { 
 	/*
 		options: {
 			descForm: '' 		-- Identificador
@@ -1417,8 +1501,7 @@ function resolvMenu(options) {
 }
 
 
-function resolvRow(options) { 
-	var tab = (arguments[1] || 0);
+function resolvRow(options, tab=0) { 
 	return ""
 		+t(tab)	+ 	"<div class='row'>"
 				+ (function(array){
@@ -1684,8 +1767,14 @@ function resolvEl(id,cla='') {
 	var objReturn 	= ids[map.indexOf(id)];
 
 	if (ids[map.indexOf(id)].parent == 'codigoConsulta') { 
+		cla = cla.indexOf('select') == 0 ? 'select' : cla;
 		objReturn.el = $("#" + id).find("." + cla).find(cla == 'select' ? 'select' : "input");
-	} else {
+	} else if (objReturn.parent == 'input' && objReturn.obj.type == "radio") { 
+		var els = document.getElementsByName(objReturn.obj.name);
+		for (var i = 0; i < els.length; i++) { 
+			if (els[i].checked) objReturn.el = $(els[i]);
+		}
+	} else { 
 		objReturn.el = $("#" + id);
 	}
 	return objReturn;
@@ -1695,12 +1784,22 @@ function resolvVal(id) {
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
-	if (el.parent == 'codigoConsulta') {
-		if (arguments.length > 2 && arguments[1] == 'select') 	return el.el.val(arguments[2]).trigger('change');
-		if (arguments.length > 2) 								return el.el.val(arguments[2]);
-																return el.el.val();
-	} else {
+	if (el.parent == 'codigoConsulta') { 
+		var getDesc = arguments[1] == 'selectDesc';
+		var isSelect = arguments[1].indexOf('select') == 0;
+		if (arguments.length > 2 && isSelect) 	return el.el.val(arguments[2]).trigger('change');
+		if (arguments.length > 2) 				return el.el.val(arguments[2]);
+		if (getDesc) 							return el.el[0].options[el.el[0].selectedIndex].innerHTML;
+												return el.el.val();
+	} else { 
 		var value = (arguments[1] != undefined ? arguments[1] : el.obj.value);
+
+		switch( (((el.obj || {}).style || {})["text-transform"] || '').toLowerCase() ) { 
+			case 'uppercase': 	value = (value || '').toUpperCase(); break;
+			case 'lowercase': 	value = (value || '').toLowerCase(); break;
+			case 'capitalize': 	value = capitalize((value || '')); break;
+		}
+
 		if (['div','spam'].indexOf(el.parent) != -1) func = 'html';
 
 		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
@@ -1731,6 +1830,27 @@ function resolvVal(id) {
 				return val;
 			}
 		}
+
+		if (el.obj.type == 'checkbox' && ([0,1]).indexOf(arguments[1]) >= 0) {
+			value = arguments[1] == 1;
+		} else if (el.obj.type == 'checkbox') { 
+			return el.el[0].checked;
+		}
+
+		if (
+			el.obj.type == 'radio' && arguments[1] != undefined && el.el.attr('id') != id
+		) { 
+			var setValue = -1;
+			var els = document.getElementsByName(id);
+			for (var i = 0; i < els.length; i++) {
+				if (els[i].value == arguments[1]) {
+					els[i].checked = true;
+					setValue = i;
+				}
+			}
+			if (setValue >= 0) return els[setValue];
+		}
+
 		if (arguments.length > 1) 	return el.el[func]( value );
 									return el.el[func]();
 	}
@@ -2025,16 +2145,30 @@ function resolvGlobalParam(options, tab, html) {
 		}
 	*/
 	var valid = [
-		{ param: 'classDiv' , attr: 'class' , },
-		{ param: 'styleDiv' , attr: 'style' , valid: 'resolvStyle' }
+		{ param: 'idDiv' 	, attr: 'id' 		, },
+		{ param: 'classDiv' , attr: 'class' 	, },
+		{ param: 'styleDiv' , attr: 'style' 	, valid: 'resolvStyle' },
+		{ param: 'clickDiv' , attr: 'onclick' 	},
 	], param = '', result;
+	var random;
 
 	if ( valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0 ) {
 		valid.forEach(function(x) {
 			if ((options[x.param] || '') != '') {
-				result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
-				result = `${(x.valid || '')}(${ result })`;
-				param += ` ${x.attr}="${eval( result )}"`;
+
+				do { 
+					random = parseInt( Math.random() * 100000 );
+				} while (registerRandom_Global.indexOf(random) != -1);
+				registerRandom_Global.push(random);
+
+				if (typeof(options[x.param]) == 'function') { 
+					window['click'+random] = options[x.param];
+					param += ` ${x.attr}="click${random}();"`;
+				} else {
+					result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
+					result = `${(x.valid || '')}(${ result })`;
+					param += ` ${x.attr}="${eval( result )}"`;
+				}
 			}
 		});
 
@@ -2091,68 +2225,70 @@ function resolvParamAjax(options) {
 
 
 /* Envetos de teclado */
-if (navigator.appName != "Microsoft Internet Explorer")
-	document.captureEvents(Event.KEYDOWN);
-document.body.onkeydown = NetscapeResolvKeyDown;
-function NetscapeResolvKeyDown(key,e) { 
-	ResolvKeyDown(key, key.which);
-}
-if (window.event) ResolvKeyDown(window.event, window.event.keyCode);
-function ResolvKeyDown(e, whichkey) { 
-	// console.log(whichkey);
-	var setComand = false;
-
-
-	if (whichkey == 115 && $(".codigoConsulta").is(':focus')) {
-		var itens = $(".codigoConsulta");
-
-		$.each(itens, function(i,x){
-			if ($(x).is(':focus')) {
-				window['pesquisa' + $(x).data('ref')]();
-			}
-		})
+$(document).ready(function() {
+	if (navigator.appName != "Microsoft Internet Explorer")
+		document.captureEvents(Event.KEYDOWN);
+	document.body.onkeydown = NetscapeResolvKeyDown;
+	function NetscapeResolvKeyDown(key,e) { 
+		ResolvKeyDown(key, key.which);
 	}
+	if (window.event) ResolvKeyDown(window.event, window.event.keyCode);
+	function ResolvKeyDown(e, whichkey) { 
+		// console.log(whichkey);
+		var setComand = false;
 
-	var proximoIndice, setInput = false;
-	if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) {
-		$.each(registerInputFocus, function(i,x) {
-			if ($(x.el[0]).is(":focus") && !setInput) {
-				setInput = true;
 
-				x.el[0].blur();
-				if (x.parent == 'codigoConsulta') return false;
+		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) {
+			var itens = $(".codigoConsulta");
 
-				var teste = {};
-				teste[x.parent] = x.obj;
-				teste = serealizeForm(teste);
-				if (!teste.valid) {
-					setComand = true;
-					return false;
+			$.each(itens, function(i,x){
+				if ($(x).is(':focus')) {
+					window['pesquisa' + $(x).data('ref')]();
 				}
+			})
+		}
 
-				if ((x.obj.onEnter || '') == '') {
-					proximoIndice = -1;
-					for (var j = (i+1); j < registerInputFocus.length; j++) {
-						if (!$(registerInputFocus[j].el[0]).attr('disabled')) {
-							proximoIndice = j;
-							j = registerInputFocus.length;
-						}
+		var proximoIndice, setInput = false;
+		if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) {
+			$.each(registerInputFocus, function(i,x) {
+				if ($(x.el[0]).is(":focus") && !setInput) {
+					setInput = true;
+
+					x.el[0].blur();
+					if (x.parent == 'codigoConsulta') return false;
+
+					var teste = {};
+					teste[x.parent] = x.obj;
+					teste = serealizeForm(teste);
+					if (!teste.valid) {
+						setComand = true;
+						return false;
 					}
-	
-					console.log(registerInputFocus[proximoIndice]);
-					registerInputFocus[proximoIndice].el[0].focus();
-					setComand = true;
-				} else {
-					x.el[0].focus();
+
+					if ((x.obj.onEnter || '') == '') {
+						proximoIndice = -1;
+						for (var j = (i+1); j < registerInputFocus.length; j++) {
+							if (!$(registerInputFocus[j].el[0]).attr('disabled')) {
+								proximoIndice = j;
+								j = registerInputFocus.length;
+							}
+						}
+		
+						console.log(registerInputFocus[proximoIndice]);
+						registerInputFocus[proximoIndice].el[0].focus();
+						setComand = true;
+					} else {
+						x.el[0].focus();
+					}
+
 				}
+			})
+		}
 
-			}
-		})
+		if (!setComand) {
+			registerEventKeyboard.forEach(function(x){
+				window[x](e,whichkey);
+			});
+		}
 	}
-
-	if (!setComand) {
-		registerEventKeyboard.forEach(function(x){
-			window[x](e,whichkey);
-		});
-	}
-}
+});

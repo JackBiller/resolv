@@ -20,6 +20,7 @@ function resolvCodigoConsulta(options, tab=0) {
 			value: '' 				-- campo com o valor desejado
 			desc: '' 				-- campo para mostrar a descrição por onde vai pesquisar
 			onchange: function(el) 	-- função disparando quando muda o valor do select
+			onload: function() 		-- função disparando quando carrega os dados do select
 		}
 		descForm: 					-- identificador
 		id: '' 						-- campo de id para acessar externo, caso seja omitido será usado o this.codigo.input
@@ -237,7 +238,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab)		+ 	`</div>`
 
 		+t(tab)		+ 	`<script>`
-		+t(tab)		+ 		`var ${capitalize(options.descForm)}Select_Global = [];`
+		+t(tab)		+ 		`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab)		+ 		`function buscar${capitalize(options.descForm)}Select() { `
 		+(!isOffline ? '' : ''
 			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) { `
@@ -261,6 +262,25 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 					`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`if (data.length != 0 && data[0].debug == "OK") { `
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = data;`
+		+t(tab+4)	+ 						`var grade = ''`
+		+t(tab+5)	+ 							`+ 	\`<select class="form-control codigoConsulta"\``
+		+t(tab+5)	+ 							`+ 		\` data-ref='${capitalize(options.descForm)}'\``
+		+t(tab+5)	+ 							`+ 		\` style='width:100%'\``
+		+t(tab+5)	+ 							`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
+		+t(tab+5)	+ 							`+ 	\`>\``
+		+t(tab+5)	+ 							`+ 		\`<option value=""></option>\`` 
+		+t(tab+5)	+ 							`+ data.map(function(dt) { return \``
+					+ 								`<option value="\${dt.${(options.select || {}).value}}">`
+					+ 									`\${dt.${(options.select || {}).desc}}`
+					+ 								`</option>`
+					+ 							`\`; });`
+		+t(tab+5)	+ 							`+ 	\`</select>\``
+		+t(tab+4)	+ 						`$("#loadSelect${capitalize(options.descForm)}").html(grade).find('select').select2();`
+		+t(tab+4)	+ 						`console.log("onload");`
+		+t(tab+4)	+ 						`var func = ${String((options.select || {}).onload || function(){})};`
+		+t(tab+4)	+ 						`func();`
+		+t(tab+3)	+ 					`} else { `
+		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`}`
 		+(!isOffline ? '' : ''
 			+t(tab+3)	+ 				`localStorage.setItem(`
@@ -380,8 +400,11 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+1)	+ 			`resolvEvento("trigger","${options.descForm}");`
 		+t(tab)		+ 		`}`
 		+t(tab)		+ 		`function onPesquisa${capitalize(options.descForm)}() { `
-		+t(tab+1)	+ 			`var func = ${String( (options.onPesquisa || function() { return true }) )};`
-		+t(tab+1)	+ 			`return func();`
+		+t(tab+1)	+ ((options.onPesquisa || '') == '' 
+						? `return true;`
+						: `var func = ${String(options.onPesquisa)};`
+						+t(tab+1)+ `return func();`
+					)
 		+t(tab)		+ 		`}`
 		+t(tab)		+ 		`var ${capitalize(options.descForm)}List_Global = [];`
 		+t(tab)		+ 		`function pesquisa${capitalize(options.descForm)}() { `
@@ -435,9 +458,7 @@ function resolvCodigoConsulta(options, tab=0) {
 						languageJson: '../qualidade/lb/DataTables-1.10.18/Portuguese.json'
 						, class: { tbody: { td: 'celB' } }
 						, defaultAlignHead: 'center'
-						, objParamGrade: objParamGrade_Global
 						, descForm: `tabela${options.descForm}`
-						, returnHTML: true
 						, trClick: {
 							desc: `set${capitalize(options.descForm)}Val(${capitalize(options.descForm)}List_Global[%0%]);`,
 							val: [{index:1}]

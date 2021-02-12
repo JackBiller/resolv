@@ -5,13 +5,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Bot Resolv File</title>
 
-	<link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./lib/bootstrap3.4.1/css/bootstrap.min.css">
 
-	<!-- <script type="text/javascript" src="../qualidade/lb/jQuery.js"></script> -->
-	<script src="../jquery/dist/jquery.min.js"></script>
-	<script src="../bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./lib/jQuery.js"></script>
+	<script src="./lib/bootstrap3.4.1/js/bootstrap.min.js"></script>
 
-	<script src="../moment/moment.js"></script>
+	<script type="text/javascript" src="./lib/moment.js"></script>
 </head>
 <body>
 
@@ -25,8 +24,8 @@
 
 <script>
 	var runBot = false;
-	function startBot() {
-		if (!runBot) {
+	function startBot() { 
+		if (!runBot) { 
 			setTimeout(() => { startBot() }, 100);
 			return ;
 		}
@@ -34,7 +33,7 @@
 			url: 'controller.php',
 			type: 'POST',
 			dataType: 'text',
-			data: {
+			data: { 
 				'atualizarArquivoConfig': true
 			},
 			error: function(){ $('#lastUpdate').val('Falha ao fazer a requisição!'); }

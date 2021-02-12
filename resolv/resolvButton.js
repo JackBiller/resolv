@@ -1,7 +1,6 @@
 
 
-function resolvButton(options) { 
-	var tab = (arguments[1] || 0);
+function resolvButton(options, tab=0) { 
 	/*
 		options: {
 			class: ''					-- Classe do botao
@@ -14,6 +13,7 @@ function resolvButton(options) {
 			compensador: (0|1) 			-- Cria um compensador para alinha o botão
 			title: '' 					-- Texto que aparece quando passa o mouse emcima
 			style: objStyle 			-- Resolve o estilo do botão
+			name: '' 					-- Atributo Name do Button
 		}
 	*/
 
@@ -31,8 +31,10 @@ function resolvButton(options) {
 			+ 	"<label><spam style='color: white;'>.</spam></label>"
 		)
 		+t(tab)		+ 	"<button"
+					+ 		((options.name  || '') == '' ? '' : " name='"  + options.name  + "'")
 					+ 		((options.class || '') == '' ? '' : " class='" + options.class + "'")
 					+ 		((options.title || '') == '' ? '' : " title='" + options.title + "'")
+					+ 		((options.id 	|| '') == '' ? '' : " id='"    + options.id    + "'")
 					+ 		((options.style || '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
 					// + 		((options.click || '') == '' ? '' : " onclick='" + options.class + "'")
 

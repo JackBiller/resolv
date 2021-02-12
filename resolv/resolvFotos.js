@@ -1,6 +1,5 @@
 
-function resolvFotos(options) { 
-	var tab = (arguments[1] || 0);
+function resolvFotos(options, tab=0) { 
 	/*
 		options: { 
 			descForm: ''					-- Parametro de identificação
@@ -36,12 +35,12 @@ function resolvFotos(options) {
 	var param = resolvParamAjax(options);
 
 	var input = {};
-	if ((options.ck_upload || '') != '') {
-		input = { input: {
+	if ((options.ck_upload || '') != '') { 
+		input = { input: { 
 			type: 'file', 
 			id: 'inputFotos' + options.descForm, 
 			fileType: 'img',
-			upload: {
+			upload: { 
 				ajax: (options.ajax || 'ajax'),
 				param: (options.ck_upload.param || {})
 			}

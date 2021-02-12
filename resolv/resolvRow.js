@@ -1,6 +1,5 @@
 
-function resolvRow(options) { 
-	var tab = (arguments[1] || 0);
+function resolvRow(options, tab=0) { 
 	return ""
 		+t(tab)	+ 	"<div class='row'>"
 				+ (function(array){

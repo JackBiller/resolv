@@ -1,6 +1,5 @@
 
-function resolvLabel(options) { 
-	var tab = (arguments[1] || 0);
+function resolvLabel(options, tab=0) { 
 	/*
 		options: {
 			text: '' 		-- Conteudo da label

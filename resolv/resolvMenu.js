@@ -1,7 +1,5 @@
 
-function resolvMenu(options) { 
-	var tab = (arguments[1] || 0)
-	options = options || {};
+function resolvMenu(options={}, tab=0) { 
 	/*
 		options: {
 			descForm: '' 		-- Identificador

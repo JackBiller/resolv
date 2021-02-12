@@ -1,6 +1,5 @@
 
-function resolvLegenda(options) { 
-	var tab = (arguments[1] || 0);
+function resolvLegenda(options, tab=0) { 
 	/*
 		height: '20px' 				-- Altura do bloco da legenda
 		width: 	'40px' 				-- Largura do bloco da legenda
@@ -24,12 +23,10 @@ function resolvLegenda(options) {
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
 
-	var click = ((options.click) || '') == '' ? '' : options.click;
+	var click = options.click || '';
 	var onClick = click == '' ? '' : " class='cursorClick' onclick='legedaClick" + random + "(%0%);'";
 
-
 	var html = ''
-
 		+ (function(info) { 
 			var cels = ''
 				+t(tab)		+ 	`<table width=''>`

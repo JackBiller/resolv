@@ -1,12 +1,12 @@
 
-function resolvDiv(options) { 
-	var tab = (arguments[1] || 0);
+function resolvDiv(options, tab=0) { 
 	/*
 		options: {
 			class: '' 		-- Class da div
 			id: '' 			-- Id da div
 			ctx: '' 		-- Conteudo div
 			style: obj 		-- Objeto CSS
+			text: '' 		-- Conteudo Padrão
 		}
 	*/
 	var html = ''

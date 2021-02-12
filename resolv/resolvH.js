@@ -5,8 +5,7 @@ function resolvH3(options){ return resolvH($.extend({}, options, { num: 3 }),(ar
 function resolvH4(options){ return resolvH($.extend({}, options, { num: 4 }),(arguments[1] || 0)); }
 function resolvH5(options){ return resolvH($.extend({}, options, { num: 5 }),(arguments[1] || 0)); }
 function resolvH6(options){ return resolvH($.extend({}, options, { num: 6 }),(arguments[1] || 0)); }
-function resolvH(options){
-	var tab = (arguments[1] || 0);
+function resolvH(options, tab=0) { 
 	/*
 		options: {
 			text: '' 		-- Descricao da Tag HN

@@ -86,12 +86,16 @@ function setForm(data, obj, options={}) {
 				} catch(e){}
 			}
 			else { 
-				var val = (data[keys[i].obj.input] || keys[i].obj.value || keys[i].obj.val || '');
+				var val = data[keys[i].obj.input];
+				if (data[keys[i].obj.input] == undefined) { 
+					val = (keys[i].obj.value || keys[i].obj.val || '');
+				}
+
 				if (keys[i].parent == 'input' && ['number','tel'].indexOf(keys[i].obj.type) >= 0) {
 					val = String(val).replace(/\./g, (options.dec || ','))
 				}
-				try { resolvVal(keys[i].id, val); } catch(e){}
-				try { $("#" + keys[i].id + "_obs").html(''); } catch(e){}
+				resolvVal(keys[i].id, val);
+				$("#" + keys[i].id + "_obs").html('');
 			}
 		// } else if (keys[i].parent == 'div' && (keys[i].obj.text || '') != '') {
 		// 	resolvVal(keys[i].id, keys[i].obj.text);
@@ -221,7 +225,7 @@ function returnRefInputObj() {
 }
 
 function returnRefId() { 
-	return ['descForm','id'];
+	return ['descForm','id','name'];
 }
 
 function returnIdObj(obj) { 

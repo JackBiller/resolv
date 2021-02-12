@@ -1,11 +1,8 @@
 <?php
 
-// include '../servidor_conexao.php';
+include './class/PadraoObjeto.php';
+include './class/funcoes.php';
 
-// include '../lb/entidades/PadraoObjeto.php';
-// include '../lb/funcoes.php';
-include '../../../class/entidade/PadraoObjeto.php';
-include '../../../controller/funcoes.php';
 
 if (!empty($_POST['atualizarArquivoConfig'])) { 
 	$files = array();

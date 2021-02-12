@@ -3,8 +3,7 @@ function resolvHr(options) {
 	return resolvBr( $.extend({}, options, { hr: true }) ,(arguments[1] || 0));
 }
 
-function resolvBr(options) { 
-	var tab = (arguments[1] || 0);
+function resolvBr(options, tab=0) { 
 	/*
 		options: {
 			num: 1 			-- Numero de br que vai montar

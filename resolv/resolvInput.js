@@ -61,14 +61,22 @@ function resolvInput(options,tab=0) {
 			enum: { 							-- Indica que o campo será um select com opções pré-definidas
 				value: desc 					-- Ex: <option value="value">desc</option>
 			}
+			mask: '' 							-- Usar Mascara no campo
+			maskOption: {} 						-- Opções para usar com a mescara
 		}
 	*/
 
 	var html = '';
 
-	if (options.type == 'radio' && (options.radio || '') != '') {
+	if (options.type == 'radio' && (options.radio || '') != '') { 
 		var isCheck = options.radio.map(function(e) { return e.checked; }).indexOf(true);
 		if(isCheck < 0) isCheck = 0;
+
+		for (var i = 0; i < options.radio.length; i++) { 
+			if (options.radio[i].checked) {
+				options.value = options.radio[i].value || '';
+			}
+		}
 
 		for (var i = 0; i < options.radio.length; i++) 
 			html += resolvInputIn( $.extend({}, options, { checked: (isCheck == i ? true : '') }, options.radio[i]) , tab);
@@ -246,7 +254,7 @@ function resolvInputIn(options,tab=0) {
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+1)	+ 		`</tr>`
 					+ t(tab)	+ 	`</table>`
-				: (options.type == 'file'
+				: (options.type == 'file' && (options.upload || '') != ''
 					? ''
 						+ t(tab)	+ 	`<table width="100%">`
 						+ t(tab+1)	+ 		`<tr>`
@@ -446,6 +454,14 @@ function resolvInputIn(options,tab=0) {
 						+ 			`$("#${options.id}_desc_file").html('');`
 			+ t(tab+2)	+ 		`});`
 			+ t(tab+1)	+ 	`}, 500);`
+		)
+
+
+
+		// ****  verificar se o campo tem mascara ****
+		+ ((options.mask || '') == '' || (options.id || '') == '' ? '' : ''
+			+ t(tab+1)	+ 	`$("#${options.id}")`
+						+ 		`.mask("${options.mask}",${jsonToString(options.maskOption || {})});`
 		)
 		+t(tab)	+ 	`</`+`script>`
 		// ***************************************************************************

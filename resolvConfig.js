@@ -61,8 +61,14 @@ function resolvEl(id,cla='') {
 	var objReturn 	= ids[map.indexOf(id)];
 
 	if (ids[map.indexOf(id)].parent == 'codigoConsulta') { 
+		cla = cla.indexOf('select') == 0 ? 'select' : cla;
 		objReturn.el = $("#" + id).find("." + cla).find(cla == 'select' ? 'select' : "input");
-	} else {
+	} else if (objReturn.parent == 'input' && objReturn.obj.type == "radio") { 
+		var els = document.getElementsByName(objReturn.obj.name);
+		for (var i = 0; i < els.length; i++) { 
+			if (els[i].checked) objReturn.el = $(els[i]);
+		}
+	} else { 
 		objReturn.el = $("#" + id);
 	}
 	return objReturn;
@@ -72,12 +78,22 @@ function resolvVal(id) {
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
-	if (el.parent == 'codigoConsulta') {
-		if (arguments.length > 2 && arguments[1] == 'select') 	return el.el.val(arguments[2]).trigger('change');
-		if (arguments.length > 2) 								return el.el.val(arguments[2]);
-																return el.el.val();
-	} else {
+	if (el.parent == 'codigoConsulta') { 
+		var getDesc = arguments[1] == 'selectDesc';
+		var isSelect = arguments[1].indexOf('select') == 0;
+		if (arguments.length > 2 && isSelect) 	return el.el.val(arguments[2]).trigger('change');
+		if (arguments.length > 2) 				return el.el.val(arguments[2]);
+		if (getDesc) 							return el.el[0].options[el.el[0].selectedIndex].innerHTML;
+												return el.el.val();
+	} else { 
 		var value = (arguments[1] != undefined ? arguments[1] : el.obj.value);
+
+		switch( (((el.obj || {}).style || {})["text-transform"] || '').toLowerCase() ) { 
+			case 'uppercase': 	value = (value || '').toUpperCase(); break;
+			case 'lowercase': 	value = (value || '').toLowerCase(); break;
+			case 'capitalize': 	value = capitalize((value || '')); break;
+		}
+
 		if (['div','spam'].indexOf(el.parent) != -1) func = 'html';
 
 		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
@@ -108,6 +124,27 @@ function resolvVal(id) {
 				return val;
 			}
 		}
+
+		if (el.obj.type == 'checkbox' && ([0,1]).indexOf(arguments[1]) >= 0) {
+			value = arguments[1] == 1;
+		} else if (el.obj.type == 'checkbox') { 
+			return el.el[0].checked;
+		}
+
+		if (
+			el.obj.type == 'radio' && arguments[1] != undefined && el.el.attr('id') != id
+		) { 
+			var setValue = -1;
+			var els = document.getElementsByName(id);
+			for (var i = 0; i < els.length; i++) {
+				if (els[i].value == arguments[1]) {
+					els[i].checked = true;
+					setValue = i;
+				}
+			}
+			if (setValue >= 0) return els[setValue];
+		}
+
 		if (arguments.length > 1) 	return el.el[func]( value );
 									return el.el[func]();
 	}
@@ -402,16 +439,30 @@ function resolvGlobalParam(options, tab, html) {
 		}
 	*/
 	var valid = [
-		{ param: 'classDiv' , attr: 'class' , },
-		{ param: 'styleDiv' , attr: 'style' , valid: 'resolvStyle' }
+		{ param: 'idDiv' 	, attr: 'id' 		, },
+		{ param: 'classDiv' , attr: 'class' 	, },
+		{ param: 'styleDiv' , attr: 'style' 	, valid: 'resolvStyle' },
+		{ param: 'clickDiv' , attr: 'onclick' 	},
 	], param = '', result;
+	var random;
 
 	if ( valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0 ) {
 		valid.forEach(function(x) {
 			if ((options[x.param] || '') != '') {
-				result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
-				result = `${(x.valid || '')}(${ result })`;
-				param += ` ${x.attr}="${eval( result )}"`;
+
+				do { 
+					random = parseInt( Math.random() * 100000 );
+				} while (registerRandom_Global.indexOf(random) != -1);
+				registerRandom_Global.push(random);
+
+				if (typeof(options[x.param]) == 'function') { 
+					window['click'+random] = options[x.param];
+					param += ` ${x.attr}="click${random}();"`;
+				} else {
+					result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
+					result = `${(x.valid || '')}(${ result })`;
+					param += ` ${x.attr}="${eval( result )}"`;
+				}
 			}
 		});
 
@@ -468,68 +519,70 @@ function resolvParamAjax(options) {
 
 
 /* Envetos de teclado */
-if (navigator.appName != "Microsoft Internet Explorer")
-	document.captureEvents(Event.KEYDOWN);
-document.body.onkeydown = NetscapeResolvKeyDown;
-function NetscapeResolvKeyDown(key,e) { 
-	ResolvKeyDown(key, key.which);
-}
-if (window.event) ResolvKeyDown(window.event, window.event.keyCode);
-function ResolvKeyDown(e, whichkey) { 
-	// console.log(whichkey);
-	var setComand = false;
-
-
-	if (whichkey == 115 && $(".codigoConsulta").is(':focus')) {
-		var itens = $(".codigoConsulta");
-
-		$.each(itens, function(i,x){
-			if ($(x).is(':focus')) {
-				window['pesquisa' + $(x).data('ref')]();
-			}
-		})
+$(document).ready(function() {
+	if (navigator.appName != "Microsoft Internet Explorer")
+		document.captureEvents(Event.KEYDOWN);
+	document.body.onkeydown = NetscapeResolvKeyDown;
+	function NetscapeResolvKeyDown(key,e) { 
+		ResolvKeyDown(key, key.which);
 	}
+	if (window.event) ResolvKeyDown(window.event, window.event.keyCode);
+	function ResolvKeyDown(e, whichkey) { 
+		// console.log(whichkey);
+		var setComand = false;
 
-	var proximoIndice, setInput = false;
-	if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) {
-		$.each(registerInputFocus, function(i,x) {
-			if ($(x.el[0]).is(":focus") && !setInput) {
-				setInput = true;
 
-				x.el[0].blur();
-				if (x.parent == 'codigoConsulta') return false;
+		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) {
+			var itens = $(".codigoConsulta");
 
-				var teste = {};
-				teste[x.parent] = x.obj;
-				teste = serealizeForm(teste);
-				if (!teste.valid) {
-					setComand = true;
-					return false;
+			$.each(itens, function(i,x){
+				if ($(x).is(':focus')) {
+					window['pesquisa' + $(x).data('ref')]();
 				}
+			})
+		}
 
-				if ((x.obj.onEnter || '') == '') {
-					proximoIndice = -1;
-					for (var j = (i+1); j < registerInputFocus.length; j++) {
-						if (!$(registerInputFocus[j].el[0]).attr('disabled')) {
-							proximoIndice = j;
-							j = registerInputFocus.length;
-						}
+		var proximoIndice, setInput = false;
+		if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) {
+			$.each(registerInputFocus, function(i,x) {
+				if ($(x.el[0]).is(":focus") && !setInput) {
+					setInput = true;
+
+					x.el[0].blur();
+					if (x.parent == 'codigoConsulta') return false;
+
+					var teste = {};
+					teste[x.parent] = x.obj;
+					teste = serealizeForm(teste);
+					if (!teste.valid) {
+						setComand = true;
+						return false;
 					}
-	
-					console.log(registerInputFocus[proximoIndice]);
-					registerInputFocus[proximoIndice].el[0].focus();
-					setComand = true;
-				} else {
-					x.el[0].focus();
+
+					if ((x.obj.onEnter || '') == '') {
+						proximoIndice = -1;
+						for (var j = (i+1); j < registerInputFocus.length; j++) {
+							if (!$(registerInputFocus[j].el[0]).attr('disabled')) {
+								proximoIndice = j;
+								j = registerInputFocus.length;
+							}
+						}
+		
+						console.log(registerInputFocus[proximoIndice]);
+						registerInputFocus[proximoIndice].el[0].focus();
+						setComand = true;
+					} else {
+						x.el[0].focus();
+					}
+
 				}
+			})
+		}
 
-			}
-		})
+		if (!setComand) {
+			registerEventKeyboard.forEach(function(x){
+				window[x](e,whichkey);
+			});
+		}
 	}
-
-	if (!setComand) {
-		registerEventKeyboard.forEach(function(x){
-			window[x](e,whichkey);
-		});
-	}
-}
+});
