@@ -28,7 +28,7 @@ if (!empty($_POST['atualizarArquivoConfig'])) {
 		array_push($files, $filObj);
 	}
 
-	$filObj = getObjFile('serializeForm.js','./');
+	$filObj = getObjFile('serealizeForm.js','./');
 	$diff = date_diff( date_create(date('Y-m-d H:i:s')), date_create($filObj->get('dateCriation')) );
 	if ($diff->y == 0 && $diff->m == 0 && $diff->d == 0 && $diff->h == 0 && $diff->i == 0 && $diff->s < 3) {
 		array_push($files, $filObj);
@@ -55,7 +55,7 @@ if (!empty($_POST['atualizarArquivoConfig'])) {
 			}
 		}
 
-		$conteudoAdd .= ctxFile('serializeForm.js');
+		$conteudoAdd .= ctxFile('serealizeForm.js');
 
 
 

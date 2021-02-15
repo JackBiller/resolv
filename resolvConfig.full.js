@@ -156,6 +156,644 @@ function resolvButton(options, tab=0) {
 	return html;
 }
 
+var registerChart_Global = [];
+
+var styleGenerico_Global = { 
+	alternarColor: '',
+	numberFormat: '#',
+	tamanhoFixo: true,
+	legendaChart: false,
+	separadorDecimal: ',',
+	separadorMilhar: '.',
+	linhaPontilhada: '5.5',
+}
+
+
+function resolvChart(data, options) { 
+	/*
+		styleGenerico = {
+			alternarColor: (0|1) 					-- Colore o fundo do grafico cor sim e cor não
+			numberFormat: '#' 						-- Formatação do numero
+			tamanhoFixo: (0|1) 						-- Se vai ter ou não
+			legendaChart: (0|1) 					-- Se vai ter ou não
+			separadorDecimal: ',' 					-- Texto para separador decimal
+			separadorMilhar: '.' 					-- Texto para separador de milhar
+			linhaPontilhada: '5.5' 					-- Parametro de pontilhado da linha
+		}
+
+		options: {
+			category: { 							-- Parametro que indica a categoria do grafico
+				text: ''							-- Texto do parametro
+				param: ''							-- Parametro do objeto data correspondente
+				click: function(index){}			-- Click considerando a categoria inteira, passar como parametro o indice da categoria / dado
+				rotation: num/graus					-- Graus de rotação da descrição da categoria
+				textUpDown: (0|1) 					-- Descrição, no eixo da catergorias, colocando um para cima e outro para baixo
+			}
+			value: [] / { 							-- Parametro que indica o valor do grafico / Pode ser um objeto ou array de objetos
+				text: ''							-- Texto do parametro
+				min: num 							-- O valor minimo que começa o gráfico, geramente fica para a lib definir automatico
+				max: num 							-- O valor máximo que pode chegar o gráfico, geramente fica para a lib definir automatico
+				opposite: (0|1) 					-- Se vai desenhar a escala do lado oposto, padrão false
+				syncWithAxis: index 				-- Se possui mais de uma escala e precisa sincronizar o valor com outra escala
+				... 								-- valor é o indice da outra escala
+			}
+			serie: [] / { 							-- Pode ser apenas um objeto ou um array de objetos
+				type: (column|line)  				-- Tipo de serie se vai montar grafico de linha ou coluna, padrão é column
+				param: ''							-- Parametro do objeto data correspondente
+				click: function(){} 				-- Quando clicar no gráfico
+				name: '' 							-- Nome do gráfico
+				color: 'lightblue' 					-- Cor que vai ter no grafico
+				onlyColumn: (0|1) 					-- Deixar uma coluna emcima da outra, padrão vardadeiro
+				label: (0|1) / { 					-- Caso for definido como false não irá mostrar no gráfico
+					color: 'black' 					-- Cor da font da label que é motrar o valor no grafico
+					align: (center|in|out)			-- Alinhamento da label se é centrelizado dentro ou fora o padrão é 'out'
+					mask: '%0%' 					-- Mascara da label
+				}
+				ball: (0|1) / { 					-- Caso gráfico de linha sem click na serie irá desenhar somente as bolas em cada categoria
+					color: '' 						-- Preenchimento da cor da bolinha
+				}
+				pontilhado: (0|1) 					-- Caso gráfico de linha denhar a linha pontilhada ou reta
+				tooltip: '' 						-- Texto em HTML
+				value: index 						-- Se possui mais de uma escala precisa informar qual escala é referente a essa serie
+				... 								-- valor é o indice da escala
+				hide: (0|1) 						-- Indicar se vai ocultar no gráfico, padrão false, atualizado pre e pos-render
+			}
+			descForm: '' 							-- Parametro de identificação
+			padination: num 						-- Trazer tantos valores pré definidos na tela
+			orientation: 'horizontal' 				-- Orientação do grafico, (horizontal | vertical)
+			percentual: (0|1) 						-- Se o grafico vai mostrar valor percentual de 0 a 100
+			width: '100%' 							-- Largura do grafico
+			height: '400px' 						-- Altura do gráfico
+			styleGenerico: {} 						-- Configurações genericas para todos os grafico gerados apartir
+			setLegend: (0|1) 						-- Se vai mostrar legenda do grafico
+			legend: { 								-- Configurações de legenda
+				position: 'bottom|top|right|left' 	-- Posição onde vai ficar a legenda (padrão bottom)
+				align: 'top|middle|bottom' 			-- Caso posição for right ou left pode escolher onde vai ficar  (padrão top)
+			}
+			title: '' 								-- Titulo do gráfico
+			colors: [] 								-- Array com as cores que o grafico vai seguir para ser montado
+			...										-- ex: ['blue','green','orange']
+			forceSet: (0|1) 						-- Forçar montar o gráfico
+		}
+	*/
+
+	var styleGenerico = $.extend({}, styleGenerico_Global, (options.styleGenerico || {}));
+
+	if (
+		(options.forceSet || '') != '' && registerChart_Global.indexOf(options.descForm) >= 0
+	) { 
+		registerChart_Global.splice(registerChart_Global.indexOf(options.descForm),1);
+	}
+
+	// var random;
+	// do {
+	// 	random = parseInt( Math.random() * 100000 );
+	// } while (registerChart_Global.indexOf(random) != -1);
+
+	data.forEach(function(dt,i) { 
+		data[i].lineDash = styleGenerico.linhaPontilhada;
+	});
+
+	// Verificar se o parametro é um objeto unitario e passar para array
+	['serie','value'].forEach(function(e) { 
+		// options.serie, options.value
+		var keys = Object.keys((options[e] || {}));
+		if (keys.length > 0 && isNaN(keys[0])) 	options[e] = [options[e]];
+		else if (keys.length == 0) 				options[e] = [{}];
+	});
+
+	window['indexCursorChart' + options.descForm + '_Global'] = 0;
+
+	if (registerChart_Global.indexOf(options.descForm) != -1) { // grafico já exite
+
+		$("#chartdiv"+options.descForm)
+			.css('height', ((options.height || '') != '' ? options.height : "400px"));
+
+		window["chart"+options.descForm].data = data;
+
+		if ((options.padination || '') != '' && !isNaN(options.padination)) { 
+			window["categoryAxis"+options.descForm].start 	= 0;
+			window["categoryAxis"+options.descForm].end 	= data.length < parseInt(options.padination) ? 1 : parseInt(options.padination) / data.length;
+		}
+
+		options.serie.forEach(function(s,i) { 
+			window["series"+i+options.descForm][((s.hide || '') == '' ? 'show' : 'hide')]();
+		});
+
+		if ((options.title || '') != '') { 
+			window["titleChart"+options.descForm].text = options.title;
+		}
+
+		return true;
+	}
+
+
+	var setLegend = false; // variavel para mostrar legenda
+
+
+	if ((options.orientation || '') == '') options.orientation = 'horizontal';
+
+	registerChart_Global.push(options.descForm);
+
+	var html = ''
+		+t(0) 	+ 	`<center>`
+		+t(1)	+ 		`<div id="chartdiv${options.descForm}"`
+		+t(2)	+ 			` style='`
+				+ 				`height:${((options.height 	|| '') != '' ? options.height 	: "400px"	)};`
+				+ 				`width:	${((options.width 	|| '') != '' ? options.width 	: "100%"	)};`
+				+ 			`'`
+		+t(1)	+ 		`></div>`
+
+
+
+		// ***************************************************************************************************** //
+		// ** Tamanho Fixo * //
+		+ ((styleGenerico.tamanhoFixo || '') == '' || (options.percentual || '') != '' ? '' : ''
+			+t(1) 	+ 	`&nbsp;&nbsp;&nbsp;<label class='cursorClick'>`
+			+t(2) 	+ 		`<input type="checkbox"`
+					+ (options.value || []).map(function(v,i) { return ''
+						+ 		` onclick='valueAxis${options.descForm+String(i)}.strictMinMax = !valueAxis${options.descForm+String(i)}.strictMinMax;'`
+					})
+					+ 		`>`
+					+ 		`&nbsp;`
+					+ 		`Tamanho fixo`
+			+t(1) 	+ 	`</label>`
+		)
+		// ***************************************************************************************************** //
+
+
+
+
+		// ***************************************************************************************************** //
+		// ** Legenda Gráfico * //
+		+ ((styleGenerico.legendaChart || '') == '' && options.serie.filter(function(e) { return (e.tooltip || '') != '' }).length == 0 ? '' : ''
+			+t(1) 	+ 	`&nbsp;&nbsp;&nbsp;<label class='cursorClick'>`
+			+t(2) 	+ 		`<input type="checkbox" checked`
+
+					+ ` onclick='`
+					+ 	options.serie.map(function(e,i) { 
+							return `series${i+options.descForm}._tooltip.disabled = !series${i+options.descForm}._tooltip.disabled;`;
+						}).join('')
+					+ `'`
+
+					+ 		`>`
+					+ 		`&nbsp;`
+					+ 		`Legenda Gráfico`
+			+t(1) 	+ 	`</label>`
+		)
+		// ***************************************************************************************************** //
+		+t(0) 	+ 	`</center>`
+
+
+
+
+
+
+		// ***************************************************************************************************** //
+		// ** Variavel Chart * //
+		+t(0)	+ 	`<script>`
+		+t(1)	+ 		`var chart${options.descForm} = null;`
+		+t(1)	+ 		`chart${options.descForm} = am4core.create("chartdiv${options.descForm}", am4charts.XYChart);`
+		+t(1)	+ 		`$('[aria-labelledby]')[$('[aria-labelledby]').length-1].style.display = 'none';`
+		+t(1)	+ 		`var categoryAxis${options.descForm}, series${options.descForm};`
+		+t()
+		+t(1)	+ 		`chart${options.descForm}.numberFormatter.language.adapter.object._locale._decimalSeparator = '${options.separadorDecimal || ','}';`
+		+t(1)	+ 		`chart${options.descForm}.numberFormatter.language.adapter.object._locale._thousandSeparator = '${options.separadorMilhar || '.'}';`
+		+t(1)	+ 		`chart${options.descForm}.data = ${JSON.stringify(data)};`
+		+t(1)	+ 		`chart${options.descForm}.numberFormatter.numberFormat = "${(styleGenerico.numberFormat || "#")}";`
+		+ ((options.colors || '') == '' ? '' : ''
+			+t(1) + 	`chart${options.descForm}.colors.list = [`
+			+t(2) + 		options.colors.map(function(dt) { return `am4core.color("${dt}")`; }).join(',' + t(2))
+			+t(1) + 	`]`
+		)
+		// ***************************************************************************************************** //
+
+
+
+
+
+
+		// ***************************************************************************************************** //
+		// ** Title * //
+		+ ((options.title || ``) == `` ? `` : ``
+			+t()
+			+t(1)+ 		`titleChart${options.descForm} 					= chart${options.descForm}.titles.push(new am4core.Label());`
+			+t(1)+ 		`titleChart${options.descForm}.text 			= '${options.title}';`
+			+t(1)+ 		`titleChart${options.descForm}.fontSize 		= 25;`
+			+t(1)+ 		`titleChart${options.descForm}.marginBottom 	= 5;`
+			+t(1)+ 		`titleChart${options.descForm}.marginTop 		= 10;`
+		)
+		// ***************************************************************************************************** //
+
+
+
+
+
+
+		// ***************************************************************************************************** //
+		// ** Categoria * //
+		+ t()
+		+ (options.orientation == 'horizontal' 
+			? t(1) + 	`categoryAxis${options.descForm} = chart${options.descForm}.xAxes.push(new am4charts.CategoryAxis());`
+			: t(1) + 	`categoryAxis${options.descForm} = chart${options.descForm}.yAxes.push(new am4charts.CategoryAxis());`
+		)
+		+t(1)	+ 		`categoryAxis${options.descForm}.dataFields.category 						= '${options.category.param}';`
+		+t(1)	+ 		`categoryAxis${options.descForm}.title.text 								= "${(options.category.text || '')}";`
+		+t(1)	+ 		`categoryAxis${options.descForm}.renderer.grid.template.location 			= 0;`
+		+t(1)	+ 		`categoryAxis${options.descForm}.renderer.minGridDistance 					= 20;`
+		+ (((options.category || {}).rotation || '') == '' ? '' : ''	
+			+t(1) +		`categoryAxis${options.descForm}.renderer.labels.template.rotation = ${options.category.rotation};`
+			// +t(1) +		`categoryAxis${options.descForm}.renderer.labels.template.horizontalCenter = "left";`
+			// +t(1) +		`categoryAxis${options.descForm}.renderer.labels.template.location = 0.5;`
+		)
+
+		+ ((styleGenerico.alternarColor || '') == '' ? '' : ''
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.disabled 		= false;`	// Grafico de avaliações
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.fillOpacity 	= 0.05;`	// Grafico de avaliações
+		)
+
+		+ (options.orientation == 'horizontal'  ? '' : ''
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.inversed 							= true;`
+		)
+		+ ((options.padination || '') == '' ? '' : ''
+			+t(1) + 	`categoryAxis${options.descForm}.start = 0;`
+			+t(1) + 	`setTimeout(function(){`
+				  + 		`categoryAxis${options.descForm}.end = `
+				  + 			(data.length < parseInt(options.padination) ? 1 : parseInt(options.padination) / data.length) + `;`
+				  + 	`},1000);`
+		)
+		+ (((options.category || {}).textUpDown || '') == '' ? '' : ''
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.labels.template.adapter.add("dy", function(dy, target) { `
+			+t(1) + 		`return dy + (target.dataItem && target.dataItem.index & 2 == 2 ? 15 : 0);`
+			+t(1) + 	`});`
+		)
+		// ***************************************************************************************************** //
+
+
+
+
+
+
+
+
+		// ***************************************************************************************************** //
+		// ** Valor * //
+		+ t()
+		+ (options.value || []).map(function(value={}, indiceVlr) { return ''
+			+ t(1) + 'var '
+			+ (options.orientation == 'horizontal' 
+				? 			`valueAxis${options.descForm + String(indiceVlr)} = chart${options.descForm}.yAxes.push(new am4charts.ValueAxis());`
+				: 			`valueAxis${options.descForm + String(indiceVlr)} = chart${options.descForm}.xAxes.push(new am4charts.ValueAxis());`
+			)
+			+t(1)	+ 		`valueAxis${options.descForm + String(indiceVlr)}.title.text = "${(value.text || '')}";`
+			+ (value.min == undefined ? '' : ''
+				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.min = ${value.min};`
+			)
+			+ (value.max == undefined ? '' : ''
+				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.max = ${value.max};`
+			)
+			+ ((value.opposite || '') == '' ? '' : ''
+				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.opposite = true;`
+			)
+			+ (value.syncWithAxis == undefined ? '' : ''
+				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.syncWithAxis = valueAxis${options.descForm + String(value.syncWithAxis)};`
+			)
+			+ ((options.percentual || '') == '' ? '' : '' // Ex: grafico de avaliação RUIM / BOM / OTIMO (por item da avaliação)
+				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.min = 0;`
+				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.max = 100;`
+				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.minGridDistance = 50;`
+				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.length = 5;`
+				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.disabled = false;`
+				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.strokeOpacity = 0.4;`
+			)
+		}).join('')
+		// ***************************************************************************************************** //
+
+
+
+
+
+
+
+
+
+	// ***************************************************************************************************** //
+	// ** Series * //
+	var maskLabel, color;
+	for (var i = 0; i < options.serie.length; i++) { 
+		if (((options.serie[i] || {}).name || '') != '') setLegend = true; // verifica se precisa de legenda
+
+		maskLabel = ((options.serie[i].label || {}).mask || '%0%').replace('%0%', (options.orientation == 'horizontal' ? '{valueY}' : '{valueX}'));
+
+		color = (options.serie[i].color || '') != '' 
+			? `am4core.color(\"${options.serie[i].color}\");`
+			: `chart${options.descForm}.colors.getIndex(${i});`;
+
+		html += ""+t()+t();
+
+		if ((options.serie[i].type || 'column') == 'column') { 
+			html += ""
+			+t(1)	+ 		`series${i+options.descForm} = chart${options.descForm}.series.push(new am4charts.ColumnSeries());`
+			+ (options.orientation == 'horizontal' 
+				? t(1) + 	`series${i+options.descForm}.dataFields.valueY 						= "${options.serie[i].param}";`
+				+ t(1) + 	`series${i+options.descForm}.dataFields.categoryX 					= "${options.category.param}";`
+				: t(1) + 	`series${i+options.descForm}.dataFields.valueX 						= "${options.serie[i].param}";`
+				+ t(1) + 	`series${i+options.descForm}.dataFields.categoryY 					= "${options.category.param}";`
+			)
+			+t(1)	+ 		`series${i+options.descForm}.columns.template.fill 					= ${color};`
+			+t(1)	+ 		`series${i+options.descForm}.stroke 								= ${color};`
+			+t(1)	+ 		`series${i+options.descForm}.fill 									= ${color};`
+			+ (options.orientation == 'horizontal' 
+				? t(1)	+ 		`series${i+options.descForm}.tooltip.dy 						= -8;`
+				: t(1)	+ 		`series${i+options.descForm}.tooltip.dx 						= -8;`
+			)
+			+t(1)	+ 		`series${i+options.descForm}.tooltip.label.interactionsEnabled 		= true;`
+			+t(1)	+ 		`series${i+options.descForm}.tooltip.keepTargetHover 				= false;`
+			+t(1)	+ 		`series${i+options.descForm}.sequencedInterpolation 				= true;`
+			+t(1)	+ 		`series${i+options.descForm}.defaultState.interpolationDuration 	= 1500;`
+			+t(1)	+ 		`series${i+options.descForm}.columns.template.strokeOpacity 		= 0;`
+			+t(1)	+ 		`series${i+options.descForm}.stacked 								= ${(options.serie[i].onlyColumn === false ? 'false' : 'true')};`
+			+ ((options.serie[i].tooltip || '') == '' ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.tooltipHTML 							= "${options.serie[i].tooltip}";`
+			)
+			+ ((options.serie[i].name || '') == '' ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.name 									= '${options.serie[i].name}';`
+			)
+			+ (options.serie[i].value == undefined ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.${(options.orientation == 'horizontal' ? 'y' : 'x')}Axis = `
+						+ 		`valueAxis${options.descForm + String(options.serie[i].value)};`
+			)
+			+ ((options.serie[i].click || '') == '' ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.columns.template.events.on("hit", function(ev) {`
+				+t(2) + 		`var func = ${String(options.serie[i].click)};`
+				+t(2) + 		`func(ev);`
+				+t(1) + 	`});`
+			)
+		}
+
+
+
+		if ((options.serie[i].type || 'column') == 'line') { 
+			html += ""
+			+t(1)	+ 		`series${i+options.descForm} = chart${options.descForm}.series.push(new am4charts.LineSeries());`
+			+ (options.orientation == 'horizontal' 
+				? t(1) + 	`series${i+options.descForm}.dataFields.valueY 				= "${options.serie[i].param}";`
+				+ t(1) + 	`series${i+options.descForm}.dataFields.categoryX 			= "${options.category.param}";`
+				: t(1) + 	`series${i+options.descForm}.dataFields.valueX 				= "${options.serie[i].param}";`
+				+ t(1) + 	`series${i+options.descForm}.dataFields.categoryY 			= "${options.category.param}";`
+			)
+			+t(1)	+ 		`series${i+options.descForm}.propertyFields.stroke 			= ${color};` // não sei o que faz
+			+t(1)	+ 		`series${i+options.descForm}.propertyFields.fill 			= ${color};`
+			+t(1)	+ 		`series${i+options.descForm}.stroke 						= ${color};` // set color line
+			+t(1)	+ 		`series${i+options.descForm}.fill 							= ${color};`
+			// +t(1)	+ 		"series"+i+options.descForm+".fillOpacity 					= 0.5;" // com fundo colorido ou não
+			+t(1)	+ 		`series${i+options.descForm}.strokeWidth 					= 3;` // espeçura da linha
+			// chart.colors.getIndex(2);
+			+ ((options.serie[i].tooltip || '') == '' ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.tooltipHTML 					= "${options.serie[i].tooltip}";`
+				+t(1) + 	`series${i+options.descForm}.tooltip.pointerOrientation 	= "vertical";`
+				+t(1) + 	`series${i+options.descForm}.tooltip.background.fill 		= ${color};`
+			)
+			+ ((options.serie[i].name || '') == '' ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.name 							= '${options.serie[i].name}';`
+			)
+			+ (options.serie[i].value == undefined ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.${(options.orientation == 'horizontal' ? 'y' : 'x')}Axis = `
+						+ 		`valueAxis${options.descForm + String(options.serie[i].value)};`
+			)
+			+ ((options.serie[i].click || '') == '' && (options.serie[i].ball || '') == '' ? '' : ''
+				+t()
+				+t(1) + 	`var bullets${i+options.descForm} = series${i+options.descForm}.bullets.push(new am4charts.CircleBullet());`
+				+t(1) + 	`bullets${i+options.descForm}.circle.fill = `
+						+ 		((((options.serie[i] || {}).ball || {}).color || '') == '' ? color : `am4core.color("${options.serie[i].ball.color}")`) + ';'
+				+ ((options.serie[i].click || '') == '' ? '' : ''
+					+t(1) + `bullets${i+options.descForm}.events.on(\"hit\", function(ev) {`
+					+t(2) + 	`var func = ${String(options.serie[i].click)};`
+					+t(2) + 	`func(ev);`
+					+t(1) + `});`
+				)
+			)
+			+ ((options.serie[i].pontilhado || '') == '' ? '' : ''
+				+t(1) + 	`series${i+options.descForm}.propertyFields.strokeDasharray = "lineDash"`
+			)
+		}
+
+		html += ""
+			+t(1)	+ 		`series${i+options.descForm}.${((options.serie[i].hide || '') == '' ? 'show' : 'hide')}();`
+
+
+		if (options.serie[i].label != false) { 
+			html += ''+t()
+			+t(1)	+ 		`var labelBullet${i+options.descForm} 					= new am4charts.LabelBullet();`
+			+t(1) 	+ 		`labelBullet${i+options.descForm}.label.text 			= "${maskLabel}";` // .value.formatNumber('#.')
+			+t(1)	+ 		`labelBullet${i+options.descForm}.strokeOpacity 		= 0;`
+			+t(1)	+ 		`labelBullet${i+options.descForm}.stroke 				= am4core.color("#dadada");`
+			+t(1)	+ 		`labelBullet${i+options.descForm}.label.strokeWidth 	= 0;`
+			+t(1)	+ 		`labelBullet${i+options.descForm}.label.fill 			= am4core.color("${((options.serie[i].label || {}).color || "black")}");`
+			+t(1)	+ 		`labelBullet${i+options.descForm}.label.hideOversized 	= true;` // não imprimi valor zerad
+			+ ((options.serie[i].click || '') == '' ? '' : ''
+				+t(1) + 	`labelBullet${i+options.descForm}.events.on(\"hit\", function(ev) {`
+				+t(2) + 		`(${String(options.serie[i].click)}(ev));`
+				+t(1) + 	`});`
+			)
+			+ (((options.serie[i].label || {}).align || '').toLowerCase() == 'center' 
+				? (options.orientation == 'horizontal' 
+					? t(1) + 	`labelBullet${i+options.descForm}.locationY 		= 0.5;`
+					: t(1) + 	`labelBullet${i+options.descForm}.locationX 		= 0.5;`
+				)
+				: (((options.serie[i].label || {}).align || '').toLowerCase() == 'in' 
+					? (options.orientation == 'horizontal' 
+						? t(1) + `labelBullet${i+options.descForm}.dy 				= 15;`
+						: t(1) + `labelBullet${i+options.descForm}.dx 				= -15;`
+					)
+					: (options.orientation == 'horizontal' // se for out
+						? t(1) + `labelBullet${i+options.descForm}.dy 				= -15;`
+						: t(1) + `labelBullet${i+options.descForm}.dx 				= 15;`
+					)
+				)
+			)
+			+t(1)	+ 		`labelBullet${i+options.descForm}.label.truncate 		= false;`
+			+t(1)	+ 		`series${i+options.descForm}.bullets.push(labelBullet${i+options.descForm});`
+		}
+	}
+	// ***************************************************************************************************** //
+
+
+
+
+
+
+
+
+
+	html += ''+t()+t()
+		// ***************************************************************************************************** //
+		// ** Reta final * //
+		// +t(1)	+ 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrecenta legenda no grafico"
+		+t(1)	+ 		`chart${options.descForm}.scrollbarY 								= new am4core.Scrollbar();`
+		+t(1)	+ 		`var scrollbarX${options.descForm} 									= new am4core.Scrollbar();`
+		+t(1)	+ 		`chart${options.descForm}.scrollbarX 								= scrollbarX${options.descForm};`
+		+t(1)	+ 		`chart${options.descForm}.scrollbarX.parent 						= chart${options.descForm}.bottomAxesContainer;` // setar scroll do eixo x embaixo
+		// +t(1)	+ 		`chart${options.descForm}.scrollbarX.thumb.minWidth 				= 100;` // Limita o zoom do gráfico (serve pra nada kkkkk)
+
+		+t(1)	+ 		`chart${options.descForm}.cursor 									= new am4charts.XYCursor();` // indica onde o curso está com cordenadas XY
+		+ (options.orientation == 'horizontal' 
+			? t(1) + 	`chart${options.descForm}.cursor.behavior 							= "zoomX";`
+			: t(1) + 	`chart${options.descForm}.cursor.behavior 							= "zoomY";`
+		)
+		+ ((options.category.click || '') == '' ? '' : ''
+			// +t(1) + 	`chartPrincipal.cursor.snapToSeries = series${0+options.descForm};`
+			+t(1) + 	`chart${options.descForm}.cursor.${options.orientation == 'horizontal' ? 'x' : 'y'}Axis = categoryAxis${options.descForm};`
+			+t(1) + 	`chart${options.descForm}.cursor.events.on("cursorpositionchanged", function(ev) {`
+			+t(1) + 		`indexCursorChart${options.descForm}_Global = categoryAxis${options.descForm}.positionToIndex(`
+				  + 			`categoryAxis${options.descForm}.toAxisPosition(ev.target.${options.orientation == 'horizontal' ? 'x' : 'y'}Position)`
+				  // + 			`categoryAxis${options.descForm}.toAxisPosition(ev.target.xPosition)`
+				  + 		`);`
+			+t(1) + 	`});`
+
+			+t(1) + 	`chart${options.descForm}.plotContainer.events.on("hit", function(ev) {`
+			+t(1) + 		`console.log(indexCursorChart${options.descForm}_Global);`
+			+t(1) + 		`var func = ${String(options.category.click)};`
+			+t(1) + 		`func(indexCursorChart${options.descForm}_Global);`
+			// +t(1) + 		`montarGraficoOS(indexCursorChartPrincipal_Global);`
+			// +t(1) + 		`montarGraficoAvalaiacao(indexCursorChartPrincipal_Global);`
+			+t(1) + 	`});`
+		)
+		+ (!setLegend && (options.legend || '') == '' ? '' : ''
+			+ t(1) + 	`chart${options.descForm}.legend 			= new am4charts.Legend();`
+			+ ((options.legend || '') == '' ? '' 
+				: ''
+				+ t(1) + `chart${options.descForm}.legend.position 	= "${(options.legend.position 	|| 'bottom'	)}";`
+				+ t(1) + `chart${options.descForm}.legend.valign 	= "${(options.legend.align 		|| 'top'	)}";`
+			)
+		)
+		// ***************************************************************************************************** //
+		+t(0)	+ 	"</"+"script>"
+
+	return html;
+}
+
+function t() { 
+	var num = arguments.length > 0 ? arguments[0] : 1, html = "\n";
+	for (var i = 0; i < num; i++) html += "\t";
+	return html;
+}
+
+function toFunction(func, replace) { 
+	var isString;
+	func = String(func);
+	for (var i = 0; i < replace.length; i++) {
+		isString = (replace[i][2] || 'literal') == 'literal' && typeof(replace[i][1]) == 'string';
+		while (func.indexOf(replace[i][0]) != -1) 
+			func = func.replace(replace[i][0] , isString ? "\"" + replace[i][1] + "\"" : replace[i][1]);
+	}
+	return eval(`(function(){ return ${func}})()`);
+}
+
+var registerChart_Global = [];
+
+// scriptChart.js
+
+function resolvChart2(data, options) { 
+	/*
+		options: {
+			category: { 		-- Parametro que indica a categoria do grafico
+				text: ''		-- Texto do parametro
+				param: ''		-- Parametro do objeto data correspondente
+			}
+			value: { 			-- Parametro que indica o valor do grafico
+				text: ''		-- Texto do parametro
+			}
+			serie: {
+				param: ''		-- Parametro do objeto data correspondente
+			}
+			descForm: '' 		-- Parametro de identificação
+			padination: num 	-- Trazer tantos valores pré definidos na tela
+		}
+	*/
+
+	// var random;
+	// do {
+	// 	random = parseInt( Math.random() * 100000 );
+	// } while (registerChart_Global.indexOf(random) != -1);
+	if (registerChart_Global.indexOf(options.descForm) != -1) {
+		window["chart"+options.descForm].data = data;
+
+		if ((options.padination || '') != '' && !isNaN(options.padination)) {
+			window["categoryAxis"+options.descForm].start 	= 0;
+			window["categoryAxis"+options.descForm].end 	= data.length < options.padination ? 1 : options.padination / data.length;
+		}
+
+		return true;
+	}
+
+	registerChart_Global.push(options.descForm);
+
+	var html = ''
+		+ 	"<div id=\"chartdiv"+options.descForm+"\"></div>"
+		+ 	"<script>"
+		+ 		"var chart"+options.descForm+" = am4core.create(\"chartdiv"+options.descForm+"\", am4charts.XYChart);"
+		+ 		"document.querySelectorAll('[aria-labelledby]')[document.querySelectorAll('[aria-labelledby]').length-1].style.display = 'none';"
+		// + 		"var renderGrafic"+options.descForm+" = false;"
+		+ 		"var valueAxis"+options.descForm+", categoryAxis"+options.descForm+", series"+options.descForm+";"
+		+ 		"chart"+options.descForm+".numberFormatter.language.adapter.object._locale._decimalSeparator = ',';"
+		+ 		"chart"+options.descForm+".numberFormatter.language.adapter.object._locale._thousandSeparator = '.';"
+		+ 		"chart"+options.descForm+".data = " + JSON.stringify(data) + ";"
+		+ 		"chart"+options.descForm+".numberFormatter.numberFormat = \"#\";"
+
+		+ 		"categoryAxis"+options.descForm+" 									= chart.xAxes.push(new am4charts.CategoryAxis());"
+		+ 		"categoryAxis"+options.descForm+".dataFields.category 				= '"+options.category.param+"';"
+		+ 		"categoryAxis"+options.descForm+".title.text 						= \""+(options.category.text || '')+"\";"
+		+ 		"categoryAxis"+options.descForm+".renderer.grid.template.location 	= 0;"
+		+ 		"categoryAxis"+options.descForm+".renderer.minGridDistance 			= 20;"
+		// + 		"categoryAxis"+options.descForm+".renderer.inversed 				= true;"
+		+ 		"categoryAxis"+options.descForm+".start = 0;"
+		+ 		"setTimeout(function(){categoryAxis"+options.descForm+".end = " + (data.length < options.padination ? 1 : options.padination / data.length) + ";}, 100);"
+
+
+		+ 		"valueAxis"+options.descForm+" 										= chart.xAxes.push(new am4charts.ValueAxis());"
+		+ 		"valueAxis"+options.descForm+".title.text 							= \""+(options.value.text || '')+"\";"
+
+		+ 		"series"+options.descForm+" 										= chart.series.push(new am4charts.ColumnSeries());"
+		+ 		"series"+options.descForm+".dataFields.valueY 						= \""+options.serie.param+"\";"
+		+ 		"series"+options.descForm+".dataFields.categoryX 					= \""+options.category.param+"\";"
+		+ 		"series"+options.descForm+".columns.template.fill 					= am4core.color(\"lightblue\");"
+		+ 		"series"+options.descForm+".tooltip.dy 								= -8;"
+		+ 		"series"+options.descForm+".tooltip.label.interactionsEnabled 		= true;"
+		+ 		"series"+options.descForm+".tooltip.keepTargetHover 				= false;"
+		+ 		"series"+options.descForm+".sequencedInterpolation 					= true;"
+		+ 		"series"+options.descForm+".defaultState.interpolationDuration 		= 1500;"
+		+ 		"series"+options.descForm+".columns.template.strokeOpacity 			= 0;"
+		// + 		"series"+options.descForm+".dataFields.valueY 						= "TOTAL_INCIDENTES";"
+		// + 		"series"+options.descForm+".dataFields.categoryX 					= 'DS_TIPO_INCIDENTE';"
+		// + 		"series"+options.descForm+".dataFields.TOTAL_INCIDENTES_FORM 		= \"TOTAL_INCIDENTES_FORM\";"
+		// + 		"series"+options.descForm+".dataFields.TOTAL_INCIDENTES_FORM 		= \"TOTAL_INCIDENTES\";"
+		// + 		"series"+options.descForm+".name 									= "Número de Incidentes";"
+		// + 		"series"+options.descForm+".tooltip.pointerOrientation 				= "vertical";"
+
+
+		+ 		"chart"+options.descForm+".cursor 									= new am4charts.XYCursor();" // indica onde o curso está com cordenadas XY
+		// + 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrecenta legenda no grafico"
+		+ 		"chart"+options.descForm+".scrollbarY 								= new am4core.Scrollbar();"
+		+ 		"var scrollbarX"+options.descForm+" 								= new am4core.Scrollbar();"
+		+ 		"chart.scrollbarX"+options.descForm+" 								= scrollbarX;"
+		+ 		"chart.scrollbarX"+options.descForm+".parent 						= chart.bottomAxesContainer;" // setar scroll do eixo x embaixo
+		+ 		"chart.scrollbarX"+options.descForm+".thumb.minWidth 				= 100;"
+		+ 		"chart"+options.descForm+".cursor.behavior 							= \"zoomX\";"
+
+		+ 		"var labelBullet"+options.descForm+" 								= new am4charts.LabelBullet();"
+		+ 		"labelBullet"+options.descForm+".label.text 						= \"{valueY}\";" // .value.formatNumber('#.')
+		+ 		"labelBullet"+options.descForm+".strokeOpacity 						= 0;"
+		+ 		"labelBullet"+options.descForm+".stroke 							= am4core.color(\"#dadada\");"
+		+ 		"labelBullet"+options.descForm+".dy 								= -15;"
+		+ 		"labelBullet"+options.descForm+".label.truncate 					= false;"
+		+ 		"series"+options.descForm+".bullets.push(labelBullet"+options.descForm+");"
+
+		+ 	"</"+"script>"
+
+	return html;
+}
+
 function resolvCodigoConsulta(options, tab=0) { 
 	/*
 	options: {
@@ -663,7 +1301,7 @@ function resolvDiv(options, tab=0) {
 			id: '' 			-- Id da div
 			ctx: '' 		-- Conteudo div
 			style: obj 		-- Objeto CSS
-			text: '' 		-- Conteudo Padrão
+			text: '' 		-- Texto de conteudo dentro da div
 		}
 	*/
 	var html = ''
@@ -845,6 +1483,949 @@ function listarFotos(descForm, id, error=0) {
 		console.error(e);
 	}
 }
+
+/*
+	Dependencias 
+	
+	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="print">
+	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="../lb/datatables.min.css"/>
+
+	<script type="text/javascript" src="../lb/jQuery.js"></script>
+	<script type="text/javascript" src="../lb/jQuery_3-3-1.js"></script>
+	<script type="text/javascript" src="../lb/moment.js"></script>
+	<script type="text/javascript" src="../lb/datatables.min.js"></script>
+*/
+
+/* GER */
+function resolvGrade(data, option) { 
+	/*
+		objParamGrade: {
+			tamanhoFont: 		11
+			fontFamily: 		"NomeDaFont"
+			classTable: 		"table table-bordered stripe table-hover table-condensed table-responsive backTeste"
+			titleTableBgColor: 	"#D5DEE3"
+			titleTableColor: 	"black"
+			titleTableWeight: 	"bold"
+			headTableBgColor: 	"#D5DEE3"
+			headTableColor: 	"black"
+			headTableWeight: 	"bold"
+			footTableBgColor: 	"#D5DEE3"
+			footTableColor: 	"black"
+			footTableWeight: 	"bold"
+			stripTableColors: 	[{bgcolor: "white"}]
+			hoverTrTableColor: 	"lightblue"
+			padination: 		[15,25]
+			isMobile_Global: 	false
+			no_scrollX: 		true
+			languageJson: 		''
+			dom: 				''
+								+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
+								+ "<'row'<'col-sm-12'tr>>"
+								+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
+		}
+
+		option = {
+			inputs: [
+				{
+					head: ''																// Descrição no titulo da tabela
+
+					param: '' 																// Parametro a ser mostrado na celula OR
+					param: function(data, option, indice) 									// Parametro a ser mostrado por function usará como callback, 
+					... 																	// 		o option é referente as opções do input e o indice é dos dados OR
+					param: { 																// Parametro mais personalizado para mostrar valores
+						op: (CONCAT|SUM), 													// operação a ser realizada pelos valores
+						val: [ { attr,literal } ] 											// valores a serem trabalhos para mostrar
+					}
+
+					align: 'left' 															// Alinhamento da celula (left | right), default: 'center'
+					alignHead: '' 															// Alinhamento do cabeçario (left | right), 
+					... 																	// OBS: herarquia de configuração:  this > defaultAlignHead > align > 'center'
+					dateFormat: { 															// Indica que o campo é data
+						format: 'DD/MM/Y' 													// Define com vai ser impresso o formato da data
+						format: function(data, option, indice) 								// Pode usar como callback, similar ao atributo param
+						useDataTable: 														// (0|1) default: 1
+					}
+					format: { 																// Indica que o campo é um número
+						casas: 	  0 														// numero de casas decimais
+						dec: 	',' 														// separedor decimal
+						mili: 	'.' 														// separedor de milhar
+					}
+					OR format: 'c0|d,|m.' 													// Pode usar format como codigo separando por "|"
+					default: '' 															// substitui o undefined
+					setDefaultValZero: (0|1) 												// quando for campo numerico (format) e o valor for zero
+					... 																	// , vai imprimir o valor padrão 
+					foot: { 																// se este for enviado como objeto vazio '{}', será usado o valor de param
+						op: 'SUM,MEDIA|expression|personalizado|literal' 					// padrão SUM
+						val: { 																// caso omitido será usado o param do próprio input
+						... 																// , pode ser enviado um array tambem
+							attr: '' 														// nome do atributo a ser usado
+							op: 'SUM,MEDIA|expression' 										// operação valor 
+						}
+						OR val: '' 															// String no caso de ser literal vai replicar o valor extamente que está escrito
+						... 																// Caso seja expressão e attr val for omitido, 
+						... 																// usa o seguinte padrão [{attr: option.param}]
+						algin: '' 															// caso omitido será usado o align do próprio input
+						format: { 															// caso omitido será usado o format do próprio input
+							casas: 	  0 													// numero de casas decimais
+							dec: 	',' 													// separedor decimal
+							mili: 	'.' 													// separedor de milhar
+						}
+						OR format: 'c0|d,|m.' 												// Pode usar format como codigo separando por "|"
+						mask: '%0%' 														// mascara do campo
+						ignoreNull: (0|1) 													// para media vai ignorar os valores undfined na hora de divir, default: false
+					}
+					style: {} 																// props de css podendo passar int, string e funcs de callback
+					...																		// OBS: os nomes dos attrs deve ser iguais ao do css
+					... 																	// Quando callback chama-se func(dt,el=inputs[i],indice)
+					... { thead: { td: { style } } }										// É possivel confecionar o estilo do head
+
+					mask: '%0%' 															// substiui o %0% pelo valor correspondentes e coloca o restante do texto
+					... 																	// , ex: (R$ %0% || %0% %)
+
+					tooltip: function(data,element){} 										// mandar callback direto com padrão de posição como bottom OR
+					tooltip: { 																// parametro para colocar balão demostrativo quando passar o mouse emcima
+						pos: 'bottom'														// posição que vai aparecer (top | right | bottom | left)
+						html: function(data,element){} 										// callback para resowlver o conteudo do balão
+					}
+					tdClick: { 																// Click na celula
+						desc: 'func(%0%)' 													// nome da função a ser executada
+						val: [ { (attr | index | obj) } ] 									// valores de referencia, default: [{obj:true}]
+						... 																// caso for obj ira retorna um parametro unico com todos os dados
+					}
+					OR tdClick: 'funcName' 													// quando string value default: [{desc: 'funcName', val: [{obj:true}]}]
+					... 																	// funcName recebe '(%0%)' dinamicamente caso não tenha
+					tdHeadClick: { 
+						desc: 'func()' 														// Função quando clica no cabecario da grade
+					}
+					no_render: (0|1) 														// Para indicar se tem que renderizar a coluna ou não
+				}
+			],
+			defaultAlignHead: 'center' 														// align default of header
+			ck_edit: (0|1) 																	// Button com função editar + descForm e passando indice no paramtro
+			ck_delete: (0|1) 																// Button com função apagar + descForm e passando indice no paramtro
+			div: '#id' 																		// Nome do elemento que vai ser para renderizar a grade
+			... 																			// Caso não informado considera returnHTML como sendo verdadeiro
+			descForm: '' 																	// referica para a função de editar e apagar registros
+			languageJson: '' 																// caminho do objeto JSON para traduzir a grade para PoRtugues ou outro idioma
+			objParamGrade: '' 																// objeto de estilização do qualidade
+			returnHTML: (0|1) 																// se vai retornar ou não um HTML, 
+			... 																			// em caso verdadeiro não precisa definir o parametro div
+			order: [[0,"asc"]] 																// opção de inicialização de ordenação
+			class: { 																		// Setar classes no geral
+				thead: { tr | td }
+				tbody: { tr | td }
+				tfoot: { tr | td }
+			}
+			style: { 																		// Setar style no geral
+				thead: { tr | td }
+				tbody: { tr | td } 															// no td aceita callback passando por parametro dt e el = (inputs[i])
+				tfoot: { tr | td }
+			}
+			trClick: { 																		// onclick na tag tr da grade
+				desc: 'func(%0%)' 															// nome da função a ser executada
+				val: [ { (attr | index | obj) } ] 											// valores de referencia, default: [{obj:true}]
+				... 																		// caso for obj ira retorna um parametro unico com todos os dados
+			}
+			OR trClick: 'funcName' 															// quando string value default: [{desc: 'funcName', val: [{obj:true}]}]
+			... 																			// funcName recebe '(%0%)' dinamicamente caso não tenha
+			trClickFoot: { 																	// onclick na tag tr do rodape
+				desc: 'funct()' 															// nome da função a ser executada
+			}
+			search: '' 																		// Campo de busca inicializado com valor
+			onOrder: function(e, settings, data){  } 										// Evento disparado quando ordenar
+			onSearch: function(e, settings, data){  } 										// Evento disparado quando procura
+			onPage: function(e, settings, data){  } 										// Envento disparado quando mudar paginação
+			no_scrollX: (0|1) 																// Remover parametro da grade scrollX (bug do cabaçalho desalhiado)
+			invertPadination: (0|1) 														// Inverter Paginação da Grade
+
+			no_tableSetWidth: (0|1) 														// Não seta width da tabela com 100%
+			no_dataTable: (0|1) 															// Não usa lib dataTable
+			initComplete: function(){} 														// Função diparada quando termina de carregar a grade
+			setDefaultValZero: (0|1) 														// quando for campo numerico (format) e o valor for zero
+			... 																			// , vai imprimir o valor padrão 
+			title: ''																		// titulo para exportação de dados
+			dom: ''																			// definição de layout da table
+				+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
+				+ "<'row'<'col-sm-12'tr>>"
+				+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
+		}
+	*/
+
+	var objParamGrade = $.extend({}, 
+		{
+			  tamanhoFont: 			11
+			, fontFamily: 			"NomeDaFont"
+			, classTable: 			"table table-bordered stripe table-hover table-condensed table-responsive backTeste"
+			, titleTableBgColor: 	"#D5DEE3"
+			, titleTableColor: 		"black"
+			, titleTableWeight: 	"bold"
+			, headTableBgColor: 	"#D5DEE3"
+			, headTableColor: 		"black"
+			, headTableWeight: 		"bold"
+			, footTableBgColor: 	"#D5DEE3"
+			, footTableColor: 		"black"
+			, footTableWeight: 		"bold"
+			, stripTableColors: 	[{bgcolor: "white"}]
+			, hoverTrTableColor: 	"lightblue"
+			, padination: 			[15,25]
+			, isMobile_Global: 		false
+			, no_scrollX: 			true
+			, languageJson: 		''
+			, dom: 					''
+									+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
+									+ "<'row'<'col-sm-12'tr>>"
+									+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
+		},
+		(window['objParamGrade_Global'] || {}), 
+		(option.objParamGrade || {})
+	)
+	, 	title = option.title || 'Exportar Grade'
+	, 	ck_tFoot = false
+	, 	ck_tooltip = false;
+
+	if (typeof(data) == 'string') { 
+		try { 
+			data = JSON.parse(data);
+		} catch(e) { 
+			return false;
+		}
+	}
+	var grade = '<br>' + ((data[0] || {}).debug || 'Nenhum resultado encontrado!');
+	if ( (data.length > 0 && (data[0].debug || '') == '') || data[0].debug == "OK" ) { 
+		grade = ``
+			// + 	`<br>`
+			// + 	`<table class='table' id='tabela${option.descForm || ''}' border='1'>`
+			+ 	`<table`
+			+ 		` id='tabela${(option.descForm || '')}'`
+			+ 		` class='${(objParamGrade.classTable || '')}'`
+			+ 		((option.no_tableSetWidth || '') != '' ? '' : " width='100%'")
+			+ 		` border='1'`
+			+ 		` style='font-size:${(objParamGrade.tamanhoFont || '12')}px'`
+			+ 	`>`
+			+ 		`<thead>`
+
+			+ 	`<tr`
+			+ 		` class='${(((option.class || {}).thead || {}).tr || '')}'`
+			+ 		` style='` // white-space:nowrap;
+			+ 			((objParamGrade.headTableWeight 	|| '') == '' ? '' : "font-weight:"		+ objParamGrade.headTableWeight		+ ";")
+			+ 			((objParamGrade.headTableBgColor 	|| '') == '' ? '' : "background-color:"	+ objParamGrade.headTableBgColor	+ ";")
+			+ 			((objParamGrade.headTableColor 		|| '') == '' ? '' : "color:"			+ objParamGrade.headTableColor		+ ";")
+			+ 			resolvStyleGrade( ((option.style || {}).thead || {}).tr || {} )
+			+ 		`'`
+			+ 	`>`
+
+			+ option.inputs.map(function(input) { 
+				return (input.no_render || '') != '' ? '' : ``
+					+ 	`<td`
+					+ 		` align='${input.alignHead || option.defaultAlignHead || input.align || 'center'}'`
+					// + 		" class='padraoLinhaH'"
+					+ 		` class='`
+					+ 			(((option.class || {}).thead || {}).td || '')
+					+ 			((input.tdHeadClick || '') == '' ? '' : 'cursorClick')
+					+ 		`'`
+					+ 		` style='${resolvStyleGrade( $.extend((((option.style || {}).thead || {}).td || {}), (((input.style || {}).thead || {}).td || {}) ) )}'`
+					+ ((input.tdHeadClick || '') == '' ? '' : ''
+						+ 	` onclick='${input.tdHeadClick.desc}'`
+					)
+					+ 	`>`
+					+ 		`<b>${input.head}</b>`
+					+ 	`</td>`
+			}).join('')
+			+ (!(option.ck_edit 	|| false) ? `` : `<td align='center' class='padraoLinhaH'><b></b></td>`)
+			+ (!(option.ck_delete 	|| false) ? `` : `<td align='center' class='padraoLinhaH'><b></b></td>`)
+
+			+ 	`</tr>`
+
+			+ 		`</thead>`
+			+ 		`<tbody>`
+
+		for (var i = 0; i < data.length; i++) { 
+			grade += ``
+				+ 		`<tr`
+				+ ((option.trClick || '') == '' ? '' : ''
+					+ 		` onclick='${resolveClick(data[i], option.trClick, i)}'`
+				)
+				+ 			` class='`
+				+ 				((option.trClick || '') == '' ? '' : 'cursorClick ')
+				+				(((option.class || {}).tbody || {}).tr || '')
+				+ 			`'`
+				+ 			` style='`
+				+ 				resolvStyleGrade ( 
+									$.extend({}, (((option.style || {}).tbody || {}).tr || {}), (((option.inputs[i] || {}).style || {}).tr || {})) , data[i]
+								)
+				+ 			`'`
+				+ 		`>`
+
+				+ option.inputs.map(function(input) { 
+					input  = $.extend({}, { setDefaultValZero: (option.setDefaultValZero || false) }, input);
+
+					if (typeof(input.format) == 'string') 
+						input.format = resolvCodigoFormatGrade(input.format);
+
+					var style 			= $.extend( {}, (((option.style || {}).tbody || {}).td || {}), ((input.style || {}).td || {}) )
+					, 	valPrint 		= resolveValPrint(input, data[i], i)
+					, 	defaultAling 	= 	(input.format 		|| '') != '' ? 'right'
+										: 	(input.dateFormat 	|| '') != '' ? 'center'
+										: 	'left';
+
+					if ((input.foot || '') != '') ck_tFoot = true;
+
+					return (input.no_render || '') != '' ? '' : ``
+						+ 	`<td`
+						+ 		` align='${(input.align || defaultAling)}'`
+						+ 		` class='`
+						+ 			((input.tdClick || '') == '' ? '' : 'cursorClick ')
+						+			(((option.class || {}).tbody || {}).td || '')
+						+		`'`
+						+ ((input.tdClick || '') == '' ? '' : ''
+							+ 	` onclick='${resolveClick(data[i], input.tdClick, i)}'`
+						)
+						+ (Object.keys(style).length == 0 ? '' : ''
+							+ 	` style='${resolvStyleGrade( style, data[i], input, i )}'`
+						)
+						+ 	">"
+
+						+ ((input.tooltip || '') == '' 
+							? valPrint  					// não é tooltip
+							: (ck_tooltip = true, '') 		// caso for tooltip
+							+ 	`<div data-toggle='tooltip' data-html='true'`
+							+ (typeof(input.tooltip) == 'function' 
+								? ''
+								+ 	` data-placement='bottom'`
+								// + 	` title='${(input.tooltip(data[i], input) || '').replace(/\"/g, '\\\"')}'`
+								+ 	` title='${(input.tooltip(data[i], input) || '')}'`
+								: ''
+								+ 	` data-placement='${(input.tooltip.pos || 'bottom')}'`
+								+ 	` title='${(input.tooltip.html(data[i], input) || '')}'`
+							)
+							+ 	`>`
+							+ 		valPrint
+							+ 	`</div>`
+						)
+						+ 	`</td>`
+				}).join('')
+
+				+ (!(option.ck_edit || 0) ? `` : ``
+					+ 		`<td align='center'`
+					+ 			` class='${(((option.class || {}).tbody || {}).td || '')}'`
+					+ 			` style='`
+					+ 				resolvStyleGrade( ((option.style || {}).tbody || {}).td || {} )
+					+ 			`'`
+					+ 		`>`
+					+ 			`<a href='#' style='color:orange' onclick='editar${(option.descForm || '')}(${i});'>`
+					+ 				`<i class='fa fa-pencil'></i>`
+					+ 			`</a>`
+					+ 		`</td>`
+				)
+				+ (!(option.ck_delete || 0) ? `` : ``
+					+ 		`<td align='center'`
+					+ 			` class='${(((option.class || {}).tbody || {}).td || '')}'`
+					+ 			` style='`
+					+ 				resolvStyleGrade( ((option.style || {}).tbody || {}).td || {} )
+					+ 			`'`
+					+ 		`>`
+					+ 			`<a href='#' style='color:red' onclick='apagar${(option.descForm || '')}(${i});'>`
+					+ 				`<i class='fa fa-times'></i>`
+					+ 			`</a>`
+					+ 		`</td>`
+				)
+				+ 		`</tr>`
+		}
+		grade += ``
+			+ 		`</tbody>`
+
+
+		if (ck_tFoot) { 
+
+			grade += ``
+				+ 	`<tfoot>`
+				// + 		`<tr bgcolor='${objParamGrade.footTableBgColor}' `
+				// + 			`style='font-weight:${objParamGrade.footTableWeight};color:${objParamGrade.footTableColor}'>`
+				+ 	`<tr`
+				+ 		` class='${(((option.class || {}).tfoot || {}).tr || '') + (((option.trClickFoot || {}).desc || '') == '' ? '' : ' cursorClick')}'`
+				+ 		` style='`
+				+ 			resolvStyleGrade( ((option.style || {}).tfoot || {}).tr || {} )
+				+ 			((objParamGrade.footTableWeight 	|| '') == '' ? '' : "font-weight:"		+ objParamGrade.footTableWeight		+ ";")
+				+ 			((objParamGrade.footTableBgColor 	|| '') == '' ? '' : "background-color:"	+ objParamGrade.footTableBgColor	+ ";")
+				+ 			((objParamGrade.footTableColor 		|| '') == '' ? '' : "color:"			+ objParamGrade.footTableColor		+ ";")
+				+ 		`'`
+				+ 		(((option.trClickFoot || {}).desc || '') == '' ? '' : ` onclick="${option.trClickFoot.desc}"`)
+				+ 	`>`
+				+ option.inputs.map(function(input) { 
+					const align = ((input.foot || {}).align || input.align || 
+						((input.format || '') != '' ? 'right' : ((input.dateFormat || '') != '' ? 'center' : 'left')))
+
+					if (typeof(input.format) == 'string') 
+						input.format = resolvCodigoFormatGrade(input.format);
+
+					var valPrint = '';
+					if ((input.foot || '') != '') { 
+						if (typeof(input.foot.format) == 'string') 
+							input.foot.format = resolvCodigoFormatGrade(input.foot.format);
+
+						if ((input.foot.val || '') == '') { 
+							input.foot.val = {};
+							input.foot.val.attr = input.param;
+						}
+						valPrint = resolveFoot(data, input.foot, input);
+					}
+
+					return (input.no_render || '') != '' ? '' : ``
+						+ 	`<td`
+						+ 		` align='${align}'`
+						+ 		` class='${(((option.class || {}).tfoot || {}).td || '')}'`
+						+ 		` style='${resolvStyleGrade( ((option.style || {}).tfoot || {}).td || {} )}'`
+						+ 	`>`
+						+ 		valPrint
+						+ 	`</td>`;
+				}).join('')
+				+ 		`</tr>`
+				+ 	`</tfoot>`
+		}
+		grade += ``
+			+ 	`</table>`
+	} else { 
+		grade = `<b>Debug != OK</b>`;
+	}
+
+	if ((option.no_dataTable || '') != '') { 
+		if ((option.div || '') != '') { 
+			$((option.div || '')).html(grade);
+			return true;
+		} else if ([false,0].indexOf(option.returnHTML) < 0) { 
+			return grade;
+		}
+	};
+
+	option.inputs.forEach(function(input, i) { option.inputs[i].indice = i; });
+
+	var padination = (objParamGrade.padination || [])
+		.filter(function(v) { return v <= data.length; })
+		.filter(function(v,i,a) { return a.indexOf(v) === i; });
+	if ((option.invertPadination || '') != '') padination = invertPadination((objParamGrade.padination || []), data.length);
+	if (padination.indexOf(data.length) < 0) padination.push(data.length);
+
+	var stripeClasses = (objParamGrade.stripTableColors || []).map(function(dt,i) { return 'stripe'+i; });
+
+	var mynumeric = option.inputs
+		.filter(function(input) { return (input.format || '') != '' && (input.tooltip || '') == '' })
+		.map(function(el) { return el.indice });
+
+	var mynumericTooltip = option.inputs
+		.filter(function(input) { return (input.tooltip || '') != ''; })
+		.map(function(el) { return el.indice; });
+
+	if ((option.returnHTML || false) || (option.div || '') == '') { 
+		return grade
+			+ 	`<script>`
+			+ 		(ck_tooltip ? `$('[data-toggle="tooltip"]').tooltip();` : '')
+			+ 		`$("#tabela${(option.descForm || '')}").DataTable({`
+			+ 			`  'language' 		: {'url': '${(option.languageJson || objParamGrade.languageJson || '../lb/DataTables-1.10.18/Portuguese.json')}'}`
+			+ 			`, 'lengthMenu' 	: ${JSON.stringify(padination)}`
+			+ 			`, 'autoWidth' 		: false`
+			+ 			`, 'order' 			: ${JSON.stringify(option.order || [[0,"asc"]])}`
+			+ 			`, 'stripeClasses' 	: ${JSON.stringify(stripeClasses)}`
+			+ 			`, 'columnDefs'		: [`
+			+ 					`  {"sType":"mynumeric","aTargets":${JSON.stringify(mynumeric)}}`
+			+ 					`, {"sType":"mynumericTooltip","aTargets":${JSON.stringify(mynumericTooltip)}}`
+			+ 			`]`
+			+ (ck_tooltip || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
+				+ 		`, 'scrollX': '${((option.scrollX || objParamGrade.isMobile_Global ? "100%" : "false"))}'`
+			)
+			+ 			`, 'search': {`
+			+ 				`'search': '${(option.search || '')}'`
+			+ 			`}`
+			// + ((objParamGrade.dom 		|| '') == '' ? '' : `, dom:"${objParamGrade.dom}"` 	)
+			+ 	`, dom:	\`${(option.dom || objParamGrade.dom || ''
+						+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
+						+ "<'row'<'col-sm-12'tr>>"
+						+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
+				)
+			}\``
+			// + ((objParamGrade.buttons 	|| '') == '' ? '' : `, buttons:${JSON.stringify(objParamGrade.buttons)}` )
+			+ 			`, 'buttons': [`
+			// + 				`{ extend: 'copy'	, text: '<i class="fa fa-copy"></i> Copiar'			, title: "${title}" , exportOptions: { stripHtml: false } },`
+			// + 				`{ extend: 'csv'	, text: '<i class="fa fa-file-o"></i> CSV'			, title: "${title}" , exportOptions: { stripHtml: false } },`
+			// + 				`{ extend: 'excel'	, text: '<i class="fa fa-file-excel-o"></i> Excel'	, title: "${title}" , exportOptions: { stripHtml: false } },`
+			// + 				`{ extend: 'pdf'	, text: '<i class="fa fa-file-pdf-o"></i> PDF'		, title: "${title}" , exportOptions: { stripHtml: false } },`
+			+ 				`{ extend: 'print'	, text: '<i class="fa fa-print"></i> Print'			, title: "${title}" , exportOptions: { stripHtml: false }, autoPrint: true },`
+			+ 			`]`
+			+ (typeof(option.initComplete) != 'function' ? '' : ''
+				+ 		`, initComplete: ${String(option.initComplete)}`
+			)
+			+		`});`
+			+ 	"</"+"script>"
+	} else { 
+		$((option.div || '')).html(grade);
+
+		if (ck_tooltip) $('[data-toggle="tooltip"]').tooltip();
+
+		$("#tabela" + (option.descForm || ''))
+			.on('order.dt', 	function (e, settings, data) { if ((option.onOrder 	|| '') != '')  option.onOrder	(e, settings, data); })
+			.on('search.dt', 	function (e, settings, data) { if ((option.onSearch || '') != '')  option.onSearch	(e, settings, data); })
+			.on('page.dt', 		function (e, settings, data) { if ((option.onPage 	|| '') != '')  option.onPage	(e, settings, data); })
+			.DataTable({
+			  "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
+			//   "language": 		{ "url": "../lb/DataTables-1.10.18/Portuguese.json" }
+			, "lengthMenu": 	padination
+			, "order":			(option.order || [[0,"asc"]]) // order = VLR_DEVOLUCAO_MES : desc
+			, 'autoWidth': 		false
+			, 'stripeClasses':  stripeClasses
+			, 'columnDefs': [ 
+				{ "sType":"mynumeric","aTargets":mynumeric }
+				, { "sType":"mynumericTooltip","aTargets":mynumericTooltip }
+			]
+			, 'scrollX': (ck_tooltip  || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
+				+ "'" + (option.scrollX || objParamGrade.isMobile_Global ? "100%" : false) + "'"
+			)
+			, 'search': { 
+				'search': (option.search || '')
+			}
+			, 'initComplete': option.initComplete
+			// , "scrollX": true
+			// , "scrollX": '100%'
+			// , "scrollY": 350
+			// , "paging": false
+			// , "dom": 'Bfrtip'
+			// , "dom": 'Blfrtip'
+			// , "dom": '<lf<t>ip>'
+			// , "dom": '<"wrapper"flipt>'
+			// , "dom": '<"top"i>rt<"bottom"flp><"clear">'
+			// , "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>>"
+			// , "dom": '<Blf<t>ip>'
+			// , "dom": 'Blfrtip'
+			, "dom": (option.dom || objParamGrade.dom || '' 
+					+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>" 
+					+ "<'row'<'col-sm-12'tr>>" 
+					+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
+			)
+			, 'buttons': [
+				// { extend: 'copy'	, text: '<i class="fa fa-copy"></i> Copiar'			, title , exportOptions: { stripHtml: false }, autoPrint: false  },
+				// { extend: 'csv'		, text: '<i class="fa fa-file-o"></i> CSV'			, title , exportOptions: { stripHtml: false }, autoPrint: false  },
+				// { extend: 'excel'	, text: '<i class="fa fa-file-excel-o"></i> Excel'	, title , exportOptions: { stripHtml: false }, autoPrint: false  },
+				// { extend: 'pdf'		, text: '<i class="fa fa-file-pdf-o"></i> PDF'		, title , exportOptions: { stripHtml: true }, autoPrint: false  },
+				{ extend: 'print' 	, text: '<i class="fa fa-print"></i> Print' 		, title , exportOptions: { stripHtml: false }, autoPrint: true },
+			]
+		});
+		return true;
+	}
+}
+
+function resolvCodigoFormatGrade(format) { 
+	var formatTemp = format.split('|'), keys, vlr;
+	format = {};
+
+	formatTemp = formatTemp.map(function(cod) { 
+		vlr = cod.substring(1, cod.length);
+		switch(cod.substring(0,1)) { 
+			case 'c': return { casas: 	parseInt(vlr) };
+			case 'd': return { dec: 	vlr };
+			case 'm': return { mili: 	vlr };
+			default:  return { }
+		}
+	});
+
+	formatTemp.forEach(function(param) { 
+		keys = Object.keys(param);
+		if (keys.length) 
+			keys.forEach(function(key) { format[key] = param[key]; });
+	});
+	return format;
+}
+
+function resolvStyleGrade(obj,dt={},el={},indice=-1) { 
+	var html = '', keys = Object.keys(obj), func, htmlTemp;
+
+	for (var i = 0; i < keys.length; i++) { 
+		if (typeof(obj[keys[i]]) == 'function') { 
+			func = obj[keys[i]];
+			htmlTemp = func(dt,el,indice);
+		}
+		html += keys[i] + ':' + (typeof(obj[keys[i]]) == 'string' ? obj[keys[i]] : htmlTemp) + ';';
+	}
+	return html;
+}
+
+function resolveValPrint(option, data, indice) { 
+	var mask = (data[option.param] == undefined) ? '%0%' : (option.mask || '%0%');
+
+	var valData = '';
+	if (typeof(option.param) == 'function') { 
+		valData = option.param(data, option, indice)
+	}
+	else if (typeof(option.param) == 'object') { 
+		if (['sum'].indexOf(option.param.op) < 0) valData = 0;
+
+		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') { 
+			valData = option.param.val.map(function(val) { return val.literal || data[val.attr]; }).join('');
+		}
+		if (option.param.op.toUpperCase() == 'SUM') { 
+			valData = option.param.val
+				.map(function(val) { return parseFloat(val.literal || data[val.attr] || 0) })
+				.reduce(function(t,v) { return t + v; }, 0);
+		}
+	}
+	else { 
+		valData = (data[option.param] || '');
+	}
+
+	var val = '';
+	if ((option.format || '') != '') { 
+		var { casas, dec, mili } = option.format;
+
+		if (
+			(typeof(option.param) == 'function' && valData == '') || 
+			(typeof(option.param) != 'function' && data[option.param] == undefined)
+		) { 
+			valData = option.default || '';
+		} else { 
+			valData = (valData || 0);
+			if (valData == 0 && (option.setDefaultValZero || false)) { 
+				val = option.default || '';
+			} else { 
+				val = number_format(valData, (casas || 0), (dec || ','), (mili || '.'));
+			}
+		}
+	}
+	else if ((option.dateFormat || '') != '') { 
+		option.dateFormat.format = ((option.dateFormat || {}).format || 'DD/MM/Y')
+		var valHide = "<spam style='display:none;'>%0%</spam>";
+		try { valHide = valHide.replace('%0%', moment(valData).format('Y-MM-DD')); } catch(e) { }
+
+		if (valData == '') {
+			valData = option.default || '';
+		} else {
+			valData = moment(valData).format(
+				eval(`option.dateFormat.format${ typeof(option.dateFormat.format) == 'string' ? '' : '(data, option, indice)' }`)
+			)
+		}
+		val = valHide + valData;
+	}
+	else { 
+		val = valData || option.default || '';
+	}
+
+	return mask.replace(/%0%/g, val);
+}
+
+function resolveClick(data, objClick, indice) { 
+	if (typeof objClick == 'string') {
+		if (objClick.indexOf('%0%') < 0) objClick += '(%0%)';
+		objClick = { desc: objClick, val: [{ obj: true }] };
+	}
+
+	var html = objClick.desc, value;
+	if ((objClick.val || '') == '') objClick.val = [{ obj: true }];
+	if (Object.keys(objClick.val)[0] != '0') objClick.val = [objClick.val];
+
+	(objClick.val || []).forEach(function(val, i) { 
+			 if ((val.obj 	|| '') != '') 	value = JSON.stringify(data).replace(/\'/g,"");
+		else if ((val.index || '') != '') 	value = indice;
+		else 								value = data[val.attr];
+
+		html = html.replace(new RegExp('%'+i+'%', 'gi'), value);
+	});
+	return html;
+}
+
+function resolveParam(data, format, options) { 
+	var param = '', val = '', valIf = '', cont = 0, 
+		setIf, setIfFunc, isTrueValid, isTrue, exclamacao, notSet;
+
+	for (var i = 0; i < data.length; i++) { 
+		val = format;
+		setIf = true;
+		setIfFunc = true;
+
+		for (var j = 0; j < (options.if || []).length; j++) { 
+			// [ notSet ]
+			if ((options.if[j].notSet || '') != '') { 
+				notSet = options.if[j].notSet;
+				exclamacao = notSet[0] == '!' ? (notSet = notSet.substring(1,notSet.length), true) : false;
+				setIf = (data[i][notSet] || false) ? exclamacao : (exclamacao ? false : setIf);
+			}
+
+			// [ first ]
+			if ((options.if[j].first || '') != '') { 
+				valIf = options.if[j].first.split('?');
+				valIf = cont == 0 ? valIf[0] : valIf[1];
+			}
+
+			// [ isTrue ]
+			if ((options.if[j].isTrue || '') != '') { 
+
+				isTrueValid = options.if[j].isTrue[0] == '!';
+				if (isTrueValid) options.if[j].isTrue = options.if[j].isTrue.substring(1,options.if[j].isTrue.length);
+				isTrue = (data[i][options.if[j].isTrue] || false);
+				if (isTrueValid) isTrue = !isTrue;
+
+				if ((options.if[j].setFunc || '') != '') { 
+					setIfFunc = false;
+					if (isTrue) { 
+						val = resolveParamSetFunc(val, options.if[j], j);
+						// val.replace(new RegExp('#'+j+'#', 'gi'), valIf);
+					} else { 
+						val = val.replace(new RegExp('#'+j, 'gi'), '');
+						val = val.replace(new RegExp(j+'#', 'gi'), '');
+					}
+				} else { 
+					valIf = options.if[j].set.split('?');
+					valIf =  isTrue ? valIf[0] : valIf[1];
+				}
+				if (isTrueValid) options.if[j].isTrue = '!' + options.if[j].isTrue;
+			}
+
+			if (setIfFunc) val = val.replace(new RegExp('#'+j+'#', 'gi'), valIf);
+			setIfFunc = true;
+			valIf = '';
+		}
+
+		for (var j = 0; j < (options.val || []).length; j++) { 
+			if ((options.val[j].default || '') != '') { 
+				val = val.replace(new RegExp('%'+j+'%', 'gi'), resolveParamDefault(data[i], options.val[j]) );
+			} else { 
+				val = val.replace(new RegExp('%'+j+'%', 'gi'), data[i][options.val[j].attr] );
+			}
+		}
+		val = setIf ? (cont++, val) : '';
+		param += val;
+	}
+	return param;
+}
+
+// resolveParamSetFunc("#0param0#", {setFunc: 'teste'}, 0) 
+// resolveParamSetFunc("#0param0#", {setFunc: 'teste(123)'}, 0)
+// resolveParamSetFunc("#0param0#", {setFunc: 'teste);'}, 0)
+// resolveParamSetFunc("#0param0#", {setFunc: 'teste(123...456) ? "continua" : "ou não";'}, 0)
+function resolveParamSetFunc(val, options, indice) { 
+	// setFunc =  "func'('pre_param'...'pos_param')'pos_func"
+
+	var pre_param = '', pos_param = '', 
+		setFunc = options.setFunc, 
+		isParamPre = false, isEtc = false, isParamPos = false;
+
+	if (setFunc.indexOf('...') != -1) { 
+		pre_param = setFunc.split('...')[0];
+		setFunc = setFunc.split('...');
+		setFunc.splice(0,1);
+		pos_param = setFunc.join('');
+		setFunc = '';
+		isEtc = true;
+	}
+	else if (setFunc.indexOf('(') != -1) { 
+		pre_param = setFunc.split('(')[0];
+		setFunc = setFunc.split('(');
+		setFunc.splice(0,1);
+		setFunc = setFunc.join('');
+		isParamPre = true;
+	}
+	
+	if (!isEtc && setFunc.indexOf(')') != -1) { 
+		if (isParamPre) pre_param += "(" + setFunc.split(')')[0];
+		else 			pre_param += setFunc.split(')')[0] + "(";
+		pos_param = setFunc.split(')')[1];
+		isParamPos = true;
+		// setFunc = setFunc.split(')');
+		// setFunc.splice(0,1);
+	}
+
+	if (!isEtc && !isParamPre && !isParamPos) { 
+		pre_param = setFunc + "(";
+		pos_param = ")";
+	}
+
+	if (pre_param.indexOf('(') == -1) pre_param += '(';
+	if (pos_param.indexOf(')') == -1) pos_param = ')' + pos_param;
+
+	if (pre_param[pre_param.length-1] != '(' && pre_param[pre_param.length-1] != ',') pre_param += ",";
+	if (pos_param[0] != ')' && pos_param[0] != ',') pos_param = ","+ pos_param;
+
+	val = val.replace(new RegExp('#'+indice, 'gi'), pre_param);
+	val = val.replace(new RegExp(indice+'#', 'gi'), pos_param);
+
+	return val;
+}
+
+function resolveParamDefault(data, options) { 
+	var val = '';
+
+	if ((options.default || '') != '') { 
+		switch (typeof(options.default)) { 
+			case 'string': 
+				val = (data[options.attr] || options.default);
+				break;
+			case 'object': 
+				val = (data[options.attr] || resolveParamDefault(data, options.default));
+				break;
+		}
+	} else { 
+		val = data[options.attr]
+	}
+	return val;
+}
+
+function invertPadination(defaultPag, length) { 
+	var pag = [length];
+	for (var i = defaultPag.length-1; i >= 0; i--) { 
+		if (length <= defaultPag[i]) return (pag.push(length), pag);
+		else pag.push(defaultPag[i]);
+	}
+	return pag;
+}
+
+/**************************************************************************************************************
+ * Resolve Foot
+ * ************************************************************************************************************/
+function resolveFoot(data,option,defaultOption={}) { 
+	/*
+		option: 
+		{
+			op: 'SUM|MEDIA|expression|personalizado|literal' 	// expression = (ex: "%0% + n") | default: SUM
+
+			val: { attr: 'PARAM', op: 'SUM|MEDIA' }				// OR
+			val: [
+				{
+					attr: 'PARAM',								// attr a ser usado
+					op: 'SUM|MEDIA' 							// em caso de expression pode resolver os valor de forma personalizada, default: SUM
+				}
+			]
+
+			ignoreNull: (0|1) 									// para media vai ignorar os valores undfined na hora de divir, default: false
+			mask: '%0%' 										// substiui o %0% pelo valor correspondentes e coloca o restante do texto, ex: (R$ %0% || %0% %)
+		}
+	*/
+	var valPrint = '';
+
+	if (['pesonalizado','personalizado'].indexOf(option.op || '') >= 0) 
+		valPrint = resolveFootPersonalizado(data, option, defaultOption);
+	else if ((option.op || '') == 'literal') 
+		valPrint = (typeof(option.val) == 'string' ? option.val : '');
+	else 
+		valPrint = resolveFormatVal( resolveFootAction(data, option), option, defaultOption );
+
+	return valPrint;
+}
+
+function resolveFormatVal(val, option, defaultOption={}) { 
+	// var 	mask = (option.mask || (defaultOption.mask || '%0%'))
+	var 	mask = (option.mask || '%0%')
+
+	return formatMask( 
+		number_format( val
+			, ((option.format || {}).casas 	|| (defaultOption.format || {}).casas 	||  0 )
+			, ((option.format || {}).dec 	|| (defaultOption.format || {}).dec 	|| ',')
+			, ((option.format || {}).mili 	|| (defaultOption.format || {}).mili 	|| '.')
+		), mask
+	)
+}
+
+function resolveFootAction(data, option, defaultOption={}) { 
+	var val = [], newOption;
+
+	if (['SUM',''].indexOf((option.op || '').toUpperCase()) != -1) 	return resolveSumNull(data, option);
+	if (option.op.toUpperCase() == 'MEDIA') 						return resolveFootMedia(data, option);
+ 
+	if ((option.val || '') == '') option.val = [{ attr: defaultOption.param }];
+	if ((option.val.attr || '') != '') option.val = [option.val];
+
+	for (var i = 0; i < option.val.length; i++) { 
+		newOption = $.extend({}, option, { val: { attr: option.val[i].attr }, op: (option.val[i].op || '') })
+		val.push( resolveFootAction(data, newOption, defaultOption) );
+	}
+	return resolveExpression(val, option.op);
+}
+
+function resolveFootPersonalizado(data, option, defaultOption={}) { 
+	/*
+		Quando a op do obj foot for igual a personalizado
+		option: {
+			mask: '%0%',
+			val: [
+				{ option foot convencional }
+			]
+		}
+	*/
+	var val = (option.mask || '%0%');
+
+	for (var i = 0; i < option.val.length; i++) 
+		val = val.replace(
+			new RegExp('%'+i+'%', 'gi'),
+			resolveFoot( data, option.val[i], defaultOption )
+		);
+
+	return val;
+}
+
+function formatMask(val, mask) { 
+	return mask.replace(/%0%/g, val);
+}
+
+function resolveExpression(vals, ex) { 
+	vals.forEach(function(val, i) { 
+		ex = ex.replace( new RegExp('%'+String(i)+'%', 'gi'), String(val) );
+	});
+	return eval(ex);
+}
+
+function resolveSumNull(data, option, type='val') { 
+	var val = 0, nulls = 0, attrs = resolvAttrArray(option);
+	data.forEach(function(dt) { 
+		attrs.forEach(function(attr) { 
+			val += parseFloat((dt[attr] || 0));
+			if (dt[attr] != 0 && (dt[attr] || '') == '') nulls++;
+		});
+	});
+	return type == 'val' ? val : { val, nulls };
+}
+
+function resolveFootMedia(data, option) { 
+	var objSum = resolveSumNull(data, option, 'obj')
+	, 	numRows = data.length
+	, 	val = objSum.val
+	, 	nulls = objSum.nulls;
+
+	if ((option.ignoreNull || false)) numRows -= nulls;
+	return numRows == 0 ? 0 : val / numRows;
+}
+
+function resolvAttrArray(option) { 
+	var attr = [];
+	if ((option.val.attr || '') != '') 				attr.push(option.val.attr);
+	else {
+		for (var i = 0; i < option.val.length; i++) attr.push(option.val[i].attr);
+	}
+	return attr;
+}
+/* 
+Testes: 
+
+// output: 17.5 § 2.875
+resolveFoot([{v1:1,v2:6},{v1:2,v2:7},{v1:3,v2:8},{v1:4,v2:9},{v1:5,v2:10}],
+	{ op: '100 / %1% + %0%', val: [{attr:'v1'},{attr:'v2'}] }
+	// op: '%0% + 100 / %1%',
+)
+
+// output: 37.5
+resolveFoot([{v1:1,v2:6},{v1:2,v2:7},{v1:3,v2:8},{v1:4,v2:9},{v1:5,v2:10}],
+	{ op: '%0% * 100 / %1%', val: [ { attr: 'v1' } , { attr: 'v2' } ] }
+)
+
+// output: 15
+resolveFoot([{v1:1,v2:6},{v1:2,v2:7},{v1:3,v2:8},{v1:4,v2:9},{v1:5,v2:10}],
+	{ val: { attr: 'v1' } }
+)
+
+// output: 3
+resolveFoot([{v:1},{v:2},{v:3},{v:4},{v:5}],{ op: 'MEDIA', val: { attr: 'v' } })
+
+// output: 15
+resolveFoot([{v:1},{v:2},{v:3},{v:4},{v:5}],{ op: 'SUM', val: { attr: 'v' } })
+*/
+/**************************************************************************************************************
+ * Resolve Foot
+ * ************************************************************************************************************/
 
 function resolvH1(options){ return resolvH($.extend({}, options, { num: 1 }),(arguments[1] || 0)); }
 function resolvH2(options){ return resolvH($.extend({}, options, { num: 2 }),(arguments[1] || 0)); }
@@ -1512,6 +3093,249 @@ function resolvRow(options, tab=0) {
 		+t(tab)	+ 	"</div>";
 }
 
+/*
+	Dependencias 
+	<script src="jquery/dist/jquery.min.js"></script>
+	<script src="jquery-ui/jquery-ui.min.js"></script>
+*/
+
+/* GER */
+function resolvSortable(option, data=[]) { 
+	/*
+		objParamGrade: {
+			tamanhoFont: 		11
+			fontFamily: 		"NomeDaFont"
+			classTable: 		"table table-bordered stripe table-hover table-condensed table-responsive backTeste"
+			titleTableBgColor: 	"#D5DEE3"
+			titleTableColor: 	"black"
+			titleTableWeight: 	"bold"
+			headTableBgColor: 	"#D5DEE3"
+			headTableColor: 	"black"
+			headTableWeight: 	"bold"
+			hoverTrTableColor: 	"lightblue"
+		}
+
+		option = {
+			inputs: [
+				{
+					head: ''												// Descrição no titulo da tabela
+					class: ''												// Class para delimitar o range de cada coluna Ex: (col-xs-11)
+
+					param: '' 												// Parametro a ser mostrado na celula OR
+					param: function(data, option, indice) 					// Parametro a ser mostrado por function usará como callback, 
+					... 													// 		o option é referente as opções do input e o indice é dos dados OR
+					param: { 												// Parametro mais personalizado para mostrar valores
+						op: (CONCAT|SUM), 									// operação a ser realizada pelos valores
+						val: [ { attr,literal } ] 							// valores a serem trabalhos para mostrar
+					}
+
+					dateFormat: { 											// Indica que o campo é data
+						format: 'DD/MM/Y' 									// Define com vai ser impresso o formato da data
+						format: function(data, option, indice) 				// Pode usar como callback, similar ao atributo param
+						useDataTable: 										// (0|1) default: 1
+					}
+					format: { 												// Indica que o campo é um número
+						casas: 	  0 										// numero de casas decimais
+						dec: 	',' 										// separedor decimal
+						mili: 	'.' 										// separedor de milhar
+					}
+				}
+			],
+			descForm: '' 													// referica para a função de editar e apagar registros
+			objParamGrade: '' 												// objeto de estilização do qualidade
+			ck_remove: (0|1) 												// informe se vai ter opção para remover o item
+			icon_ball: (0|1) 												// se vai ser icone de bolinha ou setinha
+		}
+	*/
+
+	let html = ''
+		+ 	`<ul id="sortable${option.descForm}" class="todo-list">`
+		+ 		`<li class="unsortable disable-sort-item row" style="margin:0;">`
+		+ 			`<div class="row" style="width:100%">`
+		+ 				`<div class="col-xs-1">`
+		+ 					`<span class="" style="opacity: 0;white-space: nowrap;">`
+		+ ((option.icon_ball || '') == '' 
+			? 					`<i class="fa fa-long-arrow-up" style="margin-left:1px"></i>`
+			+ 					`<i class="fa fa-long-arrow-down" style="margin-right:1px"></i>`
+			: 					`<i class="fa fa-ellipsis-v" style="margin-right:1px"></i>`
+			+ 					`<i class="fa fa-ellipsis-v" style="margin-left:1px"></i>`
+		)
+		+ 					`</span>`
+		+ 				`</div>`
+		+ (option.inputs || []).map(function(input) { return ''
+			+ 			`<div class="${(input.class || '')} text-${input.alignHead || input.align || 'left'}">`
+			+ 				`<span class="text">${(input.head || '')}</span>`
+			+ 			`</div>`
+		}).join('')
+		+ ((option.ck_remove || '') == '' ? '' : ''
+			+ 			`<div class="col-xs-1">`
+			+ 				`<span class="" style="opacity: 0;white-space: nowrap;">`
+			+ 					`<i class="fa fa-ellipsis-v" style="margin-right:1px"></i>`
+			+ 					`<i class="fa fa-ellipsis-v" style="margin-left:1px"></i>`
+			+ 				`</span>`
+			+ 			`</div>`
+		)
+		+ 			`</div>`
+		+ 		`</li>`
+		+ 		data.map(function(dt) { return returnItemSortable(dt, option)}).join('')
+		+ 	`</ul>`
+		+ 	`<style>`
+		+ 		`.todo-list li { `
+		+ 			`padding: 5px !important;`
+		+ 		`}`
+		+ 	`</style>`
+		+ 	`<script>`
+		+ 		`var optionsSortable${option.descForm} = ${jsonToString(option)};`
+		+ 		`var dataSortable${option.descForm} = ${JSON.stringify(data)};`
+		+ 		`dataSortable${option.descForm}.forEach(function(dt,i) {`
+		+ 			`dataSortable${option.descForm}[i].li = $("#sortable${option.descForm}").find("li")[i+1]`
+		+ 		`});`
+		+ 		`$('#sortable${option.descForm}').sortable({ `
+		+ 			`placeholder: 'sort-highlight',`
+		+ 			`handle: '.handle',`
+		+ 			`forcePlaceholderSize: true,`
+		+ 			`zIndex: 999999,`
+		// + 			`cancel: ".disable-sort-item",`
+		+ 			`items: "li:not(.unsortable)",`
+		+ 			`update: function(event, ui) { `
+		+ 				`reorderSortable("${option.descForm}");`
+		+ 			`}`
+		+ 		`});`
+		+ 	`</`+`script>`
+
+	return html;
+}
+
+function returnItemSortable(data, option) { 
+	return ''
+		+ 	`<li data-id="${data[(option.id || '')]}" style="margin:0;background-color:white;border:1px solid black;margin-bottom:2px;">`
+		+ 		`<div class="row" style="width:100%">`
+		+ 			`<div class="col-xs-1">`
+		+ 				`<span class="handle" style="white-space: nowrap;">`
+		+ ((option.icon_ball || '') == '' 
+			? 				`<i class="fa fa-long-arrow-up" style="margin-left:1px"></i>`
+			+ 				`<i class="fa fa-long-arrow-down" style="margin-right:1px"></i>`
+			: 				`<i class="fa fa-ellipsis-v" style="margin-right:1px"></i>`
+			+ 				`<i class="fa fa-ellipsis-v" style="margin-left:1px"></i>`
+		)
+		+ 				`</span>`
+		+ 			`</div>`
+		+ (option.inputs || []).map(function(input, indice) { return ''
+			+ 		`<div class="${(input.class || '')} text-${input.align || 'left'}">`
+			+ 			`<span class="text">${resolveValPrintSortable($.extend(option, input), data, indice)}</span>`
+			+ 		`</div>`
+		}).join('')
+		+ ((option.ck_remove || '') == '' ? '' : ''
+			+ 		`<div class="col-xs-1 text-center">`
+			+ 			`<button class="btn btn-danger"`
+			+ 				` onclick="removeItemSortable('${option.descForm}','${data[(option.id || '')]}');"`
+			+ 			`>`
+			+ 				`<i class="fa fa-times"></i>`
+			+ 			`</button>`
+			+ 		`</div>`
+		)
+		+ 		`</div>`
+		+ 	`</li>`
+}
+
+function reorderSortable(id) { 
+	let option = window['optionsSortable'+id]
+	, 	li = $('#sortable'+id).find('li')
+	, 	newArrayId = [];
+
+	for (let i = 1; i < li.length; i++) 
+		newArrayId.push(window['dataSortable'+id]
+			.filter(function(dt) { return String(dt[option.id]) == String($(li[i]).data('id')) })[0]);
+
+	window['dataSortable'+id] = newArrayId;
+}
+
+var getSortable = function(id) { return window['dataSortable'+id]};
+
+function addSortable(id, value) { 
+	let newValue = {};
+	eval(`newValue = ${ jsonToString(value) }`);
+	// eval(`newValue = { ${ Object.keys(value).map(key => `${key}: value.${key}`) } }`);
+
+	$('#sortable'+id).append(returnItemSortable(newValue, window['optionsSortable'+id]));
+	let indice = window['dataSortable'+id].length;
+	window['dataSortable'+id].push(newValue);
+	window['dataSortable'+id][indice].li = $('#sortable'+id).find("li")[indice+1];
+}
+
+function removeItemSortable(id, item) { 
+	let data = getSortable(id)
+	, 	option = window['optionsSortable'+id]
+	, 	indice = data.map(function(dt) { return String(dt[option.id])} ).indexOf(String(item));
+
+	if (indice >= 0) { 
+		$(data[indice].li).remove();
+		data.splice(indice, 1);
+	}
+}
+
+function resolveValPrintSortable(option, data, indice) { 
+	let mask = (data[option.param] == undefined) ? '%0%' : (option.mask || '%0%');
+
+	let valData = '';
+	if (typeof(option.param) == 'function') { 
+		valData = option.param(data, option, indice)
+	}
+	else if (typeof(option.param) == 'object') { 
+		if (['sum'].indexOf(option.param.op) < 0) valData = 0;
+
+		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') { 
+			valData = option.param.val.map(function(val) { return val.literal || data[val.attr]; }).join('');
+		}
+		if (option.param.op.toUpperCase() == 'SUM') { 
+			valData = option.param.val
+				.map(function(val) { return parseFloat(val.literal || data[val.attr] || 0) })
+				.reduce(function(t,v) { return t + v; }, 0);
+		}
+	}
+	else { 
+		valData = (data[option.param] || '');
+	}
+
+
+	let val = '';
+	if((option.format || '') != '') { 
+		let { casas, dec, mili } = option.format;
+		if (
+			(typeof(option.param) == 'function' && valData == '') || 
+			(typeof(option.param) != 'function' && data[option.param] == undefined)
+		) { 
+			valData = option.default || '';
+		} else { 
+			valData = (valData || 0);
+			if (valData == 0 && (option.setDefaultValZero || false)) { 
+				val = option.default || '';
+			} else { 
+				val = number_format(valData, (casas || 0), (dec || ','), (mili || '.'));
+			}
+		}
+	}
+	else if ((option.dateFormat || '') != '') { 
+		option.dateFormat.format = ((option.dateFormat || {}).format || 'DD/MM/Y')
+		let valHide = "<spam style='display:none;'>%0%</spam>";
+		try { valHide = valHide.replace('%0%', moment(valData).format('Y-MM-DD')); } catch(e) { }
+
+		if (valData == '') {
+			valData = option.default || '';
+		} else {
+			valData = moment(valData).format(
+				eval(`option.dateFormat.format${ typeof(option.dateFormat.format) == 'string' ? '' : '(data, option, indice)' }`)
+			)
+		}
+		val = valHide + valData;
+	}
+	else { 
+		val = valData || option.default || '';
+	}
+
+	return mask.replace(/%0%/g, val);
+}
+
 function resolvStyle(obj) { 
 	// var html = '';
 	var keys = Object.keys(obj);
@@ -1524,108 +3348,281 @@ function resolvStyle(obj) {
 	// return html;
 }
 
-var registerChart_Global = [];
+function getForm(obj,options={}) { 
+	return serealizeForm(obj,options);
+}
 
-// scriptChart.js
-
-function resolvChart2(data, options) { 
+function serealizeForm(obj,options={}) { 
 	/*
 		options: {
-			category: { 		-- Parametro que indica a categoria do grafico
-				text: ''		-- Texto do parametro
-				param: ''		-- Parametro do objeto data correspondente
-			}
-			value: { 			-- Parametro que indica o valor do grafico
-				text: ''		-- Texto do parametro
-			}
-			serie: {
-				param: ''		-- Parametro do objeto data correspondente
-			}
-			descForm: '' 		-- Parametro de identificação
-			padination: num 	-- Trazer tantos valores pré definidos na tela
+			options do valid 		-- Opções descritas na função returnInputValid()
 		}
 	*/
+	options = $.extend({},{ }, options);
 
-	// var random;
-	// do {
-	// 	random = parseInt( Math.random() * 100000 );
-	// } while (registerChart_Global.indexOf(random) != -1);
-	if (registerChart_Global.indexOf(options.descForm) != -1) {
-		window["chart"+options.descForm].data = data;
+	var inputs = returnInputObj(obj);
+	var valid = returnInputValid(inputs, options);
+	var keys = returnIdObj(obj);
+	var param = {}, paramAdd;
+	var input = {};
 
-		if ((options.padination || '') != '' && !isNaN(options.padination)) {
-			window["categoryAxis"+options.descForm].start 	= 0;
-			window["categoryAxis"+options.descForm].end 	= data.length < options.padination ? 1 : options.padination / data.length;
+	for (var i = 0; i < keys.length; i++) { 
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
+			paramAdd = ['codigoConsulta'].indexOf(keys[i].parent) < 0 ? '' : ',"id"'
+			param[keys[i].id] = eval(`resolvVal(keys[i].id ${paramAdd});`);
 		}
 
-		return true;
+		if (
+			(keys[i].obj.input || '') != '' || 
+			((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
+		) { 
+			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) { 
+				input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
+			} else {
+				try { input[keys[i].obj.id] 			= eval(`resolvVal(keys[i].id,"id");`); 		} catch(e) {}
+				try { input[keys[i].obj.codigo.input] 	= eval(`resolvVal(keys[i].id,"codigo");`); 	} catch(e) {}
+				try { input[keys[i].obj.desc.input] 	= eval(`resolvVal(keys[i].id,"desc");`); 	} catch(e) {}
+				try { input[keys[i].obj.select.value] 	= eval(`resolvVal(keys[i].id,"select");`); 	} catch(e) {}
+			}
+		}
+	}
+	return { valid , inputs , param , input };
+}
+
+function clearForm(obj) { 
+	var keys = returnIdObj(obj);
+	for (var i = 0; i < keys.length; i++) {
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
+			if (keys[i].parent == 'codigoConsulta') {
+				try { resolvVal(keys[i].id , 'id'		, ''); } catch(e){}
+				try { resolvVal(keys[i].id , 'codigo'	, ''); } catch(e){}
+				try { resolvVal(keys[i].id , 'desc'		, ''); } catch(e){}
+				try { resolvVal(keys[i].id , 'select'	, ''); } catch(e){}
+				// console.log('limpar ' + capitalize(keys[i].descForm) + 'Selected_Global');
+				window[capitalize(keys[i].descForm) + 'Selected_Global'] = '';
+				resolvDisabled(keys[i].descForm,'codigo',false);
+			}
+			else {
+				resolvVal(keys[i].id , (keys[i].obj.value || keys[i].obj.val || ''));
+				resolvDisabled(keys[i].id, (keys[i].obj.disabled || false));
+				$("#" + keys[i].id + "_obs").html('');
+			}
+		} else if (keys[i].parent == 'div' && (keys[i].obj.text || '') != '') {
+			resolvVal(keys[i].id, keys[i].obj.text);
+		} else if (keys[i].parent == 'fotos') {
+			$("#divFotos"+keys[i].obj.descForm).html(keys[i].obj.desc || '');
+		}
+	}
+}
+
+function setForm(data, obj, options={}) { 
+	/*
+		options: {
+			dec: ',' 	-- Caso valor seja numerico formatará o separador decimal
+		}
+	*/
+	clearForm(obj);
+	var keys = returnIdObj(obj);
+	for (var i = 0; i < keys.length; i++) { 
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
+			if (keys[i].parent == 'codigoConsulta') { 
+				try { resolvVal(keys[i].id , 'id'		, (data[keys[i].obj.id || keys[i].obj.codigo.input] || '')); } catch(e){}
+				try { resolvVal(keys[i].id , 'codigo'	, (data[keys[i].obj.codigo.input] 	|| '')); } catch(e){}
+				try { resolvVal(keys[i].id , 'desc'		, (data[keys[i].obj.desc.input] 	|| '')); } catch(e){}
+				try { resolvVal(keys[i].id , 'select'	, (data[keys[i].obj.select.value] 	|| '')); } catch(e){}
+				try {
+					window[capitalize(keys[i].descForm) + 'Selected_Global'] = (data[(keys[i].codigo || {}).input] || '');
+				} catch(e){}
+			}
+			else { 
+				var val = data[keys[i].obj.input];
+				if (data[keys[i].obj.input] == undefined) { 
+					val = (keys[i].obj.value || keys[i].obj.val || '');
+				}
+
+				if (keys[i].parent == 'input' && ['number','tel'].indexOf(keys[i].obj.type) >= 0) {
+					val = String(val).replace(/\./g, (options.dec || ','))
+				}
+				resolvVal(keys[i].id, val);
+				$("#" + keys[i].id + "_obs").html('');
+			}
+		// } else if (keys[i].parent == 'div' && (keys[i].obj.text || '') != '') {
+		// 	resolvVal(keys[i].id, keys[i].obj.text);
+		// } else if (keys[i].parent == 'fotos') {
+		// 	$("#divFotos"+keys[i].obj.descForm).html(keys[i].obj.desc || '');
+		}
+	}
+}
+
+function disabledForm(obj, disabled=true) { 
+	var keys = returnIdObj(obj);
+	for (var i = 0; i < keys.length; i++) { 
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
+			if (keys[i].parent == 'codigoConsulta') { 
+				resolvDisabled(keys[i].id, 'id', disabled);
+			}
+			else { 
+				resolvDisabled(keys[i].id, disabled);
+				$("#" + keys[i].id + "_obs").html('');
+			}
+		}
+	}
+}
+
+function returnInputValid(inputs,options={}) { 
+	/*
+		options: {
+			paramReq: 'required' | ['required'] 		-- Parametro para informar quais atributos devem ser vistos com obrigatório
+		}
+	*/
+	var paramReqArray = (options.paramReq || 'required'), paramReq;
+	if (typeof(paramReqArray) == 'string') paramReqArray = [paramReqArray];
+
+	var valid, msm;
+	for (var i = 0; i < inputs.length; i++) { 
+		for (var j = 0; j < paramReqArray.length; j++) { 
+			paramReq = paramReqArray[j];
+
+			if ((inputs[i][paramReq] || '') != '') { 
+
+				if (typeof(inputs[i][paramReq]) == 'function') {
+
+					// Valida se o campo está vazio
+					switch (inputs[i].tipoCampo) {
+						case "codigoConsulta": 	msm = resolvVal(inputs[i].descForm,"id"); 	break;
+						default: 				msm = resolvVal(inputs[i].id); 				break;
+					}
+					msm = msm == '' ? ((inputs[i].text || '') != '' ? `Informe ${inputs[i].text}!` : 'Formulário inválido!') : '';
+					if (msm == '') // Caso o campo esteja preenchido verifica a função de validação
+						msm = (inputs[i][paramReq]('valid') || '');
+
+					if (typeof(msm) == 'string' && msm != ''){
+						alert(msm);
+						msm = false;
+					} else {
+						msm = true;
+						$("#" + inputs[i].id + "_obs").html('');
+					}
+
+				} else {
+					msm = inputs[i][paramReq];
+				}
+
+				// se required for função e retornar falso
+				if (typeof(inputs[i][paramReq]) == 'function' && !msm) {
+					focusInput(inputs[i]);
+					return false;
+				}
+
+				else if (typeof(inputs[i][paramReq]) != 'function') {
+					switch (inputs[i].tipoCampo) {
+						case 'input':
+						case 'select':
+						case 'textarea':
+							valid = $("#" + inputs[i].id).val() != '';
+							break;
+						case 'codigoConsulta':
+							valid = $("#" + inputs[i].descForm).find('.id').find('input').val() != '';
+							break;
+					}
+					if (!valid) {
+						if ((inputs[i].text || '') != '') {
+							alert('Informe ' + inputs[i].text);
+						}
+						focusInput(inputs[i]);
+						return false;
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
+function focusInput(obj) { 
+	var paramIDs = returnRefId(),
+		id = (obj || {})[Object.keys(obj).filter(function(e) { return paramIDs.indexOf(e) != -1; })[0]],
+		path = resolvPath(id);
+
+	path.forEach(function(x,i) {
+		if (x.indexOf('menu') != -1) {
+			id = x.split('-')[1] + path[i+2];
+			try { $("#"+id)[0].click(); } catch(e) {}
+		}
+	});
+
+	if (['input','select','textarea'].indexOf(obj.tipoCampo) != -1) {
+		$("#" + obj.id)[0].focus();
+	}
+	if (obj.tipoCampo == 'codigoConsulta') {
+		try {
+			$("#" + obj.descForm).find('.codigo').find('input')[0].focus();
+		} catch(e){ 
+			try {
+				$("#" + obj.descForm).find('button')[0].focus();
+			} catch(e){}
+		}
+	}
+}
+
+function returnInputObj(obj) { 
+	return returnFromEl(obj, returnRefInputObj());
+}
+
+function returnRefInputObj() { 
+	return ['input','select','codigoConsulta','textarea'];
+}
+
+function returnRefId() { 
+	return ['descForm','id','name'];
+}
+
+function returnIdObj(obj) { 
+	var ref = returnRefId();
+	var el = returnFromEl(obj, ref, { first: true });
+	var map = el.map(function(e) {
+		for (var i = 0; i < ref.length; i++) if (e[ref[i]] != undefined) return e[ref[i]]
+		return '';
+	});
+	for (var i = 0; i < el.length; i++) el[i].id = map[i];
+
+	return el;
+}
+
+function returnFromEl(obj, types) { 
+	/*
+		options: {
+			first: false 	-- Server para quando tiver pesquisando as chaves do objeto parar no primeiro que encontrar
+							-- Ex: (descForm,id) / first:true -> assim que ele achar o descForm ele para, se não achar tenta achar pelo id
+		}
+	*/
+	var inputs 		= [], temp;
+	var keys 		= Object.keys(obj);
+	var options 	= $.extend( {}, { first: false }, (arguments[2] || {}) );
+
+	for (var i = 0; i < types.length; i++) { 
+		if (obj[types[i]] != undefined) { 
+			inputs.push(
+				$.extend(
+					{},
+					(typeof(obj[types[i]]) == 'object' 
+						? obj[types[i]] 
+						: JSON.parse("{\"" + types[i] + "\":\"" + String(obj[types[i]]) + "\"}")
+					),
+					{ tipoCampo: types[i], parent: (arguments[3] || ''), obj: obj }
+				) 
+			);
+			if (options.first) i = types.length;
+		}
 	}
 
-	registerChart_Global.push(options.descForm);
-
-	var html = ''
-		+ 	"<div id=\"chartdiv"+options.descForm+"\"></div>"
-		+ 	"<script>"
-		+ 		"var chart"+options.descForm+" = am4core.create(\"chartdiv"+options.descForm+"\", am4charts.XYChart);"
-		+ 		"document.querySelectorAll('[aria-labelledby]')[document.querySelectorAll('[aria-labelledby]').length-1].style.display = 'none';"
-		// + 		"var renderGrafic"+options.descForm+" = false;"
-		+ 		"var valueAxis"+options.descForm+", categoryAxis"+options.descForm+", series"+options.descForm+";"
-		+ 		"chart"+options.descForm+".numberFormatter.language.adapter.object._locale._decimalSeparator = ',';"
-		+ 		"chart"+options.descForm+".numberFormatter.language.adapter.object._locale._thousandSeparator = '.';"
-		+ 		"chart"+options.descForm+".data = " + JSON.stringify(data) + ";"
-		+ 		"chart"+options.descForm+".numberFormatter.numberFormat = \"#\";"
-
-		+ 		"categoryAxis"+options.descForm+" 									= chart.xAxes.push(new am4charts.CategoryAxis());"
-		+ 		"categoryAxis"+options.descForm+".dataFields.category 				= '"+options.category.param+"';"
-		+ 		"categoryAxis"+options.descForm+".title.text 						= \""+(options.category.text || '')+"\";"
-		+ 		"categoryAxis"+options.descForm+".renderer.grid.template.location 	= 0;"
-		+ 		"categoryAxis"+options.descForm+".renderer.minGridDistance 			= 20;"
-		// + 		"categoryAxis"+options.descForm+".renderer.inversed 				= true;"
-		+ 		"categoryAxis"+options.descForm+".start = 0;"
-		+ 		"setTimeout(function(){categoryAxis"+options.descForm+".end = " + (data.length < options.padination ? 1 : options.padination / data.length) + ";}, 100);"
-
-
-		+ 		"valueAxis"+options.descForm+" 										= chart.xAxes.push(new am4charts.ValueAxis());"
-		+ 		"valueAxis"+options.descForm+".title.text 							= \""+(options.value.text || '')+"\";"
-
-		+ 		"series"+options.descForm+" 										= chart.series.push(new am4charts.ColumnSeries());"
-		+ 		"series"+options.descForm+".dataFields.valueY 						= \""+options.serie.param+"\";"
-		+ 		"series"+options.descForm+".dataFields.categoryX 					= \""+options.category.param+"\";"
-		+ 		"series"+options.descForm+".columns.template.fill 					= am4core.color(\"lightblue\");"
-		+ 		"series"+options.descForm+".tooltip.dy 								= -8;"
-		+ 		"series"+options.descForm+".tooltip.label.interactionsEnabled 		= true;"
-		+ 		"series"+options.descForm+".tooltip.keepTargetHover 				= false;"
-		+ 		"series"+options.descForm+".sequencedInterpolation 					= true;"
-		+ 		"series"+options.descForm+".defaultState.interpolationDuration 		= 1500;"
-		+ 		"series"+options.descForm+".columns.template.strokeOpacity 			= 0;"
-		// + 		"series"+options.descForm+".dataFields.valueY 						= "TOTAL_INCIDENTES";"
-		// + 		"series"+options.descForm+".dataFields.categoryX 					= 'DS_TIPO_INCIDENTE';"
-		// + 		"series"+options.descForm+".dataFields.TOTAL_INCIDENTES_FORM 		= \"TOTAL_INCIDENTES_FORM\";"
-		// + 		"series"+options.descForm+".dataFields.TOTAL_INCIDENTES_FORM 		= \"TOTAL_INCIDENTES\";"
-		// + 		"series"+options.descForm+".name 									= "Número de Incidentes";"
-		// + 		"series"+options.descForm+".tooltip.pointerOrientation 				= "vertical";"
-
-
-		+ 		"chart"+options.descForm+".cursor 									= new am4charts.XYCursor();" // indica onde o curso está com cordenadas XY
-		// + 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrecenta legenda no grafico"
-		+ 		"chart"+options.descForm+".scrollbarY 								= new am4core.Scrollbar();"
-		+ 		"var scrollbarX"+options.descForm+" 								= new am4core.Scrollbar();"
-		+ 		"chart.scrollbarX"+options.descForm+" 								= scrollbarX;"
-		+ 		"chart.scrollbarX"+options.descForm+".parent 						= chart.bottomAxesContainer;" // setar scroll do eixo x embaixo
-		+ 		"chart.scrollbarX"+options.descForm+".thumb.minWidth 				= 100;"
-		+ 		"chart"+options.descForm+".cursor.behavior 							= \"zoomX\";"
-
-		+ 		"var labelBullet"+options.descForm+" 								= new am4charts.LabelBullet();"
-		+ 		"labelBullet"+options.descForm+".label.text 						= \"{valueY}\";" // .value.formatNumber('#.')
-		+ 		"labelBullet"+options.descForm+".strokeOpacity 						= 0;"
-		+ 		"labelBullet"+options.descForm+".stroke 							= am4core.color(\"#dadada\");"
-		+ 		"labelBullet"+options.descForm+".dy 								= -15;"
-		+ 		"labelBullet"+options.descForm+".label.truncate 					= false;"
-		+ 		"series"+options.descForm+".bullets.push(labelBullet"+options.descForm+");"
-
-		+ 	"</"+"script>"
-
-	return html;
+	for (var i = 0; i < keys.length; i++) { 
+		if (types.indexOf(keys[i]) == -1 && typeof(obj[keys[i]]) == 'object') { 
+			temp = returnFromEl(obj[keys[i]], types, options, keys[i]);
+			for (j = 0; j < temp.length; j++) inputs.push(temp[j]);
+		}
+	}
+	return inputs;
 }
 
 
@@ -2210,14 +4207,16 @@ function resolvParamAjax(options) {
 	var param = "";
 	if (Object.keys((options.param || ['']))[0] == '0') { 
 		for (var i = 0; i < (options.param || []).length; i++) { 
+			var aspas = typeof options.param[i].val == 'string' ? '"' : '';
 			param += ''
 				+ (i == 0 ? '' : ',')
-				+ `'${options.param[i].key}':${String(options.param[i].val)}`;
+				+ `'${options.param[i].key}':${aspas}${String(options.param[i].val)}${aspas}`;
 		}
 		param += ',';
 	} else { 
 		param = Object.keys(options.param).map(function(key) { 
-					return `'${key}':${String(options.param[key])}`;
+					var aspas = typeof options.param[key] == 'string' ? '"' : '';
+					return `'${key}':${aspas}${String(options.param[key])}${aspas}`;
 				}).join(',') + ',';
 	}
 	return param;
