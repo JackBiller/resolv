@@ -6,7 +6,7 @@ function resolvDiv(options, tab=0) {
 			id: '' 			-- Id da div
 			ctx: '' 		-- Conteudo div
 			style: obj 		-- Objeto CSS
-			text: '' 		-- Conteudo Padrão
+			text: '' 		-- Texto de conteudo dentro da div
 		}
 	*/
 	var html = ''

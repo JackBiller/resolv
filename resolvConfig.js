@@ -504,14 +504,16 @@ function resolvParamAjax(options) {
 	var param = "";
 	if (Object.keys((options.param || ['']))[0] == '0') { 
 		for (var i = 0; i < (options.param || []).length; i++) { 
+			var aspas = typeof options.param[i].val == 'string' ? '"' : '';
 			param += ''
 				+ (i == 0 ? '' : ',')
-				+ `'${options.param[i].key}':${String(options.param[i].val)}`;
+				+ `'${options.param[i].key}':${aspas}${String(options.param[i].val)}${aspas}`;
 		}
 		param += ',';
 	} else { 
 		param = Object.keys(options.param).map(function(key) { 
-					return `'${key}':${String(options.param[key])}`;
+					var aspas = typeof options.param[key] == 'string' ? '"' : '';
+					return `'${key}':${aspas}${String(options.param[key])}${aspas}`;
 				}).join(',') + ',';
 	}
 	return param;
