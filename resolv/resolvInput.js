@@ -41,7 +41,8 @@ function resolvInput(options,tab=0) {
 			onEnter: function(el) 				-- Função disparada quando o campo está focado e aperta o ENTER
 			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descricao na frente
 			radio: [ {} ] 						-- Array de objetos input, com caracteristicas herdadas do obj pai
-			inline: (0|1) 						-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
+			inline: (0|1) / num 				-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
+			... 								-- Quando > 1 significa o numero de campos que vai mostrar por linhas
 			no_desc: (0|1) 						-- Sem Label
 			datalist: { 						-- Colocar um autocomplete no campo
 				ajax: '' 						-- Se a listar vai vir dinamicamente do servidor
@@ -68,19 +69,40 @@ function resolvInput(options,tab=0) {
 
 	var html = '';
 
-	if (options.type == 'radio' && (options.radio || '') != '') { 
+	if ((options.type || 'radio') == 'radio' && (options.radio || '') != '') { 
+		options.type = 'radio';
 		var isCheck = options.radio.map(function(e) { return e.checked; }).indexOf(true);
-		if(isCheck < 0) isCheck = 0;
+		if (isCheck < 0) isCheck = 0;
 
 		for (var i = 0; i < options.radio.length; i++) { 
-			if (options.radio[i].checked) {
+			if (options.radio[i].checked) { 
 				options.value = options.radio[i].value || '';
 			}
 		}
 
-		for (var i = 0; i < options.radio.length; i++) 
-			html += resolvInputIn( $.extend({}, options, { checked: (isCheck == i ? true : '') }, options.radio[i]) , tab);
-	} else {
+		var cols = (options.inline || '') != '' && !isNaN(options.inline) && options.inline > 1 ? options.inline : false;
+
+		if (cols) html += t(tab) + '<table>';
+
+		for (var i = 0; i < options.radio.length; i++) { 
+			if (cols) { 
+				if (i == 0 || (i != 0 && i % cols == 0)) html += t(tab+1) + '<tr>';
+				html += t(tab+2) + '<td>';
+			}
+
+			html += resolvInputIn(
+				$.extend( {}, options, { checked: (isCheck == i ? true : '') }, options.radio[i] )
+				, tab + (cols ? 3 : 0)
+			);
+
+			if (cols) { 
+				html += t(tab+2) + '</td>'; 
+				if (i == options.radio.length-1 || ((i+1) % cols == 0)) html += t(tab+1) + '</tr>'; 
+			}
+		}
+
+		if (cols) html += t(tab) + '</table>';
+	} else { 
 		html = resolvInputIn(options, tab);
 	}
 
@@ -229,9 +251,6 @@ function resolvInputIn(options,tab=0) {
 		+ 	(!options.requiredFull ? `` : ``
 			+ t(tab) 	+ `<div style="color:red;" id="${options.id}_obs"></div>`
 		)
-
-
-
 
 
 

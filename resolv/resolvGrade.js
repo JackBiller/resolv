@@ -123,7 +123,7 @@ function resolvGrade(data, option) {
 			div: '#id' 																		// Nome do elemento que vai ser para renderizar a grade
 			... 																			// Caso não informado considera returnHTML como sendo verdadeiro
 			descForm: '' 																	// referica para a função de editar e apagar registros
-			languageJson: '' 																// caminho do objeto JSON para traduzir a grade para PoRtugues ou outro idioma
+			languageJson: Inutilizado 														// caminho do objeto JSON para traduzir a grade para PoRtugues ou outro idioma
 			objParamGrade: '' 																// objeto de estilização do qualidade
 			returnHTML: (0|1) 																// se vai retornar ou não um HTML, 
 			... 																			// em caso verdadeiro não precisa definir o parametro div
@@ -198,7 +198,24 @@ function resolvGrade(data, option) {
 	)
 	, 	title = option.title || 'Exportar Grade'
 	, 	ck_tFoot = false
-	, 	ck_tooltip = false;
+	, 	ck_tooltip = false
+	, 	language = {
+		"sProcessing":   "A processar...",
+		"sLengthMenu":   "Mostrar _MENU_ registros",
+		"sZeroRecords":  "Não foram encontrados resultados",
+		"sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+		"sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+		"sInfoFiltered": "(filtrado de _MAX_ registros no total)",
+		"sInfoPostFix":  "",
+		"sSearch":       "Procurar:",
+		"sUrl":          "",
+		"oPaginate": {
+			"sFirst":    "Primeiro",
+			"sPrevious": "Anterior",
+			"sNext":     "Seguinte",
+			"sLast":     "Último"
+		}
+	};
 
 	if (typeof(data) == 'string') { 
 		try { 
@@ -414,7 +431,11 @@ function resolvGrade(data, option) {
 		}
 	};
 
-	option.inputs.forEach(function(input, i) { option.inputs[i].indice = i; });
+	var cont = 0;
+	option.inputs.forEach(function(input, i) { 
+		option.inputs[i].indice = cont;
+		if ((input.no_render || '') == '') cont++;
+	});
 
 	var padination = (objParamGrade.padination || [])
 		.filter(function(v) { return v <= data.length; })
@@ -437,7 +458,8 @@ function resolvGrade(data, option) {
 			+ 	`<script>`
 			+ 		(ck_tooltip ? `$('[data-toggle="tooltip"]').tooltip();` : '')
 			+ 		`$("#tabela${(option.descForm || '')}").DataTable({`
-			+ 			`  'language' 		: {'url': '${(option.languageJson || objParamGrade.languageJson || '../lb/DataTables-1.10.18/Portuguese.json')}'}`
+			// + 			`  'language' 		: {'url': '${(option.languageJson || objParamGrade.languageJson || '../lb/DataTables-1.10.18/Portuguese.json')}'}`
+			+ 			`  'language' 		: ${JSON.stringify(language)}`
 			+ 			`, 'lengthMenu' 	: ${JSON.stringify(padination)}`
 			+ 			`, 'autoWidth' 		: false`
 			+ 			`, 'order' 			: ${JSON.stringify(option.order || [[0,"asc"]])}`
@@ -482,8 +504,9 @@ function resolvGrade(data, option) {
 			.on('search.dt', 	function (e, settings, data) { if ((option.onSearch || '') != '')  option.onSearch	(e, settings, data); })
 			.on('page.dt', 		function (e, settings, data) { if ((option.onPage 	|| '') != '')  option.onPage	(e, settings, data); })
 			.DataTable({
-			  "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
+			//   "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
 			//   "language": 		{ "url": "../lb/DataTables-1.10.18/Portuguese.json" }
+			"language": 		language
 			, "lengthMenu": 	padination
 			, "order":			(option.order || [[0,"asc"]]) // order = VLR_DEVOLUCAO_MES : desc
 			, 'autoWidth': 		false

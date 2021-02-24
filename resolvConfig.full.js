@@ -673,12 +673,6 @@ function resolvChart(data, options) {
 	return html;
 }
 
-function t() { 
-	var num = arguments.length > 0 ? arguments[0] : 1, html = "\n";
-	for (var i = 0; i < num; i++) html += "\t";
-	return html;
-}
-
 function toFunction(func, replace) { 
 	var isString;
 	func = String(func);
@@ -1608,7 +1602,7 @@ function resolvGrade(data, option) {
 			div: '#id' 																		// Nome do elemento que vai ser para renderizar a grade
 			... 																			// Caso não informado considera returnHTML como sendo verdadeiro
 			descForm: '' 																	// referica para a função de editar e apagar registros
-			languageJson: '' 																// caminho do objeto JSON para traduzir a grade para PoRtugues ou outro idioma
+			languageJson: Inutilizado 														// caminho do objeto JSON para traduzir a grade para PoRtugues ou outro idioma
 			objParamGrade: '' 																// objeto de estilização do qualidade
 			returnHTML: (0|1) 																// se vai retornar ou não um HTML, 
 			... 																			// em caso verdadeiro não precisa definir o parametro div
@@ -1683,7 +1677,24 @@ function resolvGrade(data, option) {
 	)
 	, 	title = option.title || 'Exportar Grade'
 	, 	ck_tFoot = false
-	, 	ck_tooltip = false;
+	, 	ck_tooltip = false
+	, 	language = {
+		"sProcessing":   "A processar...",
+		"sLengthMenu":   "Mostrar _MENU_ registros",
+		"sZeroRecords":  "Não foram encontrados resultados",
+		"sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+		"sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+		"sInfoFiltered": "(filtrado de _MAX_ registros no total)",
+		"sInfoPostFix":  "",
+		"sSearch":       "Procurar:",
+		"sUrl":          "",
+		"oPaginate": {
+			"sFirst":    "Primeiro",
+			"sPrevious": "Anterior",
+			"sNext":     "Seguinte",
+			"sLast":     "Último"
+		}
+	};
 
 	if (typeof(data) == 'string') { 
 		try { 
@@ -1899,7 +1910,11 @@ function resolvGrade(data, option) {
 		}
 	};
 
-	option.inputs.forEach(function(input, i) { option.inputs[i].indice = i; });
+	var cont = 0;
+	option.inputs.forEach(function(input, i) { 
+		option.inputs[i].indice = cont;
+		if ((input.no_render || '') == '') cont++;
+	});
 
 	var padination = (objParamGrade.padination || [])
 		.filter(function(v) { return v <= data.length; })
@@ -1922,7 +1937,8 @@ function resolvGrade(data, option) {
 			+ 	`<script>`
 			+ 		(ck_tooltip ? `$('[data-toggle="tooltip"]').tooltip();` : '')
 			+ 		`$("#tabela${(option.descForm || '')}").DataTable({`
-			+ 			`  'language' 		: {'url': '${(option.languageJson || objParamGrade.languageJson || '../lb/DataTables-1.10.18/Portuguese.json')}'}`
+			// + 			`  'language' 		: {'url': '${(option.languageJson || objParamGrade.languageJson || '../lb/DataTables-1.10.18/Portuguese.json')}'}`
+			+ 			`  'language' 		: ${JSON.stringify(language)}`
 			+ 			`, 'lengthMenu' 	: ${JSON.stringify(padination)}`
 			+ 			`, 'autoWidth' 		: false`
 			+ 			`, 'order' 			: ${JSON.stringify(option.order || [[0,"asc"]])}`
@@ -1967,8 +1983,9 @@ function resolvGrade(data, option) {
 			.on('search.dt', 	function (e, settings, data) { if ((option.onSearch || '') != '')  option.onSearch	(e, settings, data); })
 			.on('page.dt', 		function (e, settings, data) { if ((option.onPage 	|| '') != '')  option.onPage	(e, settings, data); })
 			.DataTable({
-			  "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
+			//   "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
 			//   "language": 		{ "url": "../lb/DataTables-1.10.18/Portuguese.json" }
+			"language": 		language
 			, "lengthMenu": 	padination
 			, "order":			(option.order || [[0,"asc"]]) // order = VLR_DEVOLUCAO_MES : desc
 			, 'autoWidth': 		false
@@ -2493,7 +2510,8 @@ function resolvInput(options,tab=0) {
 			onEnter: function(el) 				-- Função disparada quando o campo está focado e aperta o ENTER
 			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descricao na frente
 			radio: [ {} ] 						-- Array de objetos input, com caracteristicas herdadas do obj pai
-			inline: (0|1) 						-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
+			inline: (0|1) / num 				-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
+			... 								-- Quando > 1 significa o numero de campos que vai mostrar por linhas
 			no_desc: (0|1) 						-- Sem Label
 			datalist: { 						-- Colocar um autocomplete no campo
 				ajax: '' 						-- Se a listar vai vir dinamicamente do servidor
@@ -2520,19 +2538,40 @@ function resolvInput(options,tab=0) {
 
 	var html = '';
 
-	if (options.type == 'radio' && (options.radio || '') != '') { 
+	if ((options.type || 'radio') == 'radio' && (options.radio || '') != '') { 
+		options.type = 'radio';
 		var isCheck = options.radio.map(function(e) { return e.checked; }).indexOf(true);
-		if(isCheck < 0) isCheck = 0;
+		if (isCheck < 0) isCheck = 0;
 
 		for (var i = 0; i < options.radio.length; i++) { 
-			if (options.radio[i].checked) {
+			if (options.radio[i].checked) { 
 				options.value = options.radio[i].value || '';
 			}
 		}
 
-		for (var i = 0; i < options.radio.length; i++) 
-			html += resolvInputIn( $.extend({}, options, { checked: (isCheck == i ? true : '') }, options.radio[i]) , tab);
-	} else {
+		var cols = (options.inline || '') != '' && !isNaN(options.inline) && options.inline > 1 ? options.inline : false;
+
+		if (cols) html += t(tab) + '<table>';
+
+		for (var i = 0; i < options.radio.length; i++) { 
+			if (cols) { 
+				if (i == 0 || (i != 0 && i % cols == 0)) html += t(tab+1) + '<tr>';
+				html += t(tab+2) + '<td>';
+			}
+
+			html += resolvInputIn(
+				$.extend( {}, options, { checked: (isCheck == i ? true : '') }, options.radio[i] )
+				, tab + (cols ? 3 : 0)
+			);
+
+			if (cols) { 
+				html += t(tab+2) + '</td>'; 
+				if (i == options.radio.length-1 || ((i+1) % cols == 0)) html += t(tab+1) + '</tr>'; 
+			}
+		}
+
+		if (cols) html += t(tab) + '</table>';
+	} else { 
 		html = resolvInputIn(options, tab);
 	}
 
@@ -2681,9 +2720,6 @@ function resolvInputIn(options,tab=0) {
 		+ 	(!options.requiredFull ? `` : ``
 			+ t(tab) 	+ `<div style="color:red;" id="${options.id}_obs"></div>`
 		)
-
-
-
 
 
 
@@ -2939,6 +2975,7 @@ function resolvLegenda(options, tab=0) {
 		height: '20px' 				-- Altura do bloco da legenda
 		width: 	'40px' 				-- Largura do bloco da legenda
 		inline: (0|1) 				-- Caso verdadieiro os dados ficam numa unica linha
+		OR num > 2 					-- Caso seja um número e for maior que 1, vai de acordo com o numero por linhas
 		info: [ 					-- Informações contidas na legenda
 			{
 				desc: '' 			-- Descrição da legenda
@@ -2961,6 +2998,9 @@ function resolvLegenda(options, tab=0) {
 	var click = options.click || '';
 	var onClick = click == '' ? '' : " class='cursorClick' onclick='legedaClick" + random + "(%0%);'";
 
+	var inline = (options.inline || '') != '' && (isNaN(options.inline) || options.inline < 2);
+	var cols = (options.inline || '') != '' && !isNaN(options.inline) && options.inline > 1 ? options.inline : false;
+
 	var html = ''
 		+ (function(info) { 
 			var cels = ''
@@ -2970,7 +3010,7 @@ function resolvLegenda(options, tab=0) {
 
 				cels += 	''
 				// +t(tab+1)	+ 		`<tr>`
-							+ (!(options.inline || false) ? tr : (i == 0 ? tr : ''))
+							+ (inline ? (i == 0 ? tr : '') : (cols ? (i == 0 || (i != 0 && i % cols == 0) ? tr : '') : tr))
 				+t(tab+2)	+ 			`<td width='${(info[i].width || '40px')}'${onClick.replace('%0%',i)}>`
 				+t(tab+3)	+ 				`<div`
 							+ 					` style='`
@@ -2984,11 +3024,12 @@ function resolvLegenda(options, tab=0) {
 							+ 				`</div>`
 				+t(tab+2)	+ 			`</td>`
 				+t(tab+2)	+ 			`<td${onClick.replace('%0%',i)} id='legenda${random}${i}'`
-							+ 				`style="text-decoration:${info[i].status == 'show' ? 'none' : 'line-through'};"`
+							+ 				` style="text-decoration:${info[i].status == 'show' ? 'none' : 'line-through'};"`
+							+ 				` align='left'`
 							+ 			`>`
 				+t(tab+3)	+ 				`&nbsp;${info[i].desc}&nbsp;&nbsp;&nbsp;&nbsp;`
 				+t(tab+2)	+ 			`</td>`
-							+ (!(options.inline || false) ? trF : (i == info.length ? trF : ''))
+							+ (inline ? (i == info.length-1 ? trF : '') : (cols ? (i == info.length-1 || ((i+1) > 0 && (i+1) % cols == 0) ? trF : '') : trF ))
 				// +t(tab+1)	+ 		`</tr>`
 			}
 			cels += ''
@@ -3735,7 +3776,7 @@ function resolvConfigModal(obj) {
 	
 	var checkModalconsulta = (function (obj) {
 // function resolv(obj) {
-	return resolvFindParam(obj,'codigoConsulta') && (obj.dist || '').indexOf('B') >= 0;
+	return resolvFindParam(obj,'codigoConsulta') && (obj.dist || 'B').indexOf('B') >= 0;
 // }
 	}(obj));
 	if (checkModalconsulta) { html += modalconsulta; }

@@ -516,12 +516,6 @@ function resolvChart(data, options) {
 	return html;
 }
 
-function t() { 
-	var num = arguments.length > 0 ? arguments[0] : 1, html = "\n";
-	for (var i = 0; i < num; i++) html += "\t";
-	return html;
-}
-
 function toFunction(func, replace) { 
 	var isString;
 	func = String(func);

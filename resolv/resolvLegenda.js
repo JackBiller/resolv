@@ -4,6 +4,7 @@ function resolvLegenda(options, tab=0) {
 		height: '20px' 				-- Altura do bloco da legenda
 		width: 	'40px' 				-- Largura do bloco da legenda
 		inline: (0|1) 				-- Caso verdadieiro os dados ficam numa unica linha
+		OR num > 2 					-- Caso seja um número e for maior que 1, vai de acordo com o numero por linhas
 		info: [ 					-- Informações contidas na legenda
 			{
 				desc: '' 			-- Descrição da legenda
@@ -26,6 +27,9 @@ function resolvLegenda(options, tab=0) {
 	var click = options.click || '';
 	var onClick = click == '' ? '' : " class='cursorClick' onclick='legedaClick" + random + "(%0%);'";
 
+	var inline = (options.inline || '') != '' && (isNaN(options.inline) || options.inline < 2);
+	var cols = (options.inline || '') != '' && !isNaN(options.inline) && options.inline > 1 ? options.inline : false;
+
 	var html = ''
 		+ (function(info) { 
 			var cels = ''
@@ -35,7 +39,7 @@ function resolvLegenda(options, tab=0) {
 
 				cels += 	''
 				// +t(tab+1)	+ 		`<tr>`
-							+ (!(options.inline || false) ? tr : (i == 0 ? tr : ''))
+							+ (inline ? (i == 0 ? tr : '') : (cols ? (i == 0 || (i != 0 && i % cols == 0) ? tr : '') : tr))
 				+t(tab+2)	+ 			`<td width='${(info[i].width || '40px')}'${onClick.replace('%0%',i)}>`
 				+t(tab+3)	+ 				`<div`
 							+ 					` style='`
@@ -49,11 +53,12 @@ function resolvLegenda(options, tab=0) {
 							+ 				`</div>`
 				+t(tab+2)	+ 			`</td>`
 				+t(tab+2)	+ 			`<td${onClick.replace('%0%',i)} id='legenda${random}${i}'`
-							+ 				`style="text-decoration:${info[i].status == 'show' ? 'none' : 'line-through'};"`
+							+ 				` style="text-decoration:${info[i].status == 'show' ? 'none' : 'line-through'};"`
+							+ 				` align='left'`
 							+ 			`>`
 				+t(tab+3)	+ 				`&nbsp;${info[i].desc}&nbsp;&nbsp;&nbsp;&nbsp;`
 				+t(tab+2)	+ 			`</td>`
-							+ (!(options.inline || false) ? trF : (i == info.length ? trF : ''))
+							+ (inline ? (i == info.length-1 ? trF : '') : (cols ? (i == info.length-1 || ((i+1) > 0 && (i+1) % cols == 0) ? trF : '') : trF ))
 				// +t(tab+1)	+ 		`</tr>`
 			}
 			cels += ''
