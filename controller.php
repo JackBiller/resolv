@@ -84,14 +84,21 @@ var modal$modalName = `$modal`;";
 			else if ($branchsModal[$i]->get('isFile') && substr($branchsModal[$i]->get('name'),-3) == '.js') {
 				// echo $branchsModal[$i]->get('path');
 				$modalFunc = ctxFile($branchsModal[$i]->get('path'));
+				$modalFunc = ajusteTab($modalFunc, 1);
 				$modalName = substr($branchsModal[$i]->get('name'), 0, strlen($branchsModal[$i]->get('name'))-3);
 				array_push($modaisF, $modalName);
 
 				$modalFuncHTML .= "
-	var checkModal$modalName = (function (obj) {
+	/*****************************************************************/
+	// Resolv $modalName
+	var checkModal$modalName = (function (obj) { 
 $modalFunc
 	}(obj));
-	if (checkModal$modalName) { html += modal$modalName; }";
+	var checkModalGlobal$modalName = (function (obj) { 
+$modalFunc
+	}(objRefConfig_Global));
+	if (checkModal$modalName && (!checkModalGlobal$modalName || forceSet)) { html += modal$modalName; }
+";
 
 			}
 		}
@@ -113,10 +120,9 @@ $modalFunc
 		$conteudoAdd .=  "
 $modalHTML
 
-function resolvConfigModal(obj) { 
+function resolvConfigModal(obj, forceSet=false) { 
 	var html = '';
-	$modalFuncHTML
-
+$modalFuncHTML
 	if (t().indexOf('\\n') == -1) html.replace(/\\n|\\t/g, '');
 	return html;
 }
@@ -144,6 +150,39 @@ if (!empty($_POST['criarDiretorioDoc'])) {
 	mkdir('./resolvDoc');
 	$doc = $_POST['doc'];
 	createFile('./resolvDoc/documentacao.html', $doc);
+}
+
+
+function ajusteTab($text, $numTab=0, $boolComentario=false) { 
+	$text = explode("\n", str_replace("\r", "", $text));
+
+	for ($i=0; $i < sizeof($text); $i++) { 
+		$text[$i] = str_replace("\t", "    ", $text[$i]);
+		// remover comentario
+		if (!$boolComentario) { 
+			if (strpos($text[$i], "//") !== '') { 
+				$text[$i] = explode('//', $text[$i]);
+				$text[$i] = $text[$i][0];
+			}
+		}
+		// remover espaço no final da linha
+		while (substr($text[$i], strlen($text[$i])-1, 1) == ' ') { 
+			$text[$i] = substr($text[$i], 0, strlen($text[$i])-1);
+		}
+		// remover linhas vazias
+		if ($text[$i] == '') { 
+			array_splice($text, $i, 1);
+			$i--;
+		}
+	}
+
+	for ($i=0; $i < $numTab; $i++) { 
+		for ($j=0; $j < sizeof($text); $j++) { 
+			$text[$j] = "    " . $text[$j];
+		}
+	}
+
+	return str_replace("    ", "\t", implode("\n", $text));
 }
 
 ?>

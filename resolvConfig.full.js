@@ -3819,27 +3819,38 @@ function mudarPagina(el, divId, name, nameDiv) {
 }
 </script>`;
 
-function resolvConfigModal(obj) { 
+function resolvConfigModal(obj, forceSet=false) { 
 	var html = '';
-	
-	var checkModalconsulta = (function (obj) {
-// function resolv(obj) {
-	return resolvFindParam(obj,'codigoConsulta') && (obj.dist || 'B').indexOf('B') >= 0;
-// }
+
+	/*****************************************************************/
+	// Resolv consulta
+	var checkModalconsulta = (function (obj) { 
+		return resolvFindParam(obj,'codigoConsulta') && (obj.dist || 'B').indexOf('B') >= 0;
 	}(obj));
-	if (checkModalconsulta) { html += modalconsulta; }
-	var checkModalimagens = (function (obj) {
-// function resolv(obj) {
-	return resolvFindParam(obj,'fotos');
-// }
+	var checkModalGlobalconsulta = (function (obj) { 
+		return resolvFindParam(obj,'codigoConsulta') && (obj.dist || 'B').indexOf('B') >= 0;
+	}(objRefConfig_Global));
+	if (checkModalconsulta && (!checkModalGlobalconsulta || forceSet)) { html += modalconsulta; }
+
+	/*****************************************************************/
+	// Resolv imagens
+	var checkModalimagens = (function (obj) { 
+		return resolvFindParam(obj,'fotos');
 	}(obj));
-	if (checkModalimagens) { html += modalimagens; }
-	var checkModalmenu = (function (obj) {
-// function resolv(obj) {
-	return resolvFindParam(obj,'menu');
-// }
+	var checkModalGlobalimagens = (function (obj) { 
+		return resolvFindParam(obj,'fotos');
+	}(objRefConfig_Global));
+	if (checkModalimagens && (!checkModalGlobalimagens || forceSet)) { html += modalimagens; }
+
+	/*****************************************************************/
+	// Resolv menu
+	var checkModalmenu = (function (obj) { 
+		return resolvFindParam(obj,'menu');
 	}(obj));
-	if (checkModalmenu) { html += modalmenu; }
+	var checkModalGlobalmenu = (function (obj) { 
+		return resolvFindParam(obj,'menu');
+	}(objRefConfig_Global));
+	if (checkModalmenu && (!checkModalGlobalmenu || forceSet)) { html += modalmenu; }
 
 	if (t().indexOf('\n') == -1) html.replace(/\n|\t/g, '');
 	return html;
@@ -4158,6 +4169,8 @@ function resolvConfig(options, tab=0, isRegister=false) {
 	// var htmlModal = '';
 
 	if (isRegister) { 
+		$("body").append(resolvConfigModal(options));
+
 		var objRegisted = returnIdObj(options);
 		if (objRegisted.length) { 
 			desregistrarConfig(objRegisted[0][objRegisted[0].tipoCampo]);

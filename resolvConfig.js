@@ -366,6 +366,8 @@ function resolvConfig(options, tab=0, isRegister=false) {
 	// var htmlModal = '';
 
 	if (isRegister) { 
+		$("body").append(resolvConfigModal(options));
+
 		var objRegisted = returnIdObj(options);
 		if (objRegisted.length) { 
 			desregistrarConfig(objRegisted[0][objRegisted[0].tipoCampo]);
