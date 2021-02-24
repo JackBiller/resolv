@@ -51,7 +51,7 @@ function resolvButton(options, tab=0) {
 
 
 					+ 	">"
-					+ 		((options.icon || '') == '' ? '' : t(tab+1) + '<i class="fa fa-' + options.icon + '"></i>&nbsp;')
+					+ 		((options.icon || '') == '' ? '' : t(tab+1) + '<i class="' + resolvIcon(options.icon) + '"></i>&nbsp;')
 		+t(tab+1)	+ 		(options.desc || '')
 		+t(tab)		+ 	"</button>"
 		+t(tab)		+ 	"<script>"

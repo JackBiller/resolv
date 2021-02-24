@@ -45,7 +45,9 @@ function resolvMenu(options={}, tab=0) {
 						+ 		" title='Alt + " + options.abas[i].accesskey + "'"
 					)
 					+ 		">"
-		+t(tab+3)	+ 			((options.abas[i].icon || '') != '' ? "<i class=\"fa fa-"+options.abas[i].icon+"\"></i> " : '')
+		+t(tab+3)	+ 			((options.abas[i].icon || '') == '' ? '' : ''
+									+ "<i class=\"" + resolvIcon(options.abas[i].icon) + "\"></i> "
+								)
 					+ 			(options.abas[i].text || '')
 		+t(tab+2)	+ 		"</a>"
 		+t(tab+1)	+ 	"</li>"

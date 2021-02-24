@@ -47,6 +47,96 @@ var registerEventAll 		= [];
 
 var returnObjIdentado_Global = true;
 
+var fa_icon_Global = [
+	"address-book","address-book-o","address-card","address-card-o","adjust","american-sign-language-interpreting",
+	"anchor","archive","area-chart","arrows","arrows-h","arrows-v","asl-interpreting","assistive-listening-systems",
+	"asterisk","at","automobile","audio-description","balance-scale","ban","bank","bar-chart","bar-chart-o","barcode",
+	"bars","bath","bathtub","battery-0","battery-1","battery-2","battery-3","battery-4","battery-empty","battery-full",
+	"battery-half","battery-quarter","battery-three-quarters","bed","beer","bell","bell-o","bell-slash","bell-slash-o",
+	"bicycle","binoculars","birthday-cake","blind","bolt","bomb","book","bookmark","bookmark-o","braille","briefcase",
+	"bug","building","building-o","bullhorn","bullseye","bus","cab","calculator","calendar","calendar-o","calendar-check-o",
+	"calendar-minus-o","calendar-plus-o","calendar-times-o","camera","camera-retro","car","caret-square-o-down",
+	"caret-square-o-left","caret-square-o-right","caret-square-o-up","cart-arrow-down","cart-plus","cc","certificate",
+	"check","check-circle","check-circle-o","check-square","check-square-o","child","circle","circle-o","circle-o-notch",
+	"circle-thin","clock-o","clone","close","cloud","cloud-download","cloud-upload","code","code-fork","coffee",
+	"cog","cogs","comment","comment-o","comments","comments-o","commenting","commenting-o","compass","copyright",
+	"credit-card","credit-card-alt","creative-commons","crop","crosshairs","cube","cubes","cutlery","dashboard",
+	"database","deaf","deafness","desktop","diamond","dot-circle-o","download","drivers-license","drivers-license-o",
+	"edit","ellipsis-h","ellipsis-v","envelope","envelope-o","envelope-open","envelope-open-o","envelope-square",
+	"eraser","exchange","exclamation","exclamation-circle","exclamation-triangle","external-link","external-link-square",
+	"eye","eye-slash","eyedropper","fax","female","fighter-jet","file-archive-o","file-audio-o","file-code-o",
+	"file-excel-o","file-image-o","file-movie-o","file-pdf-o","file-photo-o","file-picture-o","file-powerpoint-o",
+	"file-sound-o","file-video-o","file-word-o","file-zip-o","film","filter","fire","fire-extinguisher","flag",
+	"flag-checkered","flag-o","flash","flask","folder","folder-o","folder-open","folder-open-o","frown-o","futbol-o",
+	"gamepad","gavel","gear","gears","genderless","gift","glass","globe","graduation-cap","group","hard-of-hearing",
+	"hdd-o","handshake-o","hashtag","headphones","heart","heart-o","heartbeat","history","home","hotel","hourglass",
+	"hourglass-1","hourglass-2","hourglass-3","hourglass-end","hourglass-half","hourglass-o","hourglass-start","i-cursor",
+	"id-badge","id-card","id-card-o","image","inbox","industry","info","info-circle","institution","key","keyboard-o",
+	"language","laptop","leaf","legal","lemon-o","level-down","level-up","life-bouy","life-buoy","life-ring",
+	"life-saver","lightbulb-o","line-chart","location-arrow","lock","low-vision","magic","magnet","mail-forward",
+	"mail-reply","mail-reply-all","male","map","map-o","map-pin","map-signs","map-marker","meh-o","microchip",
+	"microphone","microphone-slash","minus","minus-circle","minus-square","minus-square-o","mobile","mobile-phone",
+	"money","moon-o","mortar-board","motorcycle","mouse-pointer","music","navicon","newspaper-o","object-group",
+	"object-ungroup","paint-brush","paper-plane","paper-plane-o","paw","pencil","pencil-square","pencil-square-o",
+	"percent","phone","phone-square","photo","picture-o","pie-chart","plane","plug","plus","plus-circle","plus-square",
+	"plus-square-o","podcast","power-off","print","puzzle-piece","qrcode","question","question-circle","question-circle-o",
+	"quote-left","quote-right","random","recycle","refresh","registered","remove","reorder","reply","reply-all","retweet",
+	"road","rocket","rss","rss-square","s15","search","search-minus","search-plus","send","send-o","server","share",
+	"share-alt","share-alt-square","share-square","share-square-o","shield","ship","shopping-bag","shopping-basket",
+	"shopping-cart","shower","sign-in","sign-out","sign-language","signal","signing","sitemap","sliders","smile-o",
+	"snowflake-o","soccer-ball-o","sort","sort-alpha-asc","sort-alpha-desc","sort-amount-asc","sort-amount-desc",
+	"sort-asc","sort-desc","sort-down","sort-numeric-asc","sort-numeric-desc","sort-up","space-shuttle","spinner",
+	"spoon","square","square-o","star","star-half","star-half-empty","star-half-full","star-half-o","star-o",
+	"sticky-note","sticky-note-o","street-view","suitcase","sun-o","support","tablet","tachometer","tag","tags",
+	"tasks","taxi","television","terminal","thermometer","thermometer-0","thermometer-1","thermometer-2",
+	"thermometer-3","thermometer-4","thermometer-empty","thermometer-full","thermometer-half",
+	"thermometer-quarter","thermometer-three-quarters","thumb-tack","thumbs-down","thumbs-o-up","thumbs-up",
+	"ticket","times","times-circle","times-circle-o","times-rectangle","times-rectangle-o","tint","toggle-down",
+	"toggle-left","toggle-right","toggle-up","toggle-off","toggle-on","trademark","trash","trash-o","tree","trophy",
+	"truck","tty","tv","umbrella","universal-access","university","unlock","unlock-alt","unsorted","upload","user",
+	"user-circle","user-circle-o","user-o","user-plus","user-secret","user-times","users","vcard","vcard-o","video-camera",
+	"volume-control-phone","volume-down","volume-off","volume-up","warning","wheelchair","wheelchair-alt",
+	"window-close","window-close-o","window-maximize","window-minimize","window-restore","wifi","wrench",
+	"500px","amazon","adn","android","angellist","apple","bandcamp","behance","behance-square","bitbucket",
+	"bitbucket-square","bitcoin","black-tie","bluetooth","bluetooth-b","btc","buysellads","cc-amex",
+	"cc-diners-club","cc-mastercard","cc-paypal","cc-stripe","cc-visa","chrome","codepen","codiepie",
+	"connectdevelop","contao","css3","dashcube","delicious","deviantart","digg","dribbble","dropbox","drupal",
+	"edge","eercast","empire","envira","etsy","expeditedssl","fa","facebook","facebook-f","facebook-official",
+	"facebook-square","firefox","first-order","flickr","fonticons","font-awesome","fort-awesome","forumbee",
+	"foursquare","free-code-camp","ge","get-pocket","gg","gg-circle","git","git-square","github","github-alt",
+	"github-square","gitlab","gittip","glide","glide-g","google","google-plus","google-plus-circle",
+	"google-plus-official","google-plus-square","google-wallet","gratipay","grav","hacker-news","houzz",
+	"html5","imdb","instagram","internet-explorer","ioxhost","joomla","jsfiddle","lastfm","lastfm-square",
+	"leanpub","linkedin","linkedin-square","linode","linux","maxcdn","meanpath","medium","meetup","mixcloud",
+	"modx","odnoklassniki","odnoklassniki-square","opencart","openid","opera","optin-monster","pagelines","paypal",
+	"pied-piper","pied-piper-alt","pinterest","pinterest-p","pinterest-square","product-hunt","qq","quora","ra","ravelry",
+	"rebel","reddit","reddit-alien","reddit-square","renren","safari","scribd","sellsy","shirtsinbulk","snapchat",
+	"snapchat-square","simplybuilt","skyatlas","skype","slack","slideshare","soundcloud","spotify","stack-exchange",
+	"stack-overflow","steam","steam-square","stumbleupon","stumbleupon-circle","superpowers","telegram","tencent-weibo",
+	"themeisle","trello","tripadvisor","tumblr","tumblr-square","twitch","twitter","twitter-square","usb","viacoin",
+	"viadeo","viadeo-square","vimeo","vimeo-square","vine","vk","wechat","weibo","weixin","whatsapp","wikipedia-w",
+	"windows","wordpress","wpbeginner","wpexplorer","wpforms","xing","xing-square","y-combinator","yahoo","yelp",
+	"yc","yoast","youtube","youtube-play","youtube-square","cny","dollar","eur","euro","gbp","ils","inr","jpy",
+	"krw","rmb","rouble","rub","ruble","rupee","shekel","sheqel","try","turkish-lira","usd","won","yen",
+	"angle-double-down","angle-double-left","angle-double-right","angle-double-up","angle-down","angle-left",
+	"angle-right","angle-up","arrow-circle-down","arrow-circle-left","arrow-circle-right","arrow-circle-up",
+	"arrow-circle-o-down","arrow-circle-o-left","arrow-circle-o-right","arrow-circle-o-up","arrow-down",
+	"arrow-left","arrow-right","arrow-up","arrows-alt","caret-down","caret-left","caret-right","caret-up",
+	"chevron-circle-down","chevron-circle-left","chevron-circle-right","chevron-circle-up","chevron-down",
+	"chevron-left","chevron-right","chevron-up","hand-o-down","hand-o-left","hand-o-right","hand-o-up",
+	"long-arrow-down","long-arrow-left","long-arrow-right","long-arrow-up","file","file-o","file-text","file-text-o",
+	"intersex","mars","mars-double","mars-stroke","mars-stroke-h","mars-stroke-v","mercury","neuter","transgender",
+	"transgender-alt","venus","venus-double","venus-mars","hand-grab-o","hand-lizard-o","hand-paper-o","hand-peace-o",
+	"hand-pointer-o","hand-scissors-o","hand-spock-o","hand-stop-o","thumbs-o-down","ambulance","h-square","hospital-o",
+	"medkit","stethoscope","user-md","cc-discover","cc-jcb","align-center","align-justify","align-left","align-right",
+	"bold","chain","chain-broken","clipboard","columns","copy","cut","dedent","files-o","floppy-o","font","header",
+	"indent","italic","link","list","list-alt","list-ol","list-ul","outdent","paperclip","paragraph","paste","repeat",
+	"rotate-left","rotate-right","save","scissors","strikethrough","subscript","superscript","table","text-height",
+	"text-width","th","th-large","th-list","underline","undo","unlink","subway","train","backward","compress","eject",
+	"expand","fast-backward","fast-forward","forward","pause","pause-circle","pause-circle-o","play","play-circle",
+	"play-circle-o","step-backward","step-forward","stop","stop-circle","stop-circle-o"
+];
+
 function capitalize(s) { 
 	if (typeof s !== "string") return "";
 	return s.charAt(0).toUpperCase() + s.slice(1);
@@ -216,6 +306,17 @@ function resolvEvento(ev, id) {
 			evento.func();
 		}
 	});
+}
+
+function resolvIcon(icon) { 
+	var classFa = fa_icon_Global.find(function(i) { 
+		return i != 'fa' && (icon == i || icon.indexOf(i+' ') == 0);
+	}) || '';
+
+	return (
+		classFa != '' ? 'fa fa-' + icon 
+		: icon
+	);
 }
 
 function jsonToString(obj,tab=0,indent=false) { 
