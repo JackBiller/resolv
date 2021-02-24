@@ -187,7 +187,7 @@ function resolvGrade(data, option) {
 			, padination: 			[15,25]
 			, isMobile_Global: 		false
 			, no_scrollX: 			true
-			, languageJson: 		''
+			// , languageJson: 		''
 			, dom: 					''
 									+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
 									+ "<'row'<'col-sm-12'tr>>"
@@ -199,7 +199,7 @@ function resolvGrade(data, option) {
 	, 	title = option.title || 'Exportar Grade'
 	, 	ck_tFoot = false
 	, 	ck_tooltip = false
-	, 	language = {
+	, 	language = { 
 		"sProcessing":   "A processar...",
 		"sLengthMenu":   "Mostrar _MENU_ registros",
 		"sZeroRecords":  "Não foram encontrados resultados",
@@ -446,11 +446,11 @@ function resolvGrade(data, option) {
 	var stripeClasses = (objParamGrade.stripTableColors || []).map(function(dt,i) { return 'stripe'+i; });
 
 	var mynumeric = option.inputs
-		.filter(function(input) { return (input.format || '') != '' && (input.tooltip || '') == '' })
+		.filter(function(input) { return (input.no_render || '') == '' && (input.format || '') != '' && (input.tooltip || '') == '' })
 		.map(function(el) { return el.indice });
 
 	var mynumericTooltip = option.inputs
-		.filter(function(input) { return (input.tooltip || '') != ''; })
+		.filter(function(input) { return (input.no_render || '') == '' && (input.tooltip || '') != ''; })
 		.map(function(el) { return el.indice; });
 
 	if ((option.returnHTML || false) || (option.div || '') == '') { 
@@ -506,7 +506,7 @@ function resolvGrade(data, option) {
 			.DataTable({
 			//   "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
 			//   "language": 		{ "url": "../lb/DataTables-1.10.18/Portuguese.json" }
-			"language": 		language
+			language
 			, "lengthMenu": 	padination
 			, "order":			(option.order || [[0,"asc"]]) // order = VLR_DEVOLUCAO_MES : desc
 			, 'autoWidth': 		false
@@ -812,6 +812,54 @@ function invertPadination(defaultPag, length) {
 	}
 	return pag;
 }
+
+/**************************************************************************************************************
+ * Function Op
+ * ************************************************************************************************************/
+var tofloat = function(n) { 
+	return parseFloat(n.replace(/\./g, '').replace(',', '.'));
+};
+
+function removeHtml(a) { 
+	a = a.split('">');
+	a = a[a.length-1];
+	a = a.split('</')[0];
+	return a;
+}
+
+try {
+	$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) { 
+		a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
+		b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
+		return ((a < b) ? -1 : ((a > b) ?  1 : 0));
+	};
+	$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) { 
+		a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
+		b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
+		return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
+	};
+	$.fn.dataTableExt.oSort['mynumericTooltip-asc']  = function(a, b) { 
+		a = (a == '' ? String(0) : removeHtml(a));
+		b = (b == '' ? String(0) : removeHtml(b));
+	
+		if (a != '' && !isNaN(a)) a = tofloat(a);
+		if (b != '' && !isNaN(b)) b = tofloat(b);
+	
+		return ((a < b) ? -1 : ((a > b) ?  1 : 0));
+	};
+	$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) { 
+		a = (a == '' ? String(0) : removeHtml(a));
+		b = (b == '' ? String(0) : removeHtml(b));
+	
+		if (a != '' && !isNaN(a)) a = tofloat(a);
+		if (b != '' && !isNaN(b)) b = tofloat(b);
+	
+		return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
+	};
+} catch(e) {}
+/**************************************************************************************************************
+ * End: Function Op
+ * ************************************************************************************************************/
 
 /**************************************************************************************************************
  * Resolve Foot
