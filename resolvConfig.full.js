@@ -3194,18 +3194,25 @@ function resolvLegenda(options, tab=0) {
 function resolvMenu(options={}, tab=0) { 
 	/*
 		options: {
-			descForm: '' 		-- Identificador
-			no_link: (0|1) 		-- Não linqua no menu para redirecionar o conteudo
+			descForm: '' 					-- Identificador
+			no_link: (0|1) 					-- Não linqua no menu para redirecionar o conteudo
 			abas: [
 				{
-					text: '' 	-- Descricao Menu
-					icon: '' 	-- icone para acompanha a descricao
-					click: '' 	-- Função para chamar quando clicar na aba do menu
-					ctx: {} 	-- Conteudo Referente
+					text: '' 				-- Descricao Menu
+					icon: '' 				-- icone para acompanha a descricao
+					click: '' / function 	-- Função para chamar quando clicar na aba do menu
+					ctx: {} 				-- Conteudo Referente
 				}
 			]
 		}
 	*/
+
+	var random;
+	do { 
+		random = parseInt( Math.random() * 100000 );
+	} while (registerRandom_Global.indexOf(random) != -1);
+	registerRandom_Global.push(random);
+
 	if ((options.descForm || '') == '') return '';
 
 	var html = ''
@@ -3222,7 +3229,8 @@ function resolvMenu(options={}, tab=0) {
 					+ 				"\"" + options.descForm + "\","
 					+ 				"\"" + options.descForm + "Ctx\""
 					+ 			");"
-					+ 			(options.abas[i].click || '')
+					+ 			"clickMenu" + random + i + '(this);'
+					+ 			(typeof(options.abas[i].click) == 'string' ? options.abas[i].click : '')
 					+ 		"'"
 					+ 		" class='" + (i == 0 ? 'active' : '') + "'"
 					+ 	">"
@@ -3246,6 +3254,19 @@ function resolvMenu(options={}, tab=0) {
 	}
 	html += ''
 		+t(tab)		+ '</ul>'
+
+	html += ''
+		+t(tab)		+ '<script>'
+		+ (options.abas || []).map(function(aba, i) { return ''
+			+t(tab+1)	+ 	`function clickMenu${random}${i}(el) { `
+			+t(tab+2)	+ 		`resolvEvento('click','${options.descForm}');`
+			+t(tab+2)	+ (typeof(aba.click) != 'function' ? '' : ''
+							+ `var func = ${String(aba.click)};`
+							+ `func(el);`
+						)
+			+t(tab+1)	+ 	`}`
+		}).join('')
+		+t(tab)		+ '</'+'script>'
 
 	for (var i = 0; i < (options.abas || []).length; i++) { 
 		html += ""
@@ -3973,6 +3994,14 @@ function resolvVal(id) {
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
+	if (el.parent == 'menu') { 
+		var itensMenu = document.getElementsByName(id), indiceMenu = -1;
+		for (var i = 0; i < itensMenu.length; i++) {
+			if (itensMenu[i].className.indexOf('active') >= 0) indiceMenu = i;
+		}
+		return indiceMenu;
+	}
+
 	if (el.parent == 'codigoConsulta') { 
 		var getDesc = arguments[1] == 'selectDesc';
 		var isSelect = arguments[1].indexOf('select') == 0;
@@ -4098,6 +4127,8 @@ function resolvEvento(ev, id) {
 			func: function 		a rotina em si
 		}
 		Eventos: 
+			menu: 
+				click
 			input:
 				onchange
 				onclick

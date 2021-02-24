@@ -168,6 +168,14 @@ function resolvVal(id) {
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
+	if (el.parent == 'menu') { 
+		var itensMenu = document.getElementsByName(id), indiceMenu = -1;
+		for (var i = 0; i < itensMenu.length; i++) {
+			if (itensMenu[i].className.indexOf('active') >= 0) indiceMenu = i;
+		}
+		return indiceMenu;
+	}
+
 	if (el.parent == 'codigoConsulta') { 
 		var getDesc = arguments[1] == 'selectDesc';
 		var isSelect = arguments[1].indexOf('select') == 0;
@@ -293,6 +301,8 @@ function resolvEvento(ev, id) {
 			func: function 		a rotina em si
 		}
 		Eventos: 
+			menu: 
+				click
 			input:
 				onchange
 				onclick
