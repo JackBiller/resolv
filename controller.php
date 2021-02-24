@@ -36,7 +36,7 @@ if (!empty($_POST['atualizarArquivoConfig'])) {
 
 	echo 'Atualizações ' . sizeof($files);
 
-	if (sizeof($files) > 0) {
+	if (sizeof($files) > 0 || !empty($_POST['force_set'])) {
 		$conteudo = ctxFile('resolvConfig.js');
 		$conteudo = explode('// funções de resolução', $conteudo);
 

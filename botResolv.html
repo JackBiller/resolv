@@ -16,6 +16,7 @@
 
 	<button onclick="runBot = true;"> 	Iniciar </button>
 	<button onclick="runBot = false;"> 	Parar 	</button>
+	<button onclick="req(true);"> 	Gerar 	</button>
 	<br>
 	<label for="lastUpdate">Última atualização</label>
 	<input type="text" disabled id="lastUpdate">
@@ -29,15 +30,19 @@
 			setTimeout(() => { startBot() }, 100);
 			return ;
 		}
+		req();
+	}
+	function req(force=false) { 
 		$.ajax({
 			url: 'controller.php',
 			type: 'POST',
 			dataType: 'text',
 			data: { 
-				'atualizarArquivoConfig': true
+				'atualizarArquivoConfig': true,
+				'force_set': force ? true : '',
 			},
-			error: function(){ $('#lastUpdate').val('Falha ao fazer a requisição!'); }
-		}).done(function(data){
+			error: function() { $('#lastUpdate').val('Falha ao fazer a requisição!'); }
+		}).done(function(data) { 
 			console.log(data);
 
 			data = data + "<br>" + $("#logs").html()
@@ -46,7 +51,7 @@
 			$("#logs").html( data );
 			$('#lastUpdate').val(moment().format('DD/MM/Y HH:mm'));
 
-			if (runBot) setTimeout(() => { startBot() }, 100);
+			if (runBot && !force) setTimeout(() => { startBot() }, 100);
 		});
 	}
 	startBot();
