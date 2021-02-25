@@ -30,6 +30,16 @@ function resolvButton(options, tab=0) {
 
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
 
+	var classBtn = (options.class || '') == '' ? '' : options.class
+	, 	classBootstrap = [ 
+		'primary','success','danger','warning','info','default',	// v3
+		'secondary','light','dark','link', 							// v4
+	].find(function(i) { 
+		return (classBtn == i || classBtn.indexOf(i+' ') == 0);
+	}) || '';
+
+	classBtn = classBootstrap != '' ? 'btn btn-' + classBtn : classBtn;
+
 	var html = ''
 		+ ((options.preText || '') == '' ? '' : t(tab) + options.preText)
 		+ ((options.compensador || '') == '' ? '' : ''
@@ -37,7 +47,7 @@ function resolvButton(options, tab=0) {
 		)
 		+t(tab)		+ 	"<button"
 					+ 		" data-customerid='btn" + random + "'"
-					+ 		((options.class 	|| '') == '' ? '' : " class='" + options.class + "'")
+					+ 		((classBtn 			|| '') == '' ? '' : " class='" + classBtn      + "'")
 					+ 		((options.id 		|| '') == '' ? '' : " id='"    + options.id    + "'")
 					+ 		((options.name  	|| '') == '' ? '' : " name='"  + options.name  + "'")
 					+ 		((options.disabled 	|| '') == '' ? '' : " disabled")
