@@ -269,6 +269,27 @@ function resolvDisabled(id, cla='') {
 	}
 }
 
+function resolvFocus(id, cla='') { 
+	var el = resolvEl(id, cla);
+
+	function resolvFocusAction(el) { 
+		try { el[0].focus(); } catch(e) { }
+	}
+
+	if (el.parent == 'codigoConsulta') { 
+		var isBtn = (el.obj.dist || 'B').indexOf('B') >= 0 && (el.obj.dist || 'C').indexOf('C') < 0;
+		return resolvFocusAction(isBtn ? $("#"+id).find('button') : el.el);
+	} 
+
+	if (['input','button'].indexOf(el.parent) >= 0) { 
+		if ((el.obj.isMonth || false)) 
+			return resolvFocusAction($("#"+id+'Datepicker'));
+
+		resolvFocusAction(el.el);
+	}
+}
+
+
 function resolvVisibled(id, cla='') { 
 	var el = resolvEl(id, cla);
 
@@ -662,7 +683,7 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 
 
 /* Envetos de teclado */
-$(document).ready(function() {
+$(document).ready(function() { 
 	if (navigator.appName != "Microsoft Internet Explorer")
 		document.captureEvents(Event.KEYDOWN);
 	document.body.onkeydown = NetscapeResolvKeyDown;

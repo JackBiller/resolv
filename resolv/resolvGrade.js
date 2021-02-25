@@ -827,36 +827,39 @@ function removeHtml(a) {
 	return a;
 }
 
-try {
-	$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) { 
-		a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
-		b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
-		return ((a < b) ? -1 : ((a > b) ?  1 : 0));
-	};
-	$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) { 
-		a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
-		b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
-		return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
-	};
-	$.fn.dataTableExt.oSort['mynumericTooltip-asc']  = function(a, b) { 
-		a = (a == '' ? String(0) : removeHtml(a));
-		b = (b == '' ? String(0) : removeHtml(b));
-	
-		if (a != '' && !isNaN(a)) a = tofloat(a);
-		if (b != '' && !isNaN(b)) b = tofloat(b);
-	
-		return ((a < b) ? -1 : ((a > b) ?  1 : 0));
-	};
-	$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) { 
-		a = (a == '' ? String(0) : removeHtml(a));
-		b = (b == '' ? String(0) : removeHtml(b));
-	
-		if (a != '' && !isNaN(a)) a = tofloat(a);
-		if (b != '' && !isNaN(b)) b = tofloat(b);
-	
-		return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
-	};
-} catch(e) {}
+
+$(document).ready(function() { 
+	try {
+		$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) { 
+			a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
+			b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
+			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
+		};
+		$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) { 
+			a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
+			b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
+			return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
+		};
+		$.fn.dataTableExt.oSort['mynumericTooltip-asc']  = function(a, b) { 
+			a = (a == '' ? String(0) : removeHtml(a));
+			b = (b == '' ? String(0) : removeHtml(b));
+		
+			if (a != '' && !isNaN(a)) a = tofloat(a);
+			if (b != '' && !isNaN(b)) b = tofloat(b);
+		
+			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
+		};
+		$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) { 
+			a = (a == '' ? String(0) : removeHtml(a));
+			b = (b == '' ? String(0) : removeHtml(b));
+		
+			if (a != '' && !isNaN(a)) a = tofloat(a);
+			if (b != '' && !isNaN(b)) b = tofloat(b);
+		
+			return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
+		};
+	} catch(e) {}
+});
 /**************************************************************************************************************
  * End: Function Op
  * ************************************************************************************************************/
