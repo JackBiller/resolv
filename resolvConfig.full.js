@@ -174,6 +174,9 @@ function resolvButton(options, tab=0) {
 		options: {
 			class: ''					-- Classe do botao
 			desc: ''					-- descrição do botão
+			id: ''						-- ID do botao
+			name: '' 					-- Atributo Name do Button
+			disable: (0|1)				-- Desabilita o botão
 			icon: ''					-- icone
 			onclick: function(el){}		-- enveto de click
 			onchange: function(el){}	-- enveto de mudar
@@ -182,7 +185,7 @@ function resolvButton(options, tab=0) {
 			compensador: (0|1) 			-- Cria um compensador para alinha o botão
 			title: '' 					-- Texto que aparece quando passa o mouse emcima
 			style: objStyle 			-- Resolve o estilo do botão
-			name: '' 					-- Atributo Name do Button
+			accesskey: ''				-- tecla de atalho
 		}
 	*/
 
@@ -194,17 +197,28 @@ function resolvButton(options, tab=0) {
 
 	if ((options.click || '') != '' && (options.onclick || '') == '') options.onclick = options.click;
 
+	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
+
 	var html = ''
 		+ ((options.preText || '') == '' ? '' : t(tab) + options.preText)
 		+ ((options.compensador || '') == '' ? '' : ''
 			+ 	"<label><spam style='color: white;'>.</spam></label>"
 		)
 		+t(tab)		+ 	"<button"
-					+ 		((options.name  || '') == '' ? '' : " name='"  + options.name  + "'")
-					+ 		((options.class || '') == '' ? '' : " class='" + options.class + "'")
-					+ 		((options.title || '') == '' ? '' : " title='" + options.title + "'")
-					+ 		((options.id 	|| '') == '' ? '' : " id='"    + options.id    + "'")
-					+ 		((options.style || '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
+					+ 		" data-customerid='btn" + random + "'"
+					+ 		((options.class 	|| '') == '' ? '' : " class='" + options.class + "'")
+					+ 		((options.id 		|| '') == '' ? '' : " id='"    + options.id    + "'")
+					+ 		((options.name  	|| '') == '' ? '' : " name='"  + options.name  + "'")
+					+ 		((options.disabled 	|| '') == '' ? '' : " disabled")
+					+ 		((options.style 	|| '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
+					// + 		(accesskey 				   == '' ? '' : " accesskey='" + accesskey + "'")
+					+ 		((options.title 	|| '') == '' && accesskey == '' ? '' : ''
+								+ 	" title='" 
+								+ 		(options.title || '') 
+								+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
+								+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
+								+ 	"'"
+							)
 					// + 		((options.click || '') == '' ? '' : " onclick='" + options.class + "'")
 
 
@@ -220,15 +234,20 @@ function resolvButton(options, tab=0) {
 
 
 					+ 	">"
-					+ 		((options.icon || '') == '' ? '' : t(tab+1) + '<i class="' + resolvIcon(options.icon) + '"></i>&nbsp;')
-		+t(tab+1)	+ 		(options.desc || '')
+					+ ((options.icon || '') == '' ? '' : ''
+						+t(tab+1) + '<i class="' + resolvIcon(options.icon) + '"></i>'
+					)
+					+ ((options.icon || '') == '' || (options.desc || '') == '' ? '' : '&nbsp;')
+					+ ((options.desc || '') == '' ? '' : ''
+						+t(tab+1) + (accesskey == '' ? options.desc : returnDescAccesskey(options.desc, options))
+					)
 		+t(tab)		+ 	"</button>"
 		+t(tab)		+ 	"<script>"
-					+	(function(opt){
+					+	(function(opt) { 
 						var html = '';
-						for (var i = 0; i < opt.length; i++) {
+						for (var i = 0; i < opt.length; i++) { 
 							html += ((options[opt[i]] 	|| '') == '' ? '' : ''
-							+t(tab+1)	+ 	"function " + opt[i] + random + "(el){"
+							+t(tab+1)	+ 	"function " + opt[i] + random + "(el) { "
 							+t(tab+2)	+ (
 											(typeof(options[opt[i]]) == 'string')
 											? options[opt[i]]
@@ -241,8 +260,17 @@ function resolvButton(options, tab=0) {
 						}
 						return html;
 					}(['onchange','onclick','onfocus','onblur']))
+					+ (accesskey == '' ? '' : ''
+						+t(tab+1)	+ 	`function btnClickAccesskey${random}(e) { `
+						+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) { `
+						+t(tab+3)	+ 			`e.preventDefault();`
+						+t(tab+3)	+ 			`$("button[data-customerid='btn${random}']").click();`
+						+t(tab+2)	+ 		`}`
+						+t(tab+1)	+ 	`}`
+						+t(tab+1)	+ 	`registerEventKeyboard.push("btnClickAccesskey${random}");`
+					)
 		+t(tab)		+ 	"</"+"script>"
-	
+
 	return html;
 }
 
@@ -1215,10 +1243,26 @@ function resolvCodigoConsulta(options, tab=0) {
 		ajax: 'ajax',
 	}, options);
 
+	var random;
+	do { 
+		random = parseInt( Math.random() * 100000 );
+	} while (registerRandom_Global.indexOf(random) != -1);
+	registerRandom_Global.push(random);
+
 	var isOffline = options.dist.indexOf('R') >= 0;
 	var param = resolvParamAjax(options);
 	var descRef = '';
-	if ((options.accesskey || '') != '') { descRef = options.dist.indexOf('C') != -1 ? 'C' : 'D'; }
+	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
+
+	var title = accesskey == '' ? '' : " title='Alt + " + accesskey + "'";
+
+	if (accesskey != '') { 
+		descRef = (
+			options.dist.indexOf('C') >= 0 ? 'C' 
+			: (options.dist.indexOf('S') >= 0 ? 'S' 
+			: 'D'
+		));
+	}
 
 	var styleLabel = (options.styleLabel || '') == '' ? {} : options.styleLabel
 
@@ -1240,7 +1284,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ (descRef != param.substring(0,1).toUpperCase() 
 								? (options[param].text || '')
 								: ''
-											+ 	`<spam title='${prefixedComand() + options.accesskey}'>`
+											+ 	`<spam ${title}>`
 								+t(tab+4) 	+ 		returnDescAccesskey(options[param].text, options)
 								+t(tab+3) 	+ 	`</spam>`
 							)
@@ -1261,7 +1305,8 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+2)	+ 	`<input type="text" class="form-control codigoConsulta" style="text-align:right;"`
 				// + 		` onkeyup="buscar${capitalize(options.descForm)}Codigo();"`
 				+t(tab+3)	+ 		` data-ref='${capitalize(options.descForm)}'`
-				+t(tab+3)	+ 		(descRef == 'C' ? ` accesskey='${options.accesskey}'` : '')
+				+t(tab+3)	+ 		` data-customerid='codigo${random}'`
+				+t(tab+3)	+ 		(descRef == 'C' ? title : '')
 				+t(tab+3)	+ 		` onfocus="`
 				+t(tab+3)	+ 			`if(!onPesquisa${capitalize(options.descForm)}()) return (this.blur(), false);`
 				+t(tab+3)	+ 			capitalize(options.descForm) + "Selected_Global = this.value;"
@@ -1292,7 +1337,8 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+2)	+ 	`<br>`
 				+t(tab+2)	+ 	`<button class="btn btn-default btn-block"`
 				+t(tab+3)	+ 		` onclick=\"pesquisa${capitalize(options.descForm)}();"`
-							+ 		(descRef == 'D' ? ` accesskey="${options.accesskey}"` : '')
+				+t(tab+3)	+ 		` data-customerid='btn${random}'`
+							+ 		(descRef == 'D' ? title : '')
 				+t(tab+2)	+ 	`>`
 				+t(tab+3)	+ 		`<i class="fa fa-search"></i>`
 				+t(tab+2)	+ 	`</button>`
@@ -1418,6 +1464,8 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+4)	+ 						`var grade = ''`
 		+t(tab+5)	+ 							`+ 	\`<select class="form-control codigoConsulta"\``
 		+t(tab+5)	+ 							`+ 		\` data-ref='${capitalize(options.descForm)}'\``
+		+t(tab+5)	+ 							`+ 		\` data-customerid='select${random}'\``
+					+ (descRef != 'S' ? '' : t(tab+5) + `+ 		\`${title}\``)
 		+t(tab+5)	+ 							`+ 		\` style='width:100%'\``
 		+t(tab+5)	+ 							`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
 		+t(tab+5)	+ 							`+ 	\`>\``
@@ -1451,6 +1499,8 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`var grade = ''`
 		+t(tab+3)	+ 					`+ 	\`<select class="form-control codigoConsulta"\``
 		+t(tab+3)	+ 					`+ 		\` data-ref='${capitalize(options.descForm)}'\``
+		+t(tab+3)	+ 					`+ 		\` data-customerid='select${random}'\``
+					+ (descRef != 'S' ? '' : t(tab+3) + `+ 		\`${title}\``)
 		+t(tab+3)	+ 					`+ 		\` style='width:100%'\``
 		+t(tab+3)	+ 					`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
 		+t(tab+3)	+ 					`+ 	\`>\``
@@ -1633,6 +1683,19 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`$("#${options.descForm}").find('input').val('');`
 		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
+		+ (accesskey == '' ? '' : ''
+			+t(tab)		+ 	`function condigoConsultaClickAccesskey${random}(e) { `
+			+t(tab+1)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) { `
+			+t(tab+2)	+ 			`e.preventDefault();`
+			+t(tab+2)	+ 			`try { `
+						+ 				(descRef != 'D' ? '' : `$("button[data-customerid='btn${random}']").click();`)
+						+ 				(descRef != 'S' ? '' : `$("select[data-customerid='select${random}']")[0].focus();`)
+						+ 				(descRef != 'C' ? '' : `$("input[data-customerid='codigo${random}']")[0].focus();`)
+						+ 			` } catch(e) {}`
+			+t(tab+1)	+ 		`}`
+			+t(tab)		+ 	`}`
+			+t(tab)		+ 	`registerEventKeyboard.push("condigoConsultaClickAccesskey${random}");`
+		)
 		+ (!isOffline ? '' : ''
 			+t(tab)		+ 	`function recarregar${capitalize(options.descForm)}() { `
 			+t(tab+1)	+ 		`localStorage.removeItem("offline${capitalize(options.descForm)}");`
@@ -2895,6 +2958,7 @@ function resolvInput(options,tab=0) {
 			class: '' 							-- Classe do campo
 			value: '' 							-- Value do campo
 			val: '' 							-- Value do campo
+			title: '' 							-- Title do campo
 			type: '' 							-- Type do campo
 			list: '' 							-- List do campo para datalist, se não tiver definido datalista param
 			.. 									-- Caso type 'number' ou 'tel' alinha o texto a direta
@@ -3019,12 +3083,23 @@ function resolvInputIn(options,tab=0) {
 		+ 		`typeof(check${random}Test) == 'string' && check${random}Test != '' ? check${random}Test : ''`
 		+ 	");"
 
+	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
+
+	var title = ''
+		+ ((options.title || '') == '' && accesskey == '' ? '' : ''
+			+ 	" title='" 
+			+ 		(options.title || '') 
+			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
+			+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
+			+ 	"'"
+		);
+
 	var label = ''
 		// **** configurar elemtno label que complementa o campo de entrada ****
 		+ ((options.text || ``) == `` ? `` : ``
 			+t(tab)		+ 	`<label`
+						+ 		title
 						+		((options.id 			|| ``) == `` ? `` : ` for="${options.id}" id="label_${options.id}"`)
-						+ 		((options.accesskey 	|| ``) == `` ? `` : ` title="${prefixedComand() + options.accesskey}"`)
 						+ 		((options.styleLabel 	|| ``) == `` ? `` : ` style="${resolvStyle(options.styleLabel)}"`)
 						+	`>`
 			+t(tab+1)	+ 		returnDescAccesskey(options.text, options)
@@ -3063,7 +3138,7 @@ function resolvInputIn(options,tab=0) {
 		+t(tab)	+ 	"<" + ((options.isTextarea || false) ? 'textarea' : ((options.enum || '') != '' ? 'select' : 'input') )
 
 		// **** configurar atributos simples ****
-		+ ['id','name','value','type','cols','rows','accesskey','autocomplete','maxlength']
+		+ ['id','name','value','type','cols','rows','autocomplete','maxlength']
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ` ${opt}="${options[opt]}"`; })
 			.join('')
@@ -3074,6 +3149,8 @@ function resolvInputIn(options,tab=0) {
 				return ` data-${key}="${options.data[key]}"`
 			}).join('')
 		)
+		+ title
+		+ 	` data-customerid="input${random}"`
 		+ 	` class="`
 		+ 		`form-control`
 		+ 		(options.class 	|| ``)
@@ -3355,6 +3432,20 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+2)	+ 		`});`
 			+ t(tab+1)	+ 	`}, 500);`
 		)
+
+
+
+		// ****  verificar se o campo tem accesskey ****
+		+ (accesskey == '' ? '' : ''
+			+t(tab+1)	+ 	`function inputClickAccesskey${random}(e) { `
+			+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}") { `
+			+t(tab+3)	+ 			`e.preventDefault();`
+			+t(tab+3)	+ 			`try { $("*[data-customerid='input${random}']")[0].focus(); } catch(e) { }`
+			+t(tab+2)	+ 		`}`
+			+t(tab+1)	+ 	`}`
+			+t(tab+1)	+ 	`registerEventKeyboard.push("inputClickAccesskey${random}");`
+		)
+		// ***************************************************************************
 
 
 
@@ -4548,13 +4639,13 @@ function returnDescAccesskey(text, options) {
 			numKeyVerifAlt: 0 		-- Numero de caracteres que vai verificar dentro do text default = text.length
 		}
 	*/
-	if ((options.accesskey || '') != '') {
+	if ((options.accesskey || '') != '') { 
 		if (!testP(options.numKeyVerifAlt)) options.numKeyVerifAlt = text.length;
 		// if ((options.numKeyVerifAlt || '') == '') options.numKeyVerifAlt = text.length;
 		var textT = text.toLowerCase();
 
-		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) {
-			if (textT[i] == options.accesskey.toLowerCase()) {
+		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) { 
+			if (textT[i] == options.accesskey.toLowerCase()) { 
 				text = ""
 					+ (i == 0 ? '' : text.substring(0, i))
 					+ "<spam style='text-decoration: underline;'>" + text[i] + "</spam>"
@@ -4730,6 +4821,34 @@ function resolvParamAjax(options) {
 				}).join(',') + ',';
 	}
 	return param;
+}
+
+function number_format(num, numDec, decimal=',', milhar='.') { 
+	var limitDec = decimal.length, opcionalDesc = false, cont = 0;
+	if (num != 0 && ((num || '') == '' || isNaN(num))) 	return num;
+	try { num = parseFloat(num); } catch(erro){ 		return num; }
+	if (typeof numDec == 'string' && numDec[0] == '?') { 
+		opcionalDesc = true;
+		numDec = numDec.substring(1, numDec.length);
+	}
+	num = num.toFixed(numDec);
+	var formNum = num.split('.');
+	num = String(formNum[0]);
+	var negativo = num[0] == '-' ? (num = num.substring(1, num.length), true) : false;
+	decimal = ((formNum[1] || '') != '' ? decimal + String(formNum[1]) : '');
+	formNum = '';
+	for (var i = num.length-1; i >= 0; i--) {
+		formNum = num[i] + formNum;
+		if ((cont++, cont) % 3 == 0 && i > 0) formNum = milhar + formNum;
+	}
+	if (opcionalDesc) { 
+		for (var i = decimal.length-1; i >= limitDec; i--) {
+			if (decimal[i] != '0') { i = -1; continue; }
+			decimal = decimal.substring(0,i);
+		}
+		if (decimal.length == limitDec) decimal = '';
+	}
+	return (negativo ? '-' : '') + formNum + decimal;
 }
 
 

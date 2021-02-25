@@ -448,13 +448,13 @@ function returnDescAccesskey(text, options) {
 			numKeyVerifAlt: 0 		-- Numero de caracteres que vai verificar dentro do text default = text.length
 		}
 	*/
-	if ((options.accesskey || '') != '') {
+	if ((options.accesskey || '') != '') { 
 		if (!testP(options.numKeyVerifAlt)) options.numKeyVerifAlt = text.length;
 		// if ((options.numKeyVerifAlt || '') == '') options.numKeyVerifAlt = text.length;
 		var textT = text.toLowerCase();
 
-		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) {
-			if (textT[i] == options.accesskey.toLowerCase()) {
+		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) { 
+			if (textT[i] == options.accesskey.toLowerCase()) { 
 				text = ""
 					+ (i == 0 ? '' : text.substring(0, i))
 					+ "<spam style='text-decoration: underline;'>" + text[i] + "</spam>"
@@ -630,6 +630,34 @@ function resolvParamAjax(options) {
 				}).join(',') + ',';
 	}
 	return param;
+}
+
+function number_format(num, numDec, decimal=',', milhar='.') { 
+	var limitDec = decimal.length, opcionalDesc = false, cont = 0;
+	if (num != 0 && ((num || '') == '' || isNaN(num))) 	return num;
+	try { num = parseFloat(num); } catch(erro){ 		return num; }
+	if (typeof numDec == 'string' && numDec[0] == '?') { 
+		opcionalDesc = true;
+		numDec = numDec.substring(1, numDec.length);
+	}
+	num = num.toFixed(numDec);
+	var formNum = num.split('.');
+	num = String(formNum[0]);
+	var negativo = num[0] == '-' ? (num = num.substring(1, num.length), true) : false;
+	decimal = ((formNum[1] || '') != '' ? decimal + String(formNum[1]) : '');
+	formNum = '';
+	for (var i = num.length-1; i >= 0; i--) {
+		formNum = num[i] + formNum;
+		if ((cont++, cont) % 3 == 0 && i > 0) formNum = milhar + formNum;
+	}
+	if (opcionalDesc) { 
+		for (var i = decimal.length-1; i >= limitDec; i--) {
+			if (decimal[i] != '0') { i = -1; continue; }
+			decimal = decimal.substring(0,i);
+		}
+		if (decimal.length == limitDec) decimal = '';
+	}
+	return (negativo ? '-' : '') + formNum + decimal;
 }
 
 

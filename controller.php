@@ -152,6 +152,24 @@ if (!empty($_POST['criarDiretorioDoc'])) {
 	createFile('./resolvDoc/documentacao.html', $doc);
 }
 
+if (!empty($_POST['testeApiDados'])) { 
+	class DadoGenericos extends PadraoObjeto { 
+		var $id;
+		var $desc;
+		var $codigo;
+		var $debug = 'OK';
+	}
+	$arrayTeste = array();
+
+	for ($i=0; $i < 10; $i++) { 
+		$dadoGenerico = new DadoGenericos();
+		$dadoGenerico->set($i, 'id');
+		$dadoGenerico->set(($i * 1000), 'codigo');
+		$dadoGenerico->set('Pos' . $i, 'desc');
+		array_push($arrayTeste, $dadoGenerico);
+	}
+	echo toJson($arrayTeste);
+}
 
 function ajusteTab($text, $numTab=0, $boolComentario=false) { 
 	$text = explode("\n", str_replace("\r", "", $text));

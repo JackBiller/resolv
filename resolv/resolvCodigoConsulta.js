@@ -62,10 +62,26 @@ function resolvCodigoConsulta(options, tab=0) {
 		ajax: 'ajax',
 	}, options);
 
+	var random;
+	do { 
+		random = parseInt( Math.random() * 100000 );
+	} while (registerRandom_Global.indexOf(random) != -1);
+	registerRandom_Global.push(random);
+
 	var isOffline = options.dist.indexOf('R') >= 0;
 	var param = resolvParamAjax(options);
 	var descRef = '';
-	if ((options.accesskey || '') != '') { descRef = options.dist.indexOf('C') != -1 ? 'C' : 'D'; }
+	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
+
+	var title = accesskey == '' ? '' : " title='Alt + " + accesskey + "'";
+
+	if (accesskey != '') { 
+		descRef = (
+			options.dist.indexOf('C') >= 0 ? 'C' 
+			: (options.dist.indexOf('S') >= 0 ? 'S' 
+			: 'D'
+		));
+	}
 
 	var styleLabel = (options.styleLabel || '') == '' ? {} : options.styleLabel
 
@@ -87,7 +103,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ (descRef != param.substring(0,1).toUpperCase() 
 								? (options[param].text || '')
 								: ''
-											+ 	`<spam title='${prefixedComand() + options.accesskey}'>`
+											+ 	`<spam ${title}>`
 								+t(tab+4) 	+ 		returnDescAccesskey(options[param].text, options)
 								+t(tab+3) 	+ 	`</spam>`
 							)
@@ -108,7 +124,8 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+2)	+ 	`<input type="text" class="form-control codigoConsulta" style="text-align:right;"`
 				// + 		` onkeyup="buscar${capitalize(options.descForm)}Codigo();"`
 				+t(tab+3)	+ 		` data-ref='${capitalize(options.descForm)}'`
-				+t(tab+3)	+ 		(descRef == 'C' ? ` accesskey='${options.accesskey}'` : '')
+				+t(tab+3)	+ 		` data-customerid='codigo${random}'`
+				+t(tab+3)	+ 		(descRef == 'C' ? title : '')
 				+t(tab+3)	+ 		` onfocus="`
 				+t(tab+3)	+ 			`if(!onPesquisa${capitalize(options.descForm)}()) return (this.blur(), false);`
 				+t(tab+3)	+ 			capitalize(options.descForm) + "Selected_Global = this.value;"
@@ -139,7 +156,8 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+2)	+ 	`<br>`
 				+t(tab+2)	+ 	`<button class="btn btn-default btn-block"`
 				+t(tab+3)	+ 		` onclick=\"pesquisa${capitalize(options.descForm)}();"`
-							+ 		(descRef == 'D' ? ` accesskey="${options.accesskey}"` : '')
+				+t(tab+3)	+ 		` data-customerid='btn${random}'`
+							+ 		(descRef == 'D' ? title : '')
 				+t(tab+2)	+ 	`>`
 				+t(tab+3)	+ 		`<i class="fa fa-search"></i>`
 				+t(tab+2)	+ 	`</button>`
@@ -265,6 +283,8 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+4)	+ 						`var grade = ''`
 		+t(tab+5)	+ 							`+ 	\`<select class="form-control codigoConsulta"\``
 		+t(tab+5)	+ 							`+ 		\` data-ref='${capitalize(options.descForm)}'\``
+		+t(tab+5)	+ 							`+ 		\` data-customerid='select${random}'\``
+					+ (descRef != 'S' ? '' : t(tab+5) + `+ 		\`${title}\``)
 		+t(tab+5)	+ 							`+ 		\` style='width:100%'\``
 		+t(tab+5)	+ 							`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
 		+t(tab+5)	+ 							`+ 	\`>\``
@@ -298,6 +318,8 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`var grade = ''`
 		+t(tab+3)	+ 					`+ 	\`<select class="form-control codigoConsulta"\``
 		+t(tab+3)	+ 					`+ 		\` data-ref='${capitalize(options.descForm)}'\``
+		+t(tab+3)	+ 					`+ 		\` data-customerid='select${random}'\``
+					+ (descRef != 'S' ? '' : t(tab+3) + `+ 		\`${title}\``)
 		+t(tab+3)	+ 					`+ 		\` style='width:100%'\``
 		+t(tab+3)	+ 					`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
 		+t(tab+3)	+ 					`+ 	\`>\``
@@ -480,6 +502,19 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`$("#${options.descForm}").find('input').val('');`
 		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
+		+ (accesskey == '' ? '' : ''
+			+t(tab)		+ 	`function condigoConsultaClickAccesskey${random}(e) { `
+			+t(tab+1)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) { `
+			+t(tab+2)	+ 			`e.preventDefault();`
+			+t(tab+2)	+ 			`try { `
+						+ 				(descRef != 'D' ? '' : `$("button[data-customerid='btn${random}']").click();`)
+						+ 				(descRef != 'S' ? '' : `$("select[data-customerid='select${random}']")[0].focus();`)
+						+ 				(descRef != 'C' ? '' : `$("input[data-customerid='codigo${random}']")[0].focus();`)
+						+ 			` } catch(e) {}`
+			+t(tab+1)	+ 		`}`
+			+t(tab)		+ 	`}`
+			+t(tab)		+ 	`registerEventKeyboard.push("condigoConsultaClickAccesskey${random}");`
+		)
 		+ (!isOffline ? '' : ''
 			+t(tab)		+ 	`function recarregar${capitalize(options.descForm)}() { `
 			+t(tab+1)	+ 		`localStorage.removeItem("offline${capitalize(options.descForm)}");`

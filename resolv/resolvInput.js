@@ -14,6 +14,7 @@ function resolvInput(options,tab=0) {
 			class: '' 							-- Classe do campo
 			value: '' 							-- Value do campo
 			val: '' 							-- Value do campo
+			title: '' 							-- Title do campo
 			type: '' 							-- Type do campo
 			list: '' 							-- List do campo para datalist, se não tiver definido datalista param
 			.. 									-- Caso type 'number' ou 'tel' alinha o texto a direta
@@ -138,12 +139,23 @@ function resolvInputIn(options,tab=0) {
 		+ 		`typeof(check${random}Test) == 'string' && check${random}Test != '' ? check${random}Test : ''`
 		+ 	");"
 
+	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
+
+	var title = ''
+		+ ((options.title || '') == '' && accesskey == '' ? '' : ''
+			+ 	" title='" 
+			+ 		(options.title || '') 
+			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
+			+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
+			+ 	"'"
+		);
+
 	var label = ''
 		// **** configurar elemtno label que complementa o campo de entrada ****
 		+ ((options.text || ``) == `` ? `` : ``
 			+t(tab)		+ 	`<label`
+						+ 		title
 						+		((options.id 			|| ``) == `` ? `` : ` for="${options.id}" id="label_${options.id}"`)
-						+ 		((options.accesskey 	|| ``) == `` ? `` : ` title="${prefixedComand() + options.accesskey}"`)
 						+ 		((options.styleLabel 	|| ``) == `` ? `` : ` style="${resolvStyle(options.styleLabel)}"`)
 						+	`>`
 			+t(tab+1)	+ 		returnDescAccesskey(options.text, options)
@@ -182,7 +194,7 @@ function resolvInputIn(options,tab=0) {
 		+t(tab)	+ 	"<" + ((options.isTextarea || false) ? 'textarea' : ((options.enum || '') != '' ? 'select' : 'input') )
 
 		// **** configurar atributos simples ****
-		+ ['id','name','value','type','cols','rows','accesskey','autocomplete','maxlength']
+		+ ['id','name','value','type','cols','rows','autocomplete','maxlength']
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ` ${opt}="${options[opt]}"`; })
 			.join('')
@@ -193,6 +205,8 @@ function resolvInputIn(options,tab=0) {
 				return ` data-${key}="${options.data[key]}"`
 			}).join('')
 		)
+		+ title
+		+ 	` data-customerid="input${random}"`
 		+ 	` class="`
 		+ 		`form-control`
 		+ 		(options.class 	|| ``)
@@ -474,6 +488,20 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+2)	+ 		`});`
 			+ t(tab+1)	+ 	`}, 500);`
 		)
+
+
+
+		// ****  verificar se o campo tem accesskey ****
+		+ (accesskey == '' ? '' : ''
+			+t(tab+1)	+ 	`function inputClickAccesskey${random}(e) { `
+			+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}") { `
+			+t(tab+3)	+ 			`e.preventDefault();`
+			+t(tab+3)	+ 			`try { $("*[data-customerid='input${random}']")[0].focus(); } catch(e) { }`
+			+t(tab+2)	+ 		`}`
+			+t(tab+1)	+ 	`}`
+			+t(tab+1)	+ 	`registerEventKeyboard.push("inputClickAccesskey${random}");`
+		)
+		// ***************************************************************************
 
 
 
