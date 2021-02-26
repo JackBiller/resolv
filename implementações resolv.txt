@@ -42,7 +42,6 @@ Melhorias da abstração resolv:
 			https://www.amcharts.com/docs/v4/tutorials/adding-worksheets-to-excel-export/
 			https://codepen.io/team/amcharts/embed/MWbYqdy?default-tab=result&editable=true&theme-id=dark
 	- Verificar quais dependencias está faltando
-	- ResolvMenu, opção para aparecer de forma lateral
 
 
 Referencia funções de acoplamento: 

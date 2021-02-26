@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bot Resolv File</title>
+
+	<link rel="stylesheet" href="./lib/bootstrap3.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./lib/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="./lib/select2/dist/css/select2.min.css">
+	<link rel="stylesheet" href="./lib/datatables.net/datatables.min.css">
+
+	<script type="text/javascript" src="./lib/jQuery.js"></script>
+	<script src="./lib/bootstrap3.4.1/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="./lib/moment.js"></script>
+	<script src="./lib/select2/dist/js/select2.full.min.js"></script>
+	<script src="./lib/datatables.net/datatables.min.js"></script>
+
+	<script src="./resolvConfig.full.js"></script>
+</head>
+<body>
+
+
+<!--
+resolvConfig({
+	menu: {
+		descForm: 'menuTeste',
+		isLateral: true,
+		abas: [
+			{ text: 'teste1', icon: 'times', ctx: [ 
+				{ div: { text: ' teste aba 1' } }
+			] },
+			{ text: 'teste2', icon: 'check', ctx: [ 
+				{ div: { text: ' teste aba 2' } }
+			] },
+		]
+	}
+})
+-->
+
+<div class="col-sm-3">
+	<ul class="nav nav-tabs" id="menuTeste" style="display:block">
+		<li name='menuTeste' id='menuTeste0' style="width: 100%;" onclick='mudarPagina(this,"menuTesteCtx0","menuTeste","menuTesteCtx");clickMenu176940(this);' class='active'>
+			<a href="#menuTesteCtx0">
+				<i class="fa fa-times"></i> teste1
+			</a>
+		</li>
+		<br>
+		<li name='menuTeste' id='menuTeste1' style="width: 100%;" onclick='mudarPagina(this,"menuTesteCtx1","menuTeste","menuTesteCtx");clickMenu176941(this);' class=''>
+			<a href="#menuTesteCtx1">
+				<i class="fa fa-check"></i> teste2
+			</a>
+		</li>
+	</ul>
+</div>
+<style>
+	#menuTeste .active a { 
+		border-bottom: 1px solid #ddd !important;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+</style>
+<div class="col-sm-9">
+	<script>
+		function clickMenu176940(el) { 
+			resolvEvento('click','menuTeste');
+			
+		}
+		function clickMenu176941(el) { 
+			resolvEvento('click','menuTeste');
+			
+		}
+	</script>
+	<div id='menuTesteCtx0' name='menuTesteCtx'>
+		<div class=''>
+			 teste aba 1
+		</div>
+	</div>
+	<div id='menuTesteCtx1' name='menuTesteCtx' style='display:none;'>
+		<div class=''>
+			 teste aba 2
+		</div>
+	</div>
+</div>
+<script>
+	function mudarPagina(el, divId, name, nameDiv) { 
+		var elementoMenu = document.getElementsByName(name);
+		var elementoContMenu = document.getElementsByName(nameDiv);
+		for (var i = 0; i < elementoMenu.length; i++) { 
+			$(elementoMenu[i]).attr('class','');
+			$(elementoContMenu[i]).css('display','none');
+		}
+		$(el).attr('class','active');
+		$("#" + divId).css('display','block');
+	}
+</script>
+
+</body>
+</html>
