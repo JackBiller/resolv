@@ -2958,6 +2958,7 @@ function resolvH(options, tab=0) {
 
 function resolvTextarea(options,tab=0) { 
 	options.isTextarea = true;
+	options.no_tab = true;
 	options.style = $.extend({}, { 'resize': 'vertical' },  options.style);
 	return resolvInput(options,tab);
 }
@@ -2996,7 +2997,8 @@ function resolvInput(options,tab=0) {
 
 			numKeyVerifAlt: text.length 		-- Verificar até tantos caracteres percorrer para achar um math com accesskey
 			classDiv: '' 						-- Deixa o input por volta de um div
-			onEnter: function(el) 				-- Função disparada quando o campo está focado e aperta o ENTER
+			onEnter: function(e,whichkey) 		-- Função disparada quando o campo está focado e aperta o ENTER
+			... 								-- e = evento do click | whichkey = codigo da tecla
 			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descricao na frente
 			radio: [ {} ] 						-- Array de objetos input, com caracteristicas herdadas do obj pai
 			inline: (0|1) / num 				-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
@@ -3022,6 +3024,8 @@ function resolvInput(options,tab=0) {
 			}
 			mask: '' 							-- Usar Mascara no campo
 			maskOption: {} 						-- Opções para usar com a mescara
+			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrao, coloca valor correspodente
+			... 								-- Padrao true quando for textarea
 		}
 	*/
 
@@ -3355,7 +3359,7 @@ function resolvInputIn(options,tab=0) {
 				+ t(tab+1)	+ 	`function onEnter${capitalize(options.id)}(e,whichkey){`
 				+ t(tab+2)	+ 		`if (whichkey == 13 && $("#${options.id}").is(":focus")) {`
 				// + t(tab+3)	+ 			`e.preventDefault();`
-				+ t(tab+3)	+ 			`(${String(options.onEnter)}());`
+				+ t(tab+3)	+ 			`var func = ${String(options.onEnter)}; func(e,whichkey);`
 				+ t(tab+2)	+ 		`}`
 				+ t(tab+1)	+ 	`}`
 				+ t(tab+1)	+ 	`try { registerEventKeyboard.push("onEnter${capitalize(options.id)}"); } catch(e) {}`
@@ -3457,6 +3461,31 @@ function resolvInputIn(options,tab=0) {
 			+t(tab+2)	+ 		`}`
 			+t(tab+1)	+ 	`}`
 			+t(tab+1)	+ 	`registerEventKeyboard.push("inputClickAccesskey${random}");`
+		)
+		// ***************************************************************************
+
+
+
+		// ****  verificar se o campo tem accesskey ****
+		+ ((options.no_tab || '') == '' ? '' : ''
+			+t(tab+1)	+ 	`function inputNoTab${random}(e) { `
+			+t(tab+2)	+ 		`try { `
+			+t(tab+3)	+ 			`var input = $("*[data-customerid='input${random}']")[0];`
+			+t(tab+2)	+ 		`} catch(e) { return; }`
+			+t(tab+2)	+ 		`if ($(input).is(':focus') && e.keyCode === 9) { `
+			+t(tab+3)	+ 			`e.preventDefault();`
+			+t(tab+3)	+ 			`var inicioDaSelecao = input.selectionStart,`
+			+t(tab+4)	+ 				`fimDaSelecao = input.selectionEnd,`
+			+t(tab+4)	+ 				`recuo = '\\t'; // Experimente também com '    '`
+			+t(tab+3)	+ 			`input.value = [`
+			+t(tab+4)	+ 				`input.value.substring(0, inicioDaSelecao),`
+			+t(tab+4)	+ 				`recuo,`
+			+t(tab+4)	+ 				`input.value.substring(fimDaSelecao)`
+			+t(tab+3)	+ 			`].join('');`
+			+t(tab+3)	+ 			`input.selectionEnd = inicioDaSelecao + recuo.length; `
+			+t(tab+2)	+ 		`}`
+			+t(tab+1)	+ 	`}`
+			+t(tab+1)	+ 	`registerEventKeyboard.push("inputNoTab${random}");`
 		)
 		// ***************************************************************************
 
@@ -3665,6 +3694,10 @@ function resolvMenu(options={}, tab=0) {
 			+t(tab+2) 	+ 			'border-bottom-left-radius: 5px;'
 			+t(tab+2) 	+ 			'border-bottom-right-radius: 5px;'
 			+t(tab+1) 	+ 		'}'
+			+t(tab+1) 	+ 		'#' + options.descForm + ' { '
+			+t(tab+2) 	+ 			'border-bottom: none;'
+			+t(tab+2) 	+ 			'border-right: 1px solid #ddd;'
+			+t(tab+1) 	+ 		'}'
 			+t(tab+0) 	+ 	'</style>'
 			+t(tab)	+ 	'<div'
 					+ 		` class="`
@@ -3707,6 +3740,79 @@ function resolvMenu(options={}, tab=0) {
 	return html;
 }
 
+
+function resolvPreview(options={}, tab=0) { 
+	/*
+		options: { 
+			descForm: '' 					-- Parametro Identificador
+			ctx: '' 						-- Conteudo do Preview
+		}
+	*/
+
+	// var random;
+	// do { 
+	// 	random = parseInt( Math.random() * 100000 );
+	// } while (registerRandom_Global.indexOf(random) != -1);
+	// registerRandom_Global.push(random);
+
+	if ((options.descForm || '') == '') return '';
+
+	var onEnter;
+	eval(`onEnter = function(e) { 
+		if (e.ctrlKey) buildPreview("${options.descForm}");
+		var func = ${String(options.onBuild || function() { })}; func();
+	}`);
+
+	var html = ''
+		+t(tab+0) 	+ 	'<div class="row">'
+		+t(tab+1) 	+ 		'<div class="col-sm-5">'
+		+t(tab+2) 	+ resolvConfig({
+						textarea: { rows: 25, id: 'textareaJson' + options.descForm, onEnter }
+					})
+		+t(tab+1) 	+ 		'</div>'
+		+t(tab+1) 	+ 		'<div class="col-sm-7">'
+					+ resolvConfig({
+						menu: { descForm: 'menu' + options.descForm, no_link: true, abas: [
+							{ text: 'Preview', icon: 'eye', ctx: {
+								div: { id: 'divPreview' + options.descForm, text: resolvConfig(options.ctx) }
+							} },
+							{ text: 'Code', icon: 'code', ctx: {
+								textarea: { styleDiv: { 'margin-top': '15px' }
+									, id: 'textarea' + options.descForm, rows: 22
+								},
+							} },
+						] }
+					})
+		+t(tab+1) 	+ 		'</div>'
+		+t(tab+0) 	+ 	'</div>'
+		+t(tab+0) 	+ 	'<script>'
+		+t(tab+1) 	+ 		'$("#textareaJson' + options.descForm + '").val(`'
+					+			jsonToString((options.ctx || {}), 0, true).replace(/<br>/gi, "\n")
+					+		'`);'
+		+t(tab+1) 	+ 		'$("#textarea' + options.descForm + '").val(`'
+					+			resolvConfig(options.ctx).replace(/<br>/gi, "\n")
+									.replace(/\`/g, '\\\`')
+									.replace(/\$/g, '\\\$')
+									.replace(new RegExp('</'+'script>', 'gi'), '</`+`script>')
+					+		'`);'
+		+t(tab+0) 	+ 	'</'+'script>'
+
+	return html;
+}
+
+function buildPreview(id) {
+	var json = $("#textareaJson"+id).val();
+	try { 
+		eval(`json = ${json}`);
+		$("#divPreview"+id).html(resolvConfig(json, 0, true));
+		$("#textarea"+id).val(
+			resolvConfig(json).replace(/<br>/gi, '\n')
+		);
+	} catch(e) { 
+		console.error(e);
+		alert('Falha ao gerar preview!');
+	}
+}
 
 function resolvRow(options, tab=0) { 
 	return ""
@@ -4408,6 +4514,8 @@ function resolvEl(id,cla='') {
 		for (var i = 0; i < els.length; i++) { 
 			if (els[i].checked) objReturn.el = $(els[i]);
 		}
+	} else if (objReturn.parent == 'preview') { 
+		objReturn.el = $("#textareaJson" + id);
 	} else { 
 		objReturn.el = $("#" + id);
 	}
@@ -4442,7 +4550,7 @@ function resolvVal(id) {
 			case 'capitalize': 	value = capitalize((value || '')); break;
 		}
 
-		if (['div','spam'].indexOf(el.parent) != -1) func = 'html';
+		if (['div','span'].indexOf(el.parent) != -1) func = 'html';
 
 		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
 			if ((value || '') == '') { 
@@ -4806,11 +4914,11 @@ function resolvPath(id, obj=objRefConfig_Global) {
 function desregistrarConfig(id) { 
 	var path = resolvPath(id);
 	if (path.length) { 
-		path.splice(1, path.length-1);
+		path.splice(path.length-1,1);
 		path.forEach(function(p,i) { 
 			if (p.indexOf('menu') == 0) path[i] = 'menu';
 		});
-		eval(`objRefConfig_Global[${path.join('],[')}] = undefined;`);
+		eval(`objRefConfig_Global["${path.join('"]["')}"] = undefined;`);
 	}
 }
 

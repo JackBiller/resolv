@@ -1,6 +1,7 @@
 
 function resolvTextarea(options,tab=0) { 
 	options.isTextarea = true;
+	options.no_tab = true;
 	options.style = $.extend({}, { 'resize': 'vertical' },  options.style);
 	return resolvInput(options,tab);
 }
@@ -39,7 +40,8 @@ function resolvInput(options,tab=0) {
 
 			numKeyVerifAlt: text.length 		-- Verificar até tantos caracteres percorrer para achar um math com accesskey
 			classDiv: '' 						-- Deixa o input por volta de um div
-			onEnter: function(el) 				-- Função disparada quando o campo está focado e aperta o ENTER
+			onEnter: function(e,whichkey) 		-- Função disparada quando o campo está focado e aperta o ENTER
+			... 								-- e = evento do click | whichkey = codigo da tecla
 			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descricao na frente
 			radio: [ {} ] 						-- Array de objetos input, com caracteristicas herdadas do obj pai
 			inline: (0|1) / num 				-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
@@ -65,6 +67,8 @@ function resolvInput(options,tab=0) {
 			}
 			mask: '' 							-- Usar Mascara no campo
 			maskOption: {} 						-- Opções para usar com a mescara
+			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrao, coloca valor correspodente
+			... 								-- Padrao true quando for textarea
 		}
 	*/
 
@@ -398,7 +402,7 @@ function resolvInputIn(options,tab=0) {
 				+ t(tab+1)	+ 	`function onEnter${capitalize(options.id)}(e,whichkey){`
 				+ t(tab+2)	+ 		`if (whichkey == 13 && $("#${options.id}").is(":focus")) {`
 				// + t(tab+3)	+ 			`e.preventDefault();`
-				+ t(tab+3)	+ 			`(${String(options.onEnter)}());`
+				+ t(tab+3)	+ 			`var func = ${String(options.onEnter)}; func(e,whichkey);`
 				+ t(tab+2)	+ 		`}`
 				+ t(tab+1)	+ 	`}`
 				+ t(tab+1)	+ 	`try { registerEventKeyboard.push("onEnter${capitalize(options.id)}"); } catch(e) {}`
@@ -500,6 +504,31 @@ function resolvInputIn(options,tab=0) {
 			+t(tab+2)	+ 		`}`
 			+t(tab+1)	+ 	`}`
 			+t(tab+1)	+ 	`registerEventKeyboard.push("inputClickAccesskey${random}");`
+		)
+		// ***************************************************************************
+
+
+
+		// ****  verificar se o campo tem accesskey ****
+		+ ((options.no_tab || '') == '' ? '' : ''
+			+t(tab+1)	+ 	`function inputNoTab${random}(e) { `
+			+t(tab+2)	+ 		`try { `
+			+t(tab+3)	+ 			`var input = $("*[data-customerid='input${random}']")[0];`
+			+t(tab+2)	+ 		`} catch(e) { return; }`
+			+t(tab+2)	+ 		`if ($(input).is(':focus') && e.keyCode === 9) { `
+			+t(tab+3)	+ 			`e.preventDefault();`
+			+t(tab+3)	+ 			`var inicioDaSelecao = input.selectionStart,`
+			+t(tab+4)	+ 				`fimDaSelecao = input.selectionEnd,`
+			+t(tab+4)	+ 				`recuo = '\\t'; // Experimente também com '    '`
+			+t(tab+3)	+ 			`input.value = [`
+			+t(tab+4)	+ 				`input.value.substring(0, inicioDaSelecao),`
+			+t(tab+4)	+ 				`recuo,`
+			+t(tab+4)	+ 				`input.value.substring(fimDaSelecao)`
+			+t(tab+3)	+ 			`].join('');`
+			+t(tab+3)	+ 			`input.selectionEnd = inicioDaSelecao + recuo.length; `
+			+t(tab+2)	+ 		`}`
+			+t(tab+1)	+ 	`}`
+			+t(tab+1)	+ 	`registerEventKeyboard.push("inputNoTab${random}");`
 		)
 		// ***************************************************************************
 

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Bot Resolv File</title>
+	<title>Preview dos Componentes</title>
 
 	<link rel="stylesheet" href="./lib/bootstrap3.4.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./lib/font-awesome/css/font-awesome.min.css">
@@ -20,81 +20,145 @@
 	<script src="./resolvConfig.full.js"></script>
 </head>
 <body>
-
-
-<!--
-resolvConfig({
-	menu: {
-		descForm: 'menuTeste',
-		isLateral: true,
-		abas: [
-			{ text: 'teste1', icon: 'times', ctx: [ 
-				{ div: { text: ' teste aba 1' } }
-			] },
-			{ text: 'teste2', icon: 'check', ctx: [ 
-				{ div: { text: ' teste aba 2' } }
-			] },
-		]
-	}
-})
--->
-
-<div class="col-sm-3">
-	<ul class="nav nav-tabs" id="menuTeste" style="display:block">
-		<li name='menuTeste' id='menuTeste0' style="width: 100%;" onclick='mudarPagina(this,"menuTesteCtx0","menuTeste","menuTesteCtx");clickMenu176940(this);' class='active'>
-			<a href="#menuTesteCtx0">
-				<i class="fa fa-times"></i> teste1
-			</a>
-		</li>
-		<br>
-		<li name='menuTeste' id='menuTeste1' style="width: 100%;" onclick='mudarPagina(this,"menuTesteCtx1","menuTeste","menuTesteCtx");clickMenu176941(this);' class=''>
-			<a href="#menuTesteCtx1">
-				<i class="fa fa-check"></i> teste2
-			</a>
-		</li>
-	</ul>
-</div>
+	<div class="container" style="margin-left: 1%;width: 98%;">
+		<div id="conteudo"></div>
+	</div>
+</body>
 <style>
-	#menuTeste .active a { 
-		border-bottom: 1px solid #ddd !important;
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;
+	.container { 
+		margin-top: 15px;
 	}
 </style>
-<div class="col-sm-9">
-	<script>
-		function clickMenu176940(el) { 
-			resolvEvento('click','menuTeste');
-			
-		}
-		function clickMenu176941(el) { 
-			resolvEvento('click','menuTeste');
-			
-		}
-	</script>
-	<div id='menuTesteCtx0' name='menuTesteCtx'>
-		<div class=''>
-			 teste aba 1
-		</div>
-	</div>
-	<div id='menuTesteCtx1' name='menuTesteCtx' style='display:none;'>
-		<div class=''>
-			 teste aba 2
-		</div>
-	</div>
-</div>
 <script>
-	function mudarPagina(el, divId, name, nameDiv) { 
-		var elementoMenu = document.getElementsByName(name);
-		var elementoContMenu = document.getElementsByName(nameDiv);
-		for (var i = 0; i < elementoMenu.length; i++) { 
-			$(elementoMenu[i]).attr('class','');
-			$(elementoContMenu[i]).css('display','none');
+
+	var previewInput = resolvDefaultPreveiw('previewInput', { 
+		input: {
+			accesskey: 't', text: 'Test', id: 'focarInput',
+			title: 'Teste input'
 		}
-		$(el).attr('class','active');
-		$("#" + divId).css('display','block');
+	});
+
+	var previewCodigoConsulta1 = resolvDefaultPreveiw('previewCodigoConsulta1', { 
+		codigoConsulta: { 
+			codigo: { text: 'Default', input: 'codigo' },
+			desc: { text: 'Decrição', input: 'desc' },
+			descForm: 'descForm1',
+			id: 'id',
+			param: { 'testeApiDados': true },
+			required: true,
+			accesskey: 'e',
+			grade: { 
+				inputs: [ 
+					{ head: 'id' 		, param: 'id' 		, format: {} },
+					{ head: 'codigo' 	, param: 'codigo' 	, format: {} },
+					{ head: 'desc' 		, param: 'desc' 	},
+				],
+			}
+		}
+	});
+
+	var previewCodigoConsulta2 = resolvDefaultPreveiw('previewCodigoConsulta2', { 
+		codigoConsulta: { 
+			select: { text: 'Select Combo', value: 'id', desc: 'desc' },
+			dist: 'S', xs: '12',
+			descForm: 'descForm2',
+			id: 'IssoAi',
+			param: { 'testeApiDados': true },
+			accesskey: 's'
+		}
+	});
+
+	var previewCodigoConsulta3 = resolvDefaultPreveiw('previewCodigoConsulta3', { 
+		codigoConsulta: {
+			codigo: { text: 'teste', input: 'codigo' },
+			desc: { text: 'Somente Descrição', input: 'desc' },
+			dist: 'D-B', xs: '11-1',
+			descForm: 'descForm3',
+			id: 'id',
+			param: { 'testeApiDados': true },
+			required: true,
+			accesskey: 'd',
+			grade: {
+				inputs: [
+					{ head: 'id' 		, param: 'id' 		, format: {} },
+					{ head: 'codigo' 	, param: 'codigo' 	, format: {} },
+					{ head: 'desc' 		, param: 'desc' 	},
+				],
+			}
+		}
+	});
+
+
+
+	$("#conteudo").html(resolvConfig({
+		h3: { text: 'Preview dos Componentes', classDiv: 'text-center' },
+		br: { num: 1 },
+		menu: { descForm: 'menuTeste'
+			, isLateral: true, no_link: true
+			, abas: [
+			{ text: 'Input', ctx: [ 
+				{ h2: { text: 'Input' } },
+				{ preview: { descForm: 'previewInput', ctx: previewInput
+					, onBuild: function() { 
+						localStorage.setItem('previewInput', resolvVal('previewInput'))
+					}
+				} },
+			] },
+			{ text: 'Condigo Consulta', ctx: [ 
+				{ h2: { text: 'Condigo Consulta' } },
+				{ h3: { text: 'Config C-B-D (Default)' } },
+				{ preview: { descForm: 'previewCodigoConsulta1', ctx: previewCodigoConsulta1
+					, onBuild: function() { 
+						localStorage.setItem('previewCodigoConsulta1', resolvVal('previewCodigoConsulta1'))
+					}
+				} },
+				{ h3: { text: 'Config S' } },
+				{ preview: { descForm: 'previewCodigoConsulta2', ctx: previewCodigoConsulta2
+					, onBuild: function() { 
+						localStorage.setItem('previewCodigoConsulta2', resolvVal('previewCodigoConsulta2'))
+					}
+				} },
+				{ h3: { text: 'Config D-B' } },
+				{ preview: { descForm: 'previewCodigoConsulta3', ctx: previewCodigoConsulta3
+					, onBuild: function() { 
+						localStorage.setItem('previewCodigoConsulta3', resolvVal('previewCodigoConsulta3'))
+					}
+				} },
+				{ br: { num: 3 } }
+			] },
+		] }
+	}, 2, true));
+
+	function resolvDefaultPreveiw(id, obj) { 
+		var preview, isLocalStorage;
+		eval(`isLocalStorage = localStorage.${id};`);
+
+		if (isLocalStorage) { 
+			try { 
+				eval(`preview = ${localStorage.getItem(id)};`)
+			} catch(e) { 
+				preview = obj;
+			}
+		} else { 
+			preview = obj;
+		}
+		return preview;
+	}
+
+	function ajax(options) { 
+		$.ajax({
+			url: options.url || 'controller.php',
+			type: options.type || 'POST',
+			dataType: options.dataType || 'text',
+			data: options.param || {},
+			error: options.error || function() { }
+		}).done(function(data) { 
+			try { 
+				(options.done || function() {})(data);
+			} catch(e) { 
+				console.error(e);
+			}
+		});
 	}
 </script>
-
-</body>
 </html>

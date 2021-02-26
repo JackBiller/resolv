@@ -95,6 +95,10 @@ function resolvMenu(options={}, tab=0) {
 			+t(tab+2) 	+ 			'border-bottom-left-radius: 5px;'
 			+t(tab+2) 	+ 			'border-bottom-right-radius: 5px;'
 			+t(tab+1) 	+ 		'}'
+			+t(tab+1) 	+ 		'#' + options.descForm + ' { '
+			+t(tab+2) 	+ 			'border-bottom: none;'
+			+t(tab+2) 	+ 			'border-right: 1px solid #ddd;'
+			+t(tab+1) 	+ 		'}'
 			+t(tab+0) 	+ 	'</style>'
 			+t(tab)	+ 	'<div'
 					+ 		` class="`

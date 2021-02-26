@@ -23,7 +23,8 @@
 
 	<button onclick="runBot = true;"> 	Iniciar </button>
 	<button onclick="runBot = false;"> 	Parar 	</button>
-	<button onclick="req(true);"> 	Gerar 	</button>
+	<button onclick="req(true);"> 		Gerar 	</button>
+	<button onclick="openPreview();"> 	Preview </button>
 	<br>
 	<label for="lastUpdate">Última atualização</label>
 	<input type="text" disabled id="lastUpdate">
@@ -60,6 +61,10 @@
 		});
 	}
 	startBot();
+
+	function openPreview() { 
+		window.open("./previewResolv.html");
+	}
 
 	function ajax(options) { 
 		$.ajax({

@@ -158,6 +158,8 @@ function resolvEl(id,cla='') {
 		for (var i = 0; i < els.length; i++) { 
 			if (els[i].checked) objReturn.el = $(els[i]);
 		}
+	} else if (objReturn.parent == 'preview') { 
+		objReturn.el = $("#textareaJson" + id);
 	} else { 
 		objReturn.el = $("#" + id);
 	}
@@ -192,7 +194,7 @@ function resolvVal(id) {
 			case 'capitalize': 	value = capitalize((value || '')); break;
 		}
 
-		if (['div','spam'].indexOf(el.parent) != -1) func = 'html';
+		if (['div','span'].indexOf(el.parent) != -1) func = 'html';
 
 		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
 			if ((value || '') == '') { 
@@ -556,11 +558,11 @@ function resolvPath(id, obj=objRefConfig_Global) {
 function desregistrarConfig(id) { 
 	var path = resolvPath(id);
 	if (path.length) { 
-		path.splice(1, path.length-1);
+		path.splice(path.length-1,1);
 		path.forEach(function(p,i) { 
 			if (p.indexOf('menu') == 0) path[i] = 'menu';
 		});
-		eval(`objRefConfig_Global[${path.join('],[')}] = undefined;`);
+		eval(`objRefConfig_Global["${path.join('"]["')}"] = undefined;`);
 	}
 }
 
