@@ -31,6 +31,10 @@
 </style>
 <script>
 
+	var previewLivre = resolvDefaultPreveiw('previewLivre', { 
+		input: { text: 'Livre para testes' }
+	});
+
 	var previewInput = resolvDefaultPreveiw('previewInput', { 
 		input: {
 			accesskey: 't', text: 'Test', id: 'focarInput',
@@ -88,6 +92,24 @@
 		}
 	});
 
+	var previewButton = resolvDefaultPreveiw('previewButton', { 
+		button: { 
+			accesskey: 's', desc: 'Teste', icon: 'times', class: 'btn btn-danger', title: 'Teste alt'
+			, click: () => { alert('teste'); }
+		}
+	});
+
+	var previewMenu = resolvDefaultPreveiw('previewMenu', { 
+		menu: {
+			descForm: 'teste',
+			abas: [
+				{ text: 'text', click: 'abrirTeste();', icon: 'times', ctx: { div: { text: 'teste1' } } },
+				{ text: 'text', click: () => abrirTeste(), icon: 'fa fa-check', ctx: { div: { text: 'teste2' } } },
+				{ text: 'text', click: function() { abrirTeste() }, icon: 'checks', ctx: { div: { text: 'teste3' } } },
+			]
+		}
+	});
+
 
 
 	$("#conteudo").html(resolvConfig({
@@ -96,6 +118,15 @@
 		menu: { descForm: 'menuTeste'
 			, isLateral: true, no_link: true
 			, abas: [
+			{ text: 'Livre', ctx: [ 
+				{ h2: { text: 'Livre' } },
+				{ preview: { descForm: 'previewLivre', ctx: previewLivre
+					, onBuild: function() { 
+						localStorage.setItem('previewLivre', resolvVal('previewLivre'))
+					}
+				} },
+				{ br: { num: 3 } }
+			] },
 			{ text: 'Input', ctx: [ 
 				{ h2: { text: 'Input' } },
 				{ preview: { descForm: 'previewInput', ctx: previewInput
@@ -103,6 +134,7 @@
 						localStorage.setItem('previewInput', resolvVal('previewInput'))
 					}
 				} },
+				{ br: { num: 3 } }
 			] },
 			{ text: 'Código Consulta', ctx: [ 
 				{ h2: { text: 'Código Consulta' } },
@@ -122,6 +154,24 @@
 				{ preview: { descForm: 'previewCodigoConsulta3', ctx: previewCodigoConsulta3
 					, onBuild: function() { 
 						localStorage.setItem('previewCodigoConsulta3', resolvVal('previewCodigoConsulta3'))
+					}
+				} },
+				{ br: { num: 3 } }
+			] },
+			{ text: 'Button', ctx: [ 
+				{ h2: { text: 'Button' } },
+				{ preview: { descForm: 'previewButton', ctx: previewButton
+					, onBuild: function() { 
+						localStorage.setItem('previewButton', resolvVal('previewButton'))
+					}
+				} },
+				{ br: { num: 3 } }
+			] },
+			{ text: 'Menu', ctx: [ 
+				{ h2: { text: 'Menu' } },
+				{ preview: { descForm: 'previewMenu', ctx: previewMenu
+					, onBuild: function() { 
+						localStorage.setItem('previewMenu', resolvVal('previewMenu'))
 					}
 				} },
 				{ br: { num: 3 } }

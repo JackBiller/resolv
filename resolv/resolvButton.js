@@ -43,7 +43,7 @@ function resolvButton(options, tab=0) {
 	var html = ''
 		+ ((options.preText || '') == '' ? '' : t(tab) + options.preText)
 		+ ((options.compensador || '') == '' ? '' : ''
-			+ 	"<label><spam style='color: white;'>.</spam></label>"
+			+ 	"<label>&nbsp;</label>"
 		)
 		+t(tab)		+ 	"<button"
 					+ 		" data-customerid='btn" + random + "'"

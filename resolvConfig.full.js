@@ -212,7 +212,7 @@ function resolvButton(options, tab=0) {
 	var html = ''
 		+ ((options.preText || '') == '' ? '' : t(tab) + options.preText)
 		+ ((options.compensador || '') == '' ? '' : ''
-			+ 	"<label><spam style='color: white;'>.</spam></label>"
+			+ 	"<label>&nbsp;</label>"
 		)
 		+t(tab)		+ 	"<button"
 					+ 		" data-customerid='btn" + random + "'"
@@ -3747,6 +3747,7 @@ function resolvPreview(options={}, tab=0) {
 			descForm: '' 					-- Parametro Identificador
 			ctx: '' 						-- Conteudo do Preview
 			pathAce: './lib/ace' 			-- Caminho para lib do editor ace
+			onBuild: function() { } 		-- Função disparada toda vez que recontroi o obj do preview
 		}
 	*/
 
@@ -3758,18 +3759,17 @@ function resolvPreview(options={}, tab=0) {
 
 	if ((options.descForm || '') == '') return '';
 
-	var onEnter;
-	eval(`onEnter = function(e) { 
-		if (e.ctrlKey) buildPreview("${options.descForm}");
-		var func = ${String(options.onBuild || function() { })}; func();
-	}`);
+	var objOriginal = {};
+	Object.keys((options.ctx || {})).forEach(function(key) { 
+		objOriginal[key] = options.ctx[key];
+	});
 
 	var html = ''
-		+t(tab+0) 	+ 	'<div class="row">'
+		+t(tab+0) 	+ 	'<div class="row" id="preview' + options.descForm + '">'
 		+t(tab+1) 	+ 		'<div class="col-sm-5">'
 		+t(tab+2) 	+ resolvConfig({
 						textarea: {
-							id: 'textareaJson' + options.descForm, onEnter, style: { 'height': '500px' }
+							id: 'textareaJson' + options.descForm, style: { 'height': '500px' }
 						}
 					})
 		+t(tab+1) 	+ 		'</div>'
@@ -3777,7 +3777,7 @@ function resolvPreview(options={}, tab=0) {
 					+ resolvConfig({
 						menu: { descForm: 'menu' + options.descForm, no_link: true, abas: [
 							{ text: 'Preview', icon: 'eye', ctx: {
-								div: { id: 'divPreview' + options.descForm, text: resolvConfig(options.ctx) }
+								div: { id: 'divPreview' + options.descForm }
 							} },
 							{ text: 'Code', icon: 'code', ctx: {
 								textarea: { styleDiv: { 'margin-top': '15px' }
@@ -3790,10 +3790,16 @@ function resolvPreview(options={}, tab=0) {
 		+t(tab+0) 	+ 	'</div>'
 		+t(tab+0) 	+ 	'<script>'
 		+t(tab+1) 	+ 		'$("#textareaJson' + options.descForm + '").val(`'
-					+			jsonToString((options.ctx || {}), 0, true).replace(/<br>/gi, "\n")
+					+			jsonToString(objOriginal, 0, true).replace(/<br>/gi, "\n")
 					+		'`);'
 		+t(tab+1) 	+ 		'$("#textarea' + options.descForm + '").val(`'
-					+			resolvConfig(options.ctx).replace(/<br>/gi, "\n")
+					+			resolvConfig(options.ctx || {}).replace(/<br>/gi, "\n")
+									.replace(/\`/g, '\\\`')
+									.replace(/\$/g, '\\\$')
+									.replace(new RegExp('</'+'script>', 'gi'), '</`+`script>')
+					+		'`);'
+		+t(tab+1) 	+ 		'$("#divPreview' + options.descForm + '").html(`'
+					+			resolvConfig(options.ctx || {}).replace(/<br>/gi, "\n")
 									.replace(/\`/g, '\\\`')
 									.replace(/\$/g, '\\\$')
 									.replace(new RegExp('</'+'script>', 'gi'), '</`+`script>')
@@ -3838,9 +3844,28 @@ function resolvPreview(options={}, tab=0) {
 		+t(tab+2) 	+			`textAce${options.descForm} = $("#textareaJson${options.descForm}")[0].ace;`
 		+t(tab+2) 	+			`textAce${options.descForm}.setOption('theme',"monokai");`
 		+t(tab+2) 	+			`textAce${options.descForm}.setOption('mode',"json");`
+		// +t(tab+2) 	+			`textAce${options.descForm}.setOption('mode',"javascript");`
 		+t(tab+2) 	+			`textAce${options.descForm}.setOption('fontSize','11px');`
 		+t(tab+2) 	+			`textAce${options.descForm}.setOption('showGutter',true);`
 		+t(tab+1) 	+		`});`
+
+		+t(tab+1) 	+ 		`function previewKeyDown${options.descForm}(e, whichkey) { `
+		+t(tab+2) 	+ 			`var curso = $("#preview${options.descForm}").find('.ace_editor')[0];`
+		+t(tab+2) 	+ 			`if (e.ctrlKey && whichkey == 13 && curso.className.indexOf('ace_focus') >= 0) { `
+		+t(tab+3) 	+ 				`var statusGutter = textAce${options.descForm}.getOption('showGutter');`
+		+t(tab+3) 	+ 				`var statusInvisible = textAce${options.descForm}.getOption('showInvisibles');`
+		+t(tab+3) 	+ 				`textAce${options.descForm}.setOption('showGutter',false);`
+		+t(tab+3) 	+ 				`textAce${options.descForm}.setOption('showInvisibles',false);`
+		+t(tab+3) 	+ 				`setTimeout(function() { `
+		+t(tab+4) 	+ 					`buildPreview(`
+					+ 						`textAce${options.descForm}.container.innerText`
+					+ 						`, ${jsonToString(options)});`
+		+t(tab+4) 	+ 					`textAce${options.descForm}.setOption('showGutter',statusGutter);`
+		+t(tab+4) 	+ 					`textAce${options.descForm}.setOption('showInvisibles',statusInvisible);`
+		+t(tab+3) 	+ 				`}, 100);`
+		+t(tab+2) 	+ 			`}`
+		+t(tab+1) 	+ 		`}`
+		+t(tab+1) 	+ 		`registerEventKeyboard.push("previewKeyDown${options.descForm}");`
 
 
 		+t(tab+1) 	+		`function injectHtml${options.descForm}(options, callback) { `
@@ -3892,14 +3917,37 @@ function resolvPreview(options={}, tab=0) {
 	return html;
 }
 
-function buildPreview(id) {
-	var json = $("#textareaJson"+id).val();
+function buildPreview(text, options) {
+	var json = text;
+	var id = options.descForm;
+
 	try { 
 		eval(`json = ${json}`);
+		$("#textareaJson"+id).val(text);
 		$("#divPreview"+id).html(resolvConfig(json, 0, true));
+		$("#menu" + id + "Ctx1").html(resolvConfig({
+			textarea: { styleDiv: { 'margin-top': '15px' }
+				, id: 'textarea' + options.descForm, style: { 'height': '443px' }
+			}
+		}));
 		$("#textarea"+id).val(
 			resolvConfig(json).replace(/<br>/gi, '\n')
 		);
+
+		var attrs = ['theme','mode','fontSize','showGutter','showPrintMargin','useSoftTabs','showInvisibles']
+			.map(function(a) { return `textAceHTML${id}.setOption('${a}', "${window['textAceHTML'+id].getOption(a)}");` })
+			.join('\n\t\t\t\t');
+
+		eval(`
+			injectHtml${id}({
+				baseUrl: "${options.pathAce || './lib/ace'}",
+				target: $("#textarea${id}")[0]
+			}, function () { 
+				textAceHTML${id} = $("#textarea${id}")[0].ace;
+				${attrs}
+			});
+		`);
+		(options.onBuild || function() { })();
 	} catch(e) { 
 		console.error(e);
 		alert('Falha ao gerar preview!');
