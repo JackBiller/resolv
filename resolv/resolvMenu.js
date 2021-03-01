@@ -5,6 +5,7 @@ function resolvMenu(options={}, tab=0) {
 			descForm: '' 					-- Identificador
 			no_link: (0|1) 					-- Não linqua no menu para redirecionar o conteudo
 			isLateral: (0|1) 				-- Caso quera resolver um menu lateral
+			selected: indice 				-- Escolher qual aba vai começar ativa, padrão 0
 			abas: [
 				{
 					text: '' 				-- Descricao Menu
@@ -31,6 +32,8 @@ function resolvMenu(options={}, tab=0) {
 
 	var isLateral = (options.isLateral || '') != '';
 	var TA = isLateral ? 1 : 0;
+
+	var selected = options.selected || 0;
 
 	var html = ''
 		+ (!isLateral ? '' : ''
@@ -65,7 +68,7 @@ function resolvMenu(options={}, tab=0) {
 					+ 			"clickMenu" + random + i + '(this);'
 					+ 			(typeof(options.abas[i].click) == 'string' ? options.abas[i].click : '')
 					+ 		"'"
-					+ 		" class='" + (i == 0 ? 'active' : '') + "'"
+					+ 		" class='" + (i == selected ? 'active' : '') + "'"
 					+ 	">"
 		+t(tab+TA+2)	
 		+ ((options.no_link || '') == '' 
@@ -127,7 +130,8 @@ function resolvMenu(options={}, tab=0) {
 					+ 		" id='" + options.descForm + "Ctx" + i + "'"
 					+ 		" name='" + options.descForm + "Ctx'"
 					+ 		" style='"
-					+ 			(i == 0 ? '' : "display:none;")
+					+ 			(i == selected ? '' : "display:none;")
+					+ 			(options.isLateral || false ? '' : "margin-top:10px;")
 					+ 		"'"
 					+ 	">"
 					+ 		resolvConfig(options.abas[i].ctx || {},tab+TA+1)
