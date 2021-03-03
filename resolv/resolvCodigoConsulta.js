@@ -509,7 +509,7 @@ function resolvCodigoConsulta(options, tab=0) {
 			+t(tab+2)	+ 			`try { `
 						+ 				(descRef != 'D' ? '' : `$("button[data-customerid='btn${random}']").click();`)
 						+ 				(descRef != 'S' ? '' : `$("select[data-customerid='select${random}']")[0].focus();`)
-						+ 				(descRef != 'C' ? '' : `$("input[data-customerid='codigo${random}']")[0].focus();`)
+						+ 				(descRef != 'C' ? '' : `$("input[data-customerid='codigo${random}']")[0].select();`)
 						+ 			` } catch(e) {}`
 			+t(tab+1)	+ 		`}`
 			+t(tab)		+ 	`}`

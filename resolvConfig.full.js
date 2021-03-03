@@ -46,6 +46,7 @@ var registerEventKeyboard 	= [];
 var registerEventAll 		= [];
 
 var returnObjIdentado_Global = true;
+var isMobile_Global = isMobile();
 
 var fa_icon_Global = [
 	"address-book","address-book-o","address-card","address-card-o","adjust","american-sign-language-interpreting",
@@ -136,6 +137,16 @@ var fa_icon_Global = [
 	"expand","fast-backward","fast-forward","forward","pause","pause-circle","pause-circle-o","play","play-circle",
 	"play-circle-o","step-backward","step-forward","stop","stop-circle","stop-circle-o"
 ];
+
+function isMobile() { 
+	var userAgent = String(navigator.userAgent).toUpperCase()
+	, 	plataformasMobile = ['ANDROID','IOS'];
+
+	for (var i = 0; i < plataformasMobile.length; i++) { 
+		if (userAgent.indexOf(plataformasMobile[i]) != -1) return true;
+	}
+	return false;
+}
 
 function capitalize(s) { 
 	if (typeof s !== "string") return "";
@@ -1700,7 +1711,7 @@ function resolvCodigoConsulta(options, tab=0) {
 			+t(tab+2)	+ 			`try { `
 						+ 				(descRef != 'D' ? '' : `$("button[data-customerid='btn${random}']").click();`)
 						+ 				(descRef != 'S' ? '' : `$("select[data-customerid='select${random}']")[0].focus();`)
-						+ 				(descRef != 'C' ? '' : `$("input[data-customerid='codigo${random}']")[0].focus();`)
+						+ 				(descRef != 'C' ? '' : `$("input[data-customerid='codigo${random}']")[0].select();`)
 						+ 			` } catch(e) {}`
 			+t(tab+1)	+ 		`}`
 			+t(tab)		+ 	`}`
@@ -2101,7 +2112,7 @@ function resolvGrade(data, option) {
 			, stripTableColors: 	[{bgcolor: "white"}]
 			, hoverTrTableColor: 	"lightblue"
 			, padination: 			[15,25]
-			, isMobile_Global: 		false
+			, isMobile_Global: 		window['isMobile_Global'] || false
 			, no_scrollX: 			true
 			// , languageJson: 		''
 			, dom: 					''
@@ -2334,6 +2345,8 @@ function resolvGrade(data, option) {
 		}
 		grade += ``
 			+ 	`</table>`
+
+		grade = '<div style="overflow-x:auto;">' + grade + '</div>';
 	} else { 
 		grade = `<b>Debug != OK</b>`;
 	}

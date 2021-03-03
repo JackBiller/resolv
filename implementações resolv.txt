@@ -5,7 +5,6 @@ Melhorias da abstração resolv:
 			function checkInput(){ return [ 'id' ]; }
 			// no resolvConfig, se for resolver parametro input e não tiver o ID, da mensagem
 	- ResolvVal aceitar o objeto de configuração para retorna o valor
-	- ResolvInput, type hidden opção de informa-los como grade dentro de um obj só
 	- ResolvGrid, parametro para comportar ajax e montagem de grades dinamicamente
 		- conter os parametros do ajax
 		- pensar no esquema de funções separadas uma para buscar dados e outra para montar a grade
@@ -37,10 +36,6 @@ Melhorias da abstração resolv:
 	- Opções de backend, montar roteiro de funções e querys com regras a serem seguidas
 		- cogitar opção  de usar Node.js , PHP ou até C#
 		- vai trabalhar com arquivos gerados automaticamente
-	- Tela de teste de componentes do resolv
-		- analizar viabilidade de colocar um editor de codigo na pagina
-			https://www.amcharts.com/docs/v4/tutorials/adding-worksheets-to-excel-export/
-			https://codepen.io/team/amcharts/embed/MWbYqdy?default-tab=result&editable=true&theme-id=dark
 	- Verificar quais dependencias está faltando
 
 

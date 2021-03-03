@@ -185,7 +185,7 @@ function resolvGrade(data, option) {
 			, stripTableColors: 	[{bgcolor: "white"}]
 			, hoverTrTableColor: 	"lightblue"
 			, padination: 			[15,25]
-			, isMobile_Global: 		false
+			, isMobile_Global: 		window['isMobile_Global'] || false
 			, no_scrollX: 			true
 			// , languageJson: 		''
 			, dom: 					''
@@ -418,6 +418,8 @@ function resolvGrade(data, option) {
 		}
 		grade += ``
 			+ 	`</table>`
+
+		grade = '<div style="overflow-x:auto;">' + grade + '</div>';
 	} else { 
 		grade = `<b>Debug != OK</b>`;
 	}

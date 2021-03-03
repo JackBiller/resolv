@@ -46,6 +46,7 @@ var registerEventKeyboard 	= [];
 var registerEventAll 		= [];
 
 var returnObjIdentado_Global = true;
+var isMobile_Global = isMobile();
 
 var fa_icon_Global = [
 	"address-book","address-book-o","address-card","address-card-o","adjust","american-sign-language-interpreting",
@@ -136,6 +137,16 @@ var fa_icon_Global = [
 	"expand","fast-backward","fast-forward","forward","pause","pause-circle","pause-circle-o","play","play-circle",
 	"play-circle-o","step-backward","step-forward","stop","stop-circle","stop-circle-o"
 ];
+
+function isMobile() { 
+	var userAgent = String(navigator.userAgent).toUpperCase()
+	, 	plataformasMobile = ['ANDROID','IOS'];
+
+	for (var i = 0; i < plataformasMobile.length; i++) { 
+		if (userAgent.indexOf(plataformasMobile[i]) != -1) return true;
+	}
+	return false;
+}
 
 function capitalize(s) { 
 	if (typeof s !== "string") return "";
