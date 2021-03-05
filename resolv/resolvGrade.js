@@ -158,6 +158,7 @@ function resolvGrade(data, option) {
 			no_tableSetWidth: (0|1) 														// Não seta width da tabela com 100%
 			no_dataTable: (0|1) 															// Não usa lib dataTable
 			initComplete: function(){} 														// Função diparada quando termina de carregar a grade
+			initCompleteSearch: (0|1) 														// Caso true e initComplete undefined, inicia grade focando na pesquisa
 			setDefaultValZero: (0|1) 														// quando for campo numerico (format) e o valor for zero
 			... 																			// , vai imprimir o valor padrão 
 			title: ''																		// titulo para exportação de dados
@@ -216,6 +217,12 @@ function resolvGrade(data, option) {
 			"sLast":     "Último"
 		}
 	};
+
+	if ((option.initComplete || '') == '' && (option.initCompleteSearch || false)) { 
+		eval(`option.initComplete = function() { 
+			$("#divTable${option.descForm}").find('input')[0].focus();
+		}`);
+	}
 
 	if (typeof(data) == 'string') { 
 		try { 
@@ -419,7 +426,7 @@ function resolvGrade(data, option) {
 		grade += ``
 			+ 	`</table>`
 
-		grade = '<div style="overflow-x:auto;">' + grade + '</div>';
+		grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
 	} else { 
 		grade = `<b>Debug != OK</b>`;
 	}
@@ -454,6 +461,66 @@ function resolvGrade(data, option) {
 	var mynumericTooltip = option.inputs
 		.filter(function(input) { return (input.no_render || '') == '' && (input.tooltip || '') != ''; })
 		.map(function(el) { return el.indice; });
+
+	// Setinhas da grade
+	if ((option.trClick || '') != '') { 
+		window['tableEventKeyboard' + option.descForm] = function(e, whichkey) { 
+			if ($("#divTable" + option.descForm).find('input').is(":focus") 
+				|| $("#divTable" + option.descForm).find('.pagination').find('a').is(':focus')
+			) { 
+				if (whichkey == 38 || whichkey == 40 || whichkey == 13) { 
+					e.preventDefault();
+					var elTable = $("#divTable" + option.descForm);
+					var pagination = $(elTable).find('.pagination')[0];
+					var indice = -1
+					var trs = $(elTable).find('tr.cursorClick');
+					for (var i = 0; i < trs.length; i++) { 
+						if ($(trs[i]).find('td').attr('class').indexOf('active') >= 0) indice = i;
+					}
+
+					if (whichkey == 38) { // UP
+						indice = indice-1;
+						if (indice < 0) { 
+							if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) { 
+								$(pagination).find(".previous").click();
+								indice = $(elTable).find('tr.cursorClick').length-1;
+							} else { 
+								indice = 0;
+							}
+						}
+					}
+					else if (whichkey == 40) { // DOWN
+						indice = indice+1;
+						if (indice >= $(elTable).find('tr.cursorClick').length) { 
+							if ($(pagination).find('.next').attr('class').indexOf('disabled') < 0) { 
+								$(pagination).find(".next").click();
+								indice = 0;
+							} else { 
+								indice = $(elTable).find('tr.cursorClick').length-1;
+							}
+						}
+					}
+
+					trs = $(elTable).find('tr.cursorClick');
+					for (var i = 0; i < trs.length; i++) { 
+						$(trs[i]).find('td').attr('class', $(trs[i]).find('td').attr('class').replace('active',''));
+					}
+
+					var tds = $($(elTable).find('tr.cursorClick')[indice]).find('td');
+					for (var i = 0; i < tds.length; i++) { 
+						$(tds[i]).attr('class', $(tds[i]).attr('class') + ' active');
+					}
+
+					if (whichkey == 13) $(elTable).find('tr.cursorClick')[indice].click();
+				}
+			}
+		}
+		eval(`window['tableEventKeyboard' + option.descForm] = ${
+			String(window['tableEventKeyboard' + option.descForm]).replace(/option\.descForm/g, `"${option.descForm}"`)
+		};`);
+		registerEventKeyboard.push('tableEventKeyboard' + option.descForm);
+	}
+	// End: Setinhas da grade
 
 	if ((option.returnHTML || false) || (option.div || '') == '') { 
 		return grade

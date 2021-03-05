@@ -31,6 +31,8 @@
 </style>
 <script>
 
+	var selectedMenu = localStorage.selectedMenu ? localStorage.getItem('selectedMenu') : 0;
+
 	var previewLivre = resolvDefaultPreveiw('previewLivre', { 
 		input: { text: 'Livre para testes' }
 	});
@@ -116,7 +118,7 @@
 		h3: { text: 'Preview dos Componentes', classDiv: 'text-center' },
 		br: { num: 1 },
 		menu: { descForm: 'menuTeste'
-			, isLateral: true, no_link: true
+			, isLateral: true, no_link: true, selected: selectedMenu
 			, abas: [
 			{ text: 'Livre', ctx: [ 
 				{ h2: { text: 'Livre' } },
@@ -210,15 +212,9 @@
 			}
 		});
 	}
-</script>
-<div id="styleAdicional"></div>
-<script>
-	$("#styleAdicional").html(""
-		+ 	"<style>"
-		+ 		"tr:hover > .celB{background-color: lightblue !important;}"
-		// + 		"tr > .active{background-color: lightblue !important;}"
-		+ 		"tr > .active{background-color: #66ccff !important;}"
-		+ 	"</style>"
-	);
+
+	registerEventAll.push({ evento: 'click', id: 'menuTeste'
+		, func: () => { localStorage.setItem('selectedMenu', resolvVal('menuTeste')) }
+	});
 </script>
 </html>

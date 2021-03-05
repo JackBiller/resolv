@@ -755,68 +755,21 @@ $(document).ready(function() {
 			});
 		}
 
-		// modalConsulta funcionar nas setas e enter, sem o uso do mouse
-		if (($("#modalConsulta").data('bs.modal') || {}).isShown) { 
-			if (whichkey == 38 || whichkey == 40 || whichkey == 13) { 
-				e.preventDefault();
-				var pagination = $("#modalConsulta").find('.pagination')[0];
-				var indice = -1
-				var trs = $("#modalConsulta").find('tr.cursorClick');
-				for (var i = 0; i < trs.length; i++) { 
-					if ($(trs[i]).find('td').attr('class').indexOf('active') >= 0) { 
-						indice = i;
-					}
-				}
-
-				if (whichkey == 38) { // UP
-					indice = indice-1;
-					if (indice < 0) { 
-						if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) { 
-							$(pagination).find(".previous").click();
-							indice = $("#modalConsulta").find('tr.cursorClick').length-1;
-						} else { 
-							indice = 0;
-						}
-					}
-				}
-				else if (whichkey == 40) { // DOWN
-					indice = indice+1;
-					if (indice >= $("#modalConsulta").find('tr.cursorClick').length) { 
-						if ($(pagination).find('.next').attr('class').indexOf('disabled') < 0) { 
-							$(pagination).find(".next").click();
-							indice = 0;
-						} else { 
-							indice = $("#modalConsulta").find('tr.cursorClick').length-1;
-						}
-					}
-				}
-
-				trs = $("#modalConsulta").find('tr.cursorClick');
-				for (var i = 0; i < trs.length; i++) { 
-					$(trs[i]).find('td').attr('class', $(trs[i]).find('td').attr('class').replace('active',''));
-				}
-
-				var tds = $($("#modalConsulta").find('tr.cursorClick')[indice]).find('td');
-				for (var i = 0; i < tds.length; i++) { 
-					$(tds[i]).attr('class', $(tds[i]).attr('class') + ' active');
-				}
-
-				if (whichkey == 13) $("#modalConsulta").find('tr.cursorClick')[indice].click();
-			}
-		}
-
 		if (!setComand) { 
 			registerEventKeyboard.forEach(function(x) { 
 				window[x](e,whichkey);
 			});
 		}
 	}
-});
 
-$("body").append(""
-	+ 	"<style>"
-	+ 		"tr > .active { background-color: "
-	+ 			(objParamGrade_Global.activeTrTableColor || objParamGrade_Global.hoverTrTableColor || '#66ccff')
-	+ 		" !important; }"
-	+ 	"</style>"
-);
+	$("body").append(""
+		+ 	"<style>"
+		+ 		"tr:hover > .celB {"
+		+ 			"background-color:" + ((window['objParamGrade_Global'] || {}).hoverTrTableColor || 'lightblue') + " !important;"
+		+ 		"}"
+		+ 		"tr > .active {"
+		+ 			"background-color:" + ((window['objParamGrade_Global'] || {}).activeTrTableColor || '#66ccff') + " !important;"
+		+ 		"}"
+		+ 	"</style>"
+	);
+});

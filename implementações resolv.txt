@@ -11,7 +11,6 @@ Melhorias da abstração resolv:
 		- opções para tratamento dos dados, criar parametros, fazer calculos etc. (similar ao que vi ter que ter no grafico)
 		- opção de vincular com legenda para fazer filtros
 		- O que da para automatizar?
-			- registros de evetos para uma fila, caso use ajax
 			- tela de loading e controle de visualização
 			- se tem que esperar algum evento
 			- se começa com texto generico, e voltar para ele no sirealize
