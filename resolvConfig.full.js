@@ -4684,8 +4684,15 @@ function resolvVal(id) {
 	var func = "val";
 
 	if (el.parent == 'menu') { 
+		var val = arguments[1];
+		if (val === 0 || ((val || '') != '' && !isNaN(val))) { 
+			try { 
+				$("#" + id + val).click();
+			} catch(e) { console.error(e); }
+		}
+
 		var itensMenu = document.getElementsByName(id), indiceMenu = -1;
-		for (var i = 0; i < itensMenu.length; i++) {
+		for (var i = 0; i < itensMenu.length; i++) { 
 			if (itensMenu[i].className.indexOf('active') >= 0) indiceMenu = i;
 		}
 		return indiceMenu;
@@ -4709,7 +4716,7 @@ function resolvVal(id) {
 
 		if (['div','span'].indexOf(el.parent) != -1) func = 'html';
 
-		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
+		if ((el.obj.isMonth || false) && arguments[1] != undefined) { 
 			if ((value || '') == '') { 
 				$("#"+id+'Datepicker').val('');
 			} else { 
@@ -4730,7 +4737,7 @@ function resolvVal(id) {
 					// console.log(path + '/' + arguments[1]);
 				}
 				return;
-			} else {
+			} else { 
 				var val = el.el[func]().replace(/\\/g, '/');
 				val = val.substring(val.lastIndexOf('/')+1, val.length);
 				if (val == '') val = $('#' + id + '_desc_file').html();
@@ -4738,19 +4745,17 @@ function resolvVal(id) {
 			}
 		}
 
-		if (el.obj.type == 'checkbox' && ([0,1]).indexOf(arguments[1]) >= 0) {
+		if (el.obj.type == 'checkbox' && ([0,1]).indexOf(arguments[1]) >= 0) { 
 			value = arguments[1] == 1;
 		} else if (el.obj.type == 'checkbox') { 
 			return el.el[0].checked;
 		}
 
-		if (
-			el.obj.type == 'radio' && arguments[1] != undefined && el.el.attr('id') != id
-		) { 
+		if (el.obj.type == 'radio' && arguments[1] != undefined && el.el.attr('id') != id) { 
 			var setValue = -1;
 			var els = document.getElementsByName(id);
-			for (var i = 0; i < els.length; i++) {
-				if (els[i].value == arguments[1]) {
+			for (var i = 0; i < els.length; i++) { 
+				if (els[i].value == arguments[1]) { 
 					els[i].checked = true;
 					setValue = i;
 				}
@@ -4766,15 +4771,15 @@ function resolvVal(id) {
 function resolvDisabled(id, cla='') { 
 	var el = resolvEl(id, cla);
 
-	if (el.parent == 'codigoConsulta') {
-		if (arguments.length > 2) {
+	if (el.parent == 'codigoConsulta') { 
+		if (arguments.length > 2) { 
 			$("#"+id).find('button').attr('disabled',(arguments[2] || false))
 			return el.el			.attr('disabled',(arguments[2] || false));
-		} else {
+		} else { 
 			$("#"+id).find('button').attr('disabled',true);
 			return el.el			.attr('disabled',true);
 		}
-	} else {
+	} else { 
 		if (['div','spam'].indexOf(el.parent) < 0) { // se NÃO for div
 			if ((el.obj.isMonth || false)) $("#"+id+'Datepicker').attr('disabled', (arguments[1] || false));
 
@@ -4804,13 +4809,12 @@ function resolvFocus(id, cla='') {
 	}
 }
 
-
 function resolvVisibled(id, cla='') { 
 	var el = resolvEl(id, cla);
 
-	if (el.parent == 'codigoConsulta') {
+	if (el.parent == 'codigoConsulta') { 
 		return el.el.parent().parent().css('display', (arguments[2] || 'none'));
-	} else {
+	} else { 
 		if (['div','spam'].indexOf(el.parent) < 0) { // se NÃO for div
 			var keys = Object.keys(el.obj);
 			var tiposDiv = ['idDiv','classDiv','styleDiv','clickDiv','isRow'];
@@ -4823,7 +4827,7 @@ function resolvVisibled(id, cla='') {
 
 			$("#label_"+id).css('display', (arguments[1] || 'none'));
 			return el.el.css('display', (arguments[1] || 'none') );
-		} else {
+		} else { 
 			return el.el.css('display', (arguments[1] || 'none') );
 		}
 	}
@@ -4909,16 +4913,16 @@ function ajusteTabFunc(func,tab=0,initTab=false) {
 	func = func.split('\n');
 
 	var defaultTab = 0, contTabIni, linha;
-	for (var i = 1; i < func.length; i++) {
+	for (var i = 1; i < func.length; i++) { 
 		contTabIni = 0
 		linha = func[i].split('&nbsp;');
-		for (var j = 0; j < linha.length; j++) {
+		for (var j = 0; j < linha.length; j++) { 
 			if (linha[j] == '') contTabIni++;
 			else 				j = linha.length;
 		}
 		if (defaultTab == 0 || contTabIni < defaultTab) defaultTab = contTabIni;
 	}
-	for (var i = 1; i < func.length; i++) {
+	for (var i = 1; i < func.length; i++) { 
 		linha = func[i].split('&nbsp;');
 		linha.splice(0, defaultTab);
 		func[i] = linha.join('&nbsp;');
@@ -5087,7 +5091,7 @@ function resolvGlobalParam(options, tab, html) {
 			isRow: (0|1) -- Colocar o parametro em volta de uma div com a class row
 		}
 	*/
-	var valid = [
+	var valid = [ 
 		{ param: 'idDiv' 	, attr: 'id' 		, },
 		{ param: 'classDiv' , attr: 'class' 	, },
 		{ param: 'styleDiv' , attr: 'style' 	, valid: 'resolvStyle' },
@@ -5095,9 +5099,9 @@ function resolvGlobalParam(options, tab, html) {
 	], param = '', result;
 	var random;
 
-	if ( valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0 ) {
+	if (valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0) { 
 		valid.forEach(function(x) {
-			if ((options[x.param] || '') != '') {
+			if ((options[x.param] || '') != '') { 
 
 				do { 
 					random = parseInt( Math.random() * 100000 );
@@ -5107,7 +5111,7 @@ function resolvGlobalParam(options, tab, html) {
 				if (typeof(options[x.param]) == 'function') { 
 					window['click'+random] = options[x.param];
 					param += ` ${x.attr}="click${random}();"`;
-				} else {
+				} else { 
 					result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
 					result = `${(x.valid || '')}(${ result })`;
 					param += ` ${x.attr}="${eval( result )}"`;
@@ -5141,11 +5145,10 @@ function resolvFindParam(obj, search) {
 
 	if (keys.indexOf(search) >= 0) return true;
 
-	for (var i = 0; i < keys.length; i++) {
+	for (var i = 0; i < keys.length; i++) { 
 		if (typeof(obj[keys[i]]) == 'object') isFind = resolvFindParam(obj[keys[i]], search);
 		if (isFind) i = keys.length;
 	}
-
 	return isFind;
 }
 
@@ -5161,9 +5164,9 @@ function resolvParamAjax(options) {
 		param += ',';
 	} else { 
 		param = Object.keys(options.param).map(function(key) { 
-					var aspas = typeof options.param[key] == 'string' ? '"' : '';
-					return `'${key}':${aspas}${String(options.param[key])}${aspas}`;
-				}).join(',') + ',';
+			var aspas = typeof options.param[key] == 'string' ? '"' : '';
+			return `'${key}':${aspas}${String(options.param[key])}${aspas}`;
+		}).join(',') + ',';
 	}
 	return param;
 }
@@ -5182,12 +5185,12 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 	var negativo = num[0] == '-' ? (num = num.substring(1, num.length), true) : false;
 	decimal = ((formNum[1] || '') != '' ? decimal + String(formNum[1]) : '');
 	formNum = '';
-	for (var i = num.length-1; i >= 0; i--) {
+	for (var i = num.length-1; i >= 0; i--) { 
 		formNum = num[i] + formNum;
 		if ((cont++, cont) % 3 == 0 && i > 0) formNum = milhar + formNum;
 	}
 	if (opcionalDesc) { 
-		for (var i = decimal.length-1; i >= limitDec; i--) {
+		for (var i = decimal.length-1; i >= limitDec; i--) { 
 			if (decimal[i] != '0') { i = -1; continue; }
 			decimal = decimal.substring(0,i);
 		}
@@ -5207,24 +5210,22 @@ $(document).ready(function() {
 	}
 	if (window.event) ResolvKeyDown(window.event, window.event.keyCode);
 	function ResolvKeyDown(e, whichkey) { 
-		// console.log(whichkey);
 		var setComand = false;
 
-
-		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) {
+		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) { 
 			var itens = $(".codigoConsulta");
 
-			$.each(itens, function(i,x){
-				if ($(x).is(':focus')) {
+			$.each(itens, function(i,x){ 
+				if ($(x).is(':focus')) { 
 					window['pesquisa' + $(x).data('ref')]();
 				}
 			})
 		}
 
 		var proximoIndice, setInput = false;
-		if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) {
-			$.each(registerInputFocus, function(i,x) {
-				if ($(x.el[0]).is(":focus") && !setInput) {
+		if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) { 
+			$.each(registerInputFocus, function(i,x) { 
+				if ($(x.el[0]).is(":focus") && !setInput) { 
 					setInput = true;
 
 					x.el[0].blur();
@@ -5233,35 +5234,91 @@ $(document).ready(function() {
 					var teste = {};
 					teste[x.parent] = x.obj;
 					teste = serealizeForm(teste);
-					if (!teste.valid) {
+					if (!teste.valid) { 
 						setComand = true;
 						return false;
 					}
 
-					if ((x.obj.onEnter || '') == '') {
+					if ((x.obj.onEnter || '') == '') { 
 						proximoIndice = -1;
-						for (var j = (i+1); j < registerInputFocus.length; j++) {
-							if (!$(registerInputFocus[j].el[0]).attr('disabled')) {
+						for (var j = (i+1); j < registerInputFocus.length; j++) { 
+							if (!$(registerInputFocus[j].el[0]).attr('disabled')) { 
 								proximoIndice = j;
 								j = registerInputFocus.length;
 							}
 						}
-		
-						console.log(registerInputFocus[proximoIndice]);
+						// console.log(registerInputFocus[proximoIndice]);
 						registerInputFocus[proximoIndice].el[0].focus();
 						setComand = true;
-					} else {
+					} else { 
 						x.el[0].focus();
 					}
-
 				}
-			})
+			});
 		}
 
-		if (!setComand) {
-			registerEventKeyboard.forEach(function(x){
+		// modalConsulta funcionar nas setas e enter, sem o uso do mouse
+		if (($("#modalConsulta").data('bs.modal') || {}).isShown) { 
+			if (whichkey == 38 || whichkey == 40 || whichkey == 13) { 
+				e.preventDefault();
+				var pagination = $("#modalConsulta").find('.pagination')[0];
+				var indice = -1
+				var trs = $("#modalConsulta").find('tr.cursorClick');
+				for (var i = 0; i < trs.length; i++) { 
+					if ($(trs[i]).find('td').attr('class').indexOf('active') >= 0) { 
+						indice = i;
+					}
+				}
+
+				if (whichkey == 38) { // UP
+					indice = indice-1;
+					if (indice < 0) { 
+						if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) { 
+							$(pagination).find(".previous").click();
+							indice = $("#modalConsulta").find('tr.cursorClick').length-1;
+						} else { 
+							indice = 0;
+						}
+					}
+				}
+				else if (whichkey == 40) { // DOWN
+					indice = indice+1;
+					if (indice >= $("#modalConsulta").find('tr.cursorClick').length) { 
+						if ($(pagination).find('.next').attr('class').indexOf('disabled') < 0) { 
+							$(pagination).find(".next").click();
+							indice = 0;
+						} else { 
+							indice = $("#modalConsulta").find('tr.cursorClick').length-1;
+						}
+					}
+				}
+
+				trs = $("#modalConsulta").find('tr.cursorClick');
+				for (var i = 0; i < trs.length; i++) { 
+					$(trs[i]).find('td').attr('class', $(trs[i]).find('td').attr('class').replace('active',''));
+				}
+
+				var tds = $($("#modalConsulta").find('tr.cursorClick')[indice]).find('td');
+				for (var i = 0; i < tds.length; i++) { 
+					$(tds[i]).attr('class', $(tds[i]).attr('class') + ' active');
+				}
+
+				if (whichkey == 13) $("#modalConsulta").find('tr.cursorClick')[indice].click();
+			}
+		}
+
+		if (!setComand) { 
+			registerEventKeyboard.forEach(function(x) { 
 				window[x](e,whichkey);
 			});
 		}
 	}
 });
+
+$("body").append(""
+	+ 	"<style>"
+	+ 		"tr > .active { background-color: "
+	+ 			(objParamGrade_Global.activeTrTableColor || objParamGrade_Global.hoverTrTableColor || '#66ccff')
+	+ 		" !important; }"
+	+ 	"</style>"
+);

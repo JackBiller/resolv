@@ -161,7 +161,7 @@ if (!empty($_POST['testeApiDados'])) {
 	}
 	$arrayTeste = array();
 
-	for ($i=0; $i < 10; $i++) { 
+	for ($i=0; $i < 50; $i++) { 
 		$dadoGenerico = new DadoGenericos();
 		$dadoGenerico->set($i, 'id');
 		$dadoGenerico->set(($i * 1000), 'codigo');
