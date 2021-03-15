@@ -48,7 +48,7 @@
 			},
 			error: function() { $('#lastUpdate').val('Falha ao fazer a requisição!'); },
 			done: function(data) { 
-				console.log(data);
+				// console.log(data);
 
 				data = data + "<br>" + $("#logs").html()
 				if (data.length > 1000) data = data.substring(0,1000);
