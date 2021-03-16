@@ -3056,7 +3056,9 @@ function resolvInput(options,tab=0) {
 			type: '' 							-- Type do campo
 			list: '' 							-- List do campo para datalist, se não tiver definido datalista param
 			.. 									-- Caso type 'number' ou 'tel' alinha o texto a direta
+			placeholder: '' 					-- Placeholder do campo
 			autocomplete: '' 					-- Autocomplete do campo
+			autofocus: (0|1) 					-- Autofocus do campo
 			accesskey: '' 						-- Accesskey do campo, atalho para focar no campo ou clicar no botão
 			data: { 							-- Acresenta o atributos data no campo (data-key='value')
 				key: value
@@ -3235,7 +3237,7 @@ function resolvInputIn(options,tab=0) {
 		+t(tab)	+ 	"<" + ((options.isTextarea || false) ? 'textarea' : ((options.enum || '') != '' ? 'select' : 'input') )
 
 		// **** configurar atributos simples ****
-		+ ['id','name','value','type','cols','rows','autocomplete','maxlength']
+		+ ['id','name','value','type','cols','rows','autocomplete','maxlength','autofocus','placeholder']
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ` ${opt}="${options[opt]}"`; })
 			.join('')
@@ -3268,7 +3270,7 @@ function resolvInputIn(options,tab=0) {
 
 
 		// **** configurar as chamadas dos metodos ****
-		+ [`onchange`,`onclick`,`onfocus`,`onblur`]
+		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) {
 				return ` ${opt}="${opt + random}(this);`
@@ -3278,7 +3280,7 @@ function resolvInputIn(options,tab=0) {
 					)
 					+ 	`"`
 			}).join('')
-		+ [`onchange`,`onclick`,`onfocus`]
+		+ [`onchange`,`onclick`,`onfocus`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) == ``; })
 			.map(function(opt) {
 				return ` ${opt}="resolvEvento('${opt}','${(options.id || options.name || '')}');"`
@@ -3387,7 +3389,7 @@ function resolvInputIn(options,tab=0) {
 
 
 		// ****  configurar as funções chamada pelos metodos ****
-		+ [`onchange`,`onclick`,`onfocus`,`onblur`]
+		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ''
 				+ t(tab+1)	+ 	`function ${opt + random}(el) { `
@@ -4312,12 +4314,18 @@ function serealizeForm(obj,options={}) {
 	/*
 		options: {
 			options do valid 		-- Opções descritas na função returnInputValid()
+			onlyValue: (0|1) 	-- Buscar somente valores do formulario
+			onlyValuePre: (0|1) 	-- Buscar valores predefinido no formulario
 		}
 	*/
 	options = $.extend({},{ }, options);
 
 	var inputs = returnInputObj(obj);
-	var valid = returnInputValid(inputs, options);
+	if ((options.onlyValuePre || '') == '' && (options.onlyValue || '') == '') {
+		var valid = returnInputValid(inputs, options);
+	} else { 
+		var valid = true;
+	}
 	var keys = returnIdObj(obj);
 	var param = {}, paramAdd;
 	var input = {};
@@ -4325,7 +4333,11 @@ function serealizeForm(obj,options={}) {
 	for (var i = 0; i < keys.length; i++) { 
 		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
 			paramAdd = ['codigoConsulta'].indexOf(keys[i].parent) < 0 ? '' : ',"id"'
-			param[keys[i].id] = eval(`resolvVal(keys[i].id ${paramAdd});`);
+			if ((options.onlyValuePre || '') == '') {
+				param[keys[i].id] = eval(`resolvVal(keys[i].id ${paramAdd});`);
+			} else { 
+				param[keys[i].id] = keys[i].obj.value != undefined ? keys[i].obj.value : eval(`resolvVal(keys[i].id ${paramAdd});`);
+			}
 		}
 
 		if (
@@ -4333,12 +4345,20 @@ function serealizeForm(obj,options={}) {
 			((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
 		) { 
 			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) { 
-				input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
+				if ((options.onlyValuePre || '') == '') {
+					input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
+				} else { 
+					input[keys[i].obj.input] = keys[i].obj.value;
+				}
 			} else {
-				try { input[keys[i].obj.id] 			= eval(`resolvVal(keys[i].id,"id");`); 		} catch(e) {}
-				try { input[keys[i].obj.codigo.input] 	= eval(`resolvVal(keys[i].id,"codigo");`); 	} catch(e) {}
-				try { input[keys[i].obj.desc.input] 	= eval(`resolvVal(keys[i].id,"desc");`); 	} catch(e) {}
-				try { input[keys[i].obj.select.value] 	= eval(`resolvVal(keys[i].id,"select");`); 	} catch(e) {}
+				if ((options.onlyValuePre || '') == '') { 
+					try { input[keys[i].obj.id] 			= eval(`resolvVal(keys[i].id,"id");`); 		} catch(e) {}
+					try { input[keys[i].obj.codigo.input] 	= eval(`resolvVal(keys[i].id,"codigo");`); 	} catch(e) {}
+					try { input[keys[i].obj.desc.input] 	= eval(`resolvVal(keys[i].id,"desc");`); 	} catch(e) {}
+					try { input[keys[i].obj.select.value] 	= eval(`resolvVal(keys[i].id,"select");`); 	} catch(e) {}
+				} else { 
+					input[(keys[i].obj.id || keys[i].obj.codigo.input)] = keys[i].obj.value;
+				}
 			}
 		}
 	}
@@ -4859,8 +4879,8 @@ function resolvDisabled(id, cla='') {
 function resolvFocus(id, cla='') { 
 	var el = resolvEl(id, cla);
 
-	function resolvFocusAction(el) { 
-		try { el[0].focus(); } catch(e) { }
+	function resolvFocusAction(el, op="focus") { 
+		try { el[0][op](); } catch(e) { }
 	}
 
 	if (el.parent == 'codigoConsulta') { 
@@ -4872,7 +4892,7 @@ function resolvFocus(id, cla='') {
 		if ((el.obj.isMonth || false)) 
 			return resolvFocusAction($("#"+id+'Datepicker'));
 
-		resolvFocusAction(el.el);
+		resolvFocusAction(el.el, el.parent == 'input' ? 'select' : 'focus');
 	}
 }
 
