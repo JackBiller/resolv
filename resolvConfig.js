@@ -290,8 +290,8 @@ function resolvDisabled(id, cla='') {
 function resolvFocus(id, cla='') { 
 	var el = resolvEl(id, cla);
 
-	function resolvFocusAction(el) { 
-		try { el[0].focus(); } catch(e) { }
+	function resolvFocusAction(el, op="focus") { 
+		try { el[0][op](); } catch(e) { }
 	}
 
 	if (el.parent == 'codigoConsulta') { 
@@ -303,7 +303,7 @@ function resolvFocus(id, cla='') {
 		if ((el.obj.isMonth || false)) 
 			return resolvFocusAction($("#"+id+'Datepicker'));
 
-		resolvFocusAction(el.el);
+		resolvFocusAction(el.el, el.parent == 'input' ? 'select' : 'focus');
 	}
 }
 
