@@ -19,7 +19,9 @@ function resolvInput(options,tab=0) {
 			type: '' 							-- Type do campo
 			list: '' 							-- List do campo para datalist, se não tiver definido datalista param
 			.. 									-- Caso type 'number' ou 'tel' alinha o texto a direta
+			placeholder: '' 					-- Placeholder do campo
 			autocomplete: '' 					-- Autocomplete do campo
+			autofocus: (0|1) 					-- Autofocus do campo
 			accesskey: '' 						-- Accesskey do campo, atalho para focar no campo ou clicar no botão
 			data: { 							-- Acresenta o atributos data no campo (data-key='value')
 				key: value
@@ -198,7 +200,7 @@ function resolvInputIn(options,tab=0) {
 		+t(tab)	+ 	"<" + ((options.isTextarea || false) ? 'textarea' : ((options.enum || '') != '' ? 'select' : 'input') )
 
 		// **** configurar atributos simples ****
-		+ ['id','name','value','type','cols','rows','autocomplete','maxlength']
+		+ ['id','name','value','type','cols','rows','autocomplete','maxlength','autofocus','placeholder']
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ` ${opt}="${options[opt]}"`; })
 			.join('')
@@ -231,7 +233,7 @@ function resolvInputIn(options,tab=0) {
 
 
 		// **** configurar as chamadas dos metodos ****
-		+ [`onchange`,`onclick`,`onfocus`,`onblur`]
+		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) {
 				return ` ${opt}="${opt + random}(this);`
@@ -241,7 +243,7 @@ function resolvInputIn(options,tab=0) {
 					)
 					+ 	`"`
 			}).join('')
-		+ [`onchange`,`onclick`,`onfocus`]
+		+ [`onchange`,`onclick`,`onfocus`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) == ``; })
 			.map(function(opt) {
 				return ` ${opt}="resolvEvento('${opt}','${(options.id || options.name || '')}');"`
@@ -350,7 +352,7 @@ function resolvInputIn(options,tab=0) {
 
 
 		// ****  configurar as funções chamada pelos metodos ****
-		+ [`onchange`,`onclick`,`onfocus`,`onblur`]
+		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ''
 				+ t(tab+1)	+ 	`function ${opt + random}(el) { `
