@@ -7,12 +7,18 @@ function serealizeForm(obj,options={}) {
 	/*
 		options: {
 			options do valid 		-- Opções descritas na função returnInputValid()
+			onlyValue: (0|1) 	-- Buscar somente valores do formulario
+			onlyValuePre: (0|1) 	-- Buscar valores predefinido no formulario
 		}
 	*/
 	options = $.extend({},{ }, options);
 
 	var inputs = returnInputObj(obj);
-	var valid = returnInputValid(inputs, options);
+	if ((options.onlyValuePre || '') == '' && (options.onlyValue || '') == '') {
+		var valid = returnInputValid(inputs, options);
+	} else { 
+		var valid = true;
+	}
 	var keys = returnIdObj(obj);
 	var param = {}, paramAdd;
 	var input = {};
@@ -20,7 +26,11 @@ function serealizeForm(obj,options={}) {
 	for (var i = 0; i < keys.length; i++) { 
 		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
 			paramAdd = ['codigoConsulta'].indexOf(keys[i].parent) < 0 ? '' : ',"id"'
-			param[keys[i].id] = eval(`resolvVal(keys[i].id ${paramAdd});`);
+			if ((options.onlyValuePre || '') == '') {
+				param[keys[i].id] = eval(`resolvVal(keys[i].id ${paramAdd});`);
+			} else { 
+				param[keys[i].id] = keys[i].obj.value != undefined ? keys[i].obj.value : eval(`resolvVal(keys[i].id ${paramAdd});`);
+			}
 		}
 
 		if (
@@ -28,12 +38,20 @@ function serealizeForm(obj,options={}) {
 			((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
 		) { 
 			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) { 
-				input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
+				if ((options.onlyValuePre || '') == '') {
+					input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
+				} else { 
+					input[keys[i].obj.input] = keys[i].obj.value;
+				}
 			} else {
-				try { input[keys[i].obj.id] 			= eval(`resolvVal(keys[i].id,"id");`); 		} catch(e) {}
-				try { input[keys[i].obj.codigo.input] 	= eval(`resolvVal(keys[i].id,"codigo");`); 	} catch(e) {}
-				try { input[keys[i].obj.desc.input] 	= eval(`resolvVal(keys[i].id,"desc");`); 	} catch(e) {}
-				try { input[keys[i].obj.select.value] 	= eval(`resolvVal(keys[i].id,"select");`); 	} catch(e) {}
+				if ((options.onlyValuePre || '') == '') { 
+					try { input[keys[i].obj.id] 			= eval(`resolvVal(keys[i].id,"id");`); 		} catch(e) {}
+					try { input[keys[i].obj.codigo.input] 	= eval(`resolvVal(keys[i].id,"codigo");`); 	} catch(e) {}
+					try { input[keys[i].obj.desc.input] 	= eval(`resolvVal(keys[i].id,"desc");`); 	} catch(e) {}
+					try { input[keys[i].obj.select.value] 	= eval(`resolvVal(keys[i].id,"select");`); 	} catch(e) {}
+				} else { 
+					input[(keys[i].obj.id || keys[i].obj.codigo.input)] = keys[i].obj.value;
+				}
 			}
 		}
 	}
