@@ -3179,8 +3179,9 @@ function resolvInputIn(options,tab=0) {
 		// + 		`$("#${options.id}_obs").html(check${random}Test);`
 		// + 	`else $("#${options.id}_obs").html("");`
 		+ 	`$('#${options.id}_obs').html(`
-		+ 		`typeof(check${random}Test) == 'string' && check${random}Test != '' ? check${random}Test : ''`
-		+ 	");"
+		+ 		`typeof(check${random}Test) == 'string' && check${random}Test != '' `
+		+			`? '<i class=\\'fa fa-times\\'></i> ' + check${random}Test : ''`
+		+ 	`);`
 
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
 
