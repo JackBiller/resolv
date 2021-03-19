@@ -896,35 +896,34 @@ function removeHtml(a) {
 	return a;
 }
 
-
 $(document).ready(function() { 
-	try {
+	try { 
 		$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) { 
-			a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
-			b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
+			a = tofloat(((a || '') == '' ? String(0) : a));
+			b = tofloat(((b || '') == '' ? String(0) : b));
 			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
 		};
 		$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) { 
-			a = tofloat(((a || '') == '' || isNaN(a) ? String(0) : a));
-			b = tofloat(((b || '') == '' || isNaN(b) ? String(0) : b));
+			a = tofloat(((a || '') == '' ? String(0) : a));
+			b = tofloat(((b || '') == '' ? String(0) : b));
 			return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
 		};
 		$.fn.dataTableExt.oSort['mynumericTooltip-asc']  = function(a, b) { 
 			a = (a == '' ? String(0) : removeHtml(a));
 			b = (b == '' ? String(0) : removeHtml(b));
-		
-			if (a != '' && !isNaN(a)) a = tofloat(a);
-			if (b != '' && !isNaN(b)) b = tofloat(b);
-		
+
+			if (a != '') a = tofloat(a);
+			if (b != '') b = tofloat(b);
+
 			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
 		};
 		$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) { 
 			a = (a == '' ? String(0) : removeHtml(a));
 			b = (b == '' ? String(0) : removeHtml(b));
-		
-			if (a != '' && !isNaN(a)) a = tofloat(a);
-			if (b != '' && !isNaN(b)) b = tofloat(b);
-		
+
+			if (a != '') a = tofloat(a);
+			if (b != '') b = tofloat(b);
+
 			return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
 		};
 	} catch(e) {}
@@ -984,7 +983,7 @@ function resolveFootAction(data, option, defaultOption={}) {
 
 	if (['SUM',''].indexOf((option.op || '').toUpperCase()) != -1) 	return resolveSumNull(data, option);
 	if (option.op.toUpperCase() == 'MEDIA') 						return resolveFootMedia(data, option);
- 
+
 	if ((option.val || '') == '') option.val = [{ attr: defaultOption.param }];
 	if ((option.val.attr || '') != '') option.val = [option.val];
 
