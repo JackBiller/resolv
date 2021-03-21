@@ -427,7 +427,7 @@ function resolvInputIn(options,tab=0) {
 							? (options.datalist.ajax || 'ajax') 
 							: `window[(function(){ var func = ${String(options.datalist.ajax)}; return func(); })()]`
 						) + `({`
-			+ t(tab+3)	+ 			`param: ` + JSON.stringify(options.datalist.param || {}) + `,`
+			+ t(tab+3)	+ 			`param: ` + jsonToStringParam(options.datalist.param || {}) + `,`
 			+ t(tab+3)	+ 			`done: function(data) { `
 			+ t(tab+4)	+ 				`data = JSON.parse(data);`
 			+ t(tab+4)	+ 				`var grade = "<datalist id=\\"${(options.id || '')}datalist\\">";`

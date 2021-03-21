@@ -3463,7 +3463,7 @@ function resolvInputIn(options,tab=0) {
 							? (options.datalist.ajax || 'ajax') 
 							: `window[(function(){ var func = ${String(options.datalist.ajax)}; return func(); })()]`
 						) + `({`
-			+ t(tab+3)	+ 			`param: ` + JSON.stringify(options.datalist.param || {}) + `,`
+			+ t(tab+3)	+ 			`param: ` + jsonToStringParam(options.datalist.param || {}) + `,`
 			+ t(tab+3)	+ 			`done: function(data) { `
 			+ t(tab+4)	+ 				`data = JSON.parse(data);`
 			+ t(tab+4)	+ 				`var grade = "<datalist id=\\"${(options.id || '')}datalist\\">";`
@@ -4954,6 +4954,22 @@ function resolvIcon(icon) {
 		classFa != '' ? 'fa fa-' + icon 
 		: icon
 	);
+}
+
+function jsonToStringParam(obj) { 
+	var keys = Object.keys(obj);
+	var objParam = {}, val, func;
+
+	for (var i = 0; i < keys.length; i++) { 
+		if (typeof(obj[keys[i]]) == 'function') { 
+			func = obj[keys[i]];
+			val = func();
+		} else { 
+			val = obj[keys[i]];
+		}
+		objParam[keys[i]] = val;
+	}
+	return jsonToString(objParam);
 }
 
 function jsonToString(obj,tab=0,indent=false) { 
