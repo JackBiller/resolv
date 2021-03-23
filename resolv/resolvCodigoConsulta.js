@@ -489,7 +489,7 @@ function resolvCodigoConsulta(options, tab=0) {
 							$("#modalConsulta").find('input')[1].focus();
 						}
 						// , no_dataTable: true
-					},(options.grade || {}) ), tab+2, true)
+					},(options.grade || {}) ), tab+2, returnObjIdentado_Global)
 		+t(tab+2)	+ 				`);`
 		+t(tab+1)	+ 			`}`
 		+t(tab+1)	+ 			`$("#modalConsulta").find('.conteudo').html(grade);`

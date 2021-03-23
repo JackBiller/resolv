@@ -230,12 +230,12 @@ function resolvVal(id) {
 					setTimeout(function() { 
 						var path = typeof el.obj.upload.path == 'string' ? el.obj.upload.path : el.obj.upload.path();
 						$('#'+ id + 'preview').attr('src', path + '/' + nameFile.replace(/ /g, '_'));
-						
+
 						try { 
 							if ((el.obj.defaultImg || '') != '') { 
-								$('#'+ id + 'preview')[0].onerror;
 								$('#'+ id + 'preview')[0].onerror = function() { 
-									$('#'+ id + 'preview').attr('src', el.obj.defaultImg);
+									var comp = typeof el.obj.defaultImg == 'string' ? '' : '.path';
+									eval(`$('#'+ id + 'preview').attr('src', el.obj.defaultImg${comp});`)
 								}
 							}
 						} catch(e) {}
