@@ -5234,7 +5234,8 @@ function jsonToString(obj,tab=0,indent=false) {
 	if (typeof(obj) != 'object') return false;
 
 	var keys = Object.keys(obj);
-	var text = (isNaN(keys[0]) ? '{' : '['); // (indent ? t(tab) : '') +
+	var isObj = isNaN(keys[0] || 0) || JSON.stringify(obj).substring(0,1) == '{';
+	var text = (isObj  ? '{' : '['); // (indent ? t(tab) : '') +
 
 	for (var i = 0; i < keys.length; i++) { 
 		if (
@@ -5245,7 +5246,7 @@ function jsonToString(obj,tab=0,indent=false) {
 		text += ''
 			+ (['{','['].indexOf(text) < 0 ? ',' : '')
 			+ (indent ? t(tab+1) : '')
-			+ (isNaN(keys[i]) ? "\"" + keys[i] + "\":" : '')
+			+ (isObj ? "\"" + keys[i] + "\":" : '')
 
 		switch( typeof(obj[keys[i]]) ) { 
 			case 'number': 
@@ -5257,7 +5258,7 @@ function jsonToString(obj,tab=0,indent=false) {
 				text += indent ? ajusteTabFunc(obj[keys[i]],tab+1) : String(obj[keys[i]]); break;
 		}
 	}
-	text += (indent ? t(tab) : '') + (isNaN(keys[0]) ? '}' : ']');
+	text += (indent ? t(tab) : '') + (isObj ? '}' : ']');
 	return text;
 }
 
