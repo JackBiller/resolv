@@ -521,7 +521,7 @@ function resolvInputIn(options,tab=0) {
 				+ t(tab+3)	+ 		`fileName: '${options.upload.fileName}',`
 			)
 			+ ((options.upload.param || '') == '' ? '' : ''
-				+ t(tab+3)	+ 		`param: ${jsonToString(options.upload.param, tab+3, returnObjIdentado_Global)},`
+				+ t(tab+3)	+ 		`param: ${jsonToStringParam(options.upload.param, tab+3, returnObjIdentado_Global)},`
 			)
 			+ t(tab+3)	+ 			`path,`
 			+ t(tab+3)	+ 			`onstart: function(data='') { `

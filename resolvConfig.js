@@ -48,7 +48,7 @@ var registerEventAll 		= [];
 var returnObjIdentado_Global = true;
 var isMobile_Global = isMobile();
 
-var fa_icon_Global = [
+var fa_icon_Global = [ 
 	"address-book","address-book-o","address-card","address-card-o","adjust","american-sign-language-interpreting",
 	"anchor","archive","area-chart","arrows","arrows-h","arrows-v","asl-interpreting","assistive-listening-systems",
 	"asterisk","at","automobile","audio-description","balance-scale","ban","bank","bar-chart","bar-chart-o","barcode",
@@ -206,7 +206,7 @@ function resolvVal(id) {
 	} else { 
 		var value = (arguments[1] != undefined ? arguments[1] : el.obj.value);
 
-		switch( (((el.obj || {}).style || {})["text-transform"] || '').toLowerCase() ) { 
+		switch ((((el.obj || {}).style || {})["text-transform"] || '').toLowerCase()) { 
 			case 'uppercase': 	value = (value || '').toUpperCase(); break;
 			case 'lowercase': 	value = (value || '').toLowerCase(); break;
 			case 'capitalize': 	value = capitalize((value || '')); break;
@@ -241,7 +241,6 @@ function resolvVal(id) {
 						} catch(e) {}
 					},350);
 					// if (path[path.length-1] != '/') path += '/';
-					// console.log(path + '/' + arguments[1]);
 				}
 				return;
 			} else { 
@@ -269,7 +268,6 @@ function resolvVal(id) {
 			}
 			if (setValue >= 0) return els[setValue];
 		}
-
 		if (arguments.length > 1) 	return el.el[func]( value );
 									return el.el[func]();
 	}
@@ -309,9 +307,9 @@ function resolvFocus(id, cla='') {
 	} 
 
 	if (['input','button'].indexOf(el.parent) >= 0) { 
-		if ((el.obj.isMonth || false)) 
+		if ((el.obj.isMonth || false)) {
 			return resolvFocusAction($("#"+id+'Datepicker'));
-
+		}
 		resolvFocusAction(el.el, el.parent == 'input' ? 'select' : 'focus');
 	}
 }
@@ -331,7 +329,6 @@ function resolvVisibled(id, cla='') {
 					return el.el.parent().css('display',(arguments[1] || 'none'));
 				}
 			}
-
 			$("#label_"+id).css('display', (arguments[1] || 'none'));
 			return el.el.css('display', (arguments[1] || 'none') );
 		} else { 
@@ -376,9 +373,8 @@ function resolvIcon(icon) {
 	);
 }
 
-function jsonToStringParam(obj) { 
-	var keys = Object.keys(obj);
-	var objParam = {}, val, func;
+function jsonToStringParam(obj,tab=0,indent=false) { 
+	var objParam = {}, val, func, keys = Object.keys(obj);
 
 	for (var i = 0; i < keys.length; i++) { 
 		if (typeof(obj[keys[i]]) == 'function') { 
@@ -389,10 +385,10 @@ function jsonToStringParam(obj) {
 		}
 		objParam[keys[i]] = val;
 	}
-	return jsonToString(objParam);
+	return jsonToString(objParam, tab, indent);
 }
 
-function jsonToString(obj,tab=0,indent=false) { 
+function jsonToString(obj, tab=0, indent=false) { 
 	if (typeof(obj) != 'object') return false;
 
 	var keys = Object.keys(obj);
@@ -410,7 +406,7 @@ function jsonToString(obj,tab=0,indent=false) {
 			+ (indent ? t(tab+1) : '')
 			+ (isObj ? "\"" + keys[i] + "\":" : '')
 
-		switch( typeof(obj[keys[i]]) ) { 
+		switch (typeof(obj[keys[i]])) { 
 			case 'number': 
 			case 'boolean': text += obj[keys[i]]; 								break;
 			case 'string': 	text += "\"" + obj[keys[i]] + "\""; 				break;
@@ -451,7 +447,6 @@ function ajusteTabFunc(func,tab=0,initTab=false) {
 		linha.splice(0, defaultTab);
 		func[i] = linha.join('&nbsp;');
 	}
-
 	func = func.join('\n');
 	func = func.replace(/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/g, '\t');
 	func = func.replace(/&nbsp;/g, ' ');
@@ -468,7 +463,7 @@ function t() {
 }
 
 function tirarAcentuacao(texto) { 
-	var chars = [
+	var chars = [ 
 		'áàãäâÃÂÁÀÄéèëêÉÈËÊíìïîÍÌÏÎóòôõöÕÔÓÒÖúùüûÚÙÜÛýÿÝñÑçÇ°º¹²³ÅÂž¡ËØŽƒ‰ŠÐ×—ß÷',
 		'aaaaaAAAAAeeeeEEEEiiiiIIIIoooooOOOOOuuuuuuuuyyYnNcCoo123AAziEOZF%SDX-B/'
 	]
@@ -485,24 +480,7 @@ function tirarAcentuacao(texto) {
 	texto = texto.replace(/Æ/g, "AE");
 	texto = texto.replace(/™/g, "TM");
 	texto = texto.replace(/…/g, "...");
-
 	return texto;
-}
-
-function prefixedComand() { 
-	// navigator.appCodeName
-	// navigator.platform
-	// navigator.userAgent
-
-	// "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
-	// "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0"
-	// "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3; rv:11.0) like Gecko"
-
-	if ($.browserDetection(true) == 'Chrome'	){ return 'Alt + '; 			}
-	if ($.browserDetection(true) == 'IE11'		){ return 'Alt + '; 			}
-	if ($.browserDetection(true) == 'Firefox'	){ return 'Alt + Shift + '; 	}
-
-	return '';
 }
 
 function returnDescAccesskey(text, options) { 
@@ -514,7 +492,6 @@ function returnDescAccesskey(text, options) {
 	*/
 	if ((options.accesskey || '') != '') { 
 		if (!testP(options.numKeyVerifAlt)) options.numKeyVerifAlt = text.length;
-		// if ((options.numKeyVerifAlt || '') == '') options.numKeyVerifAlt = text.length;
 		var textT = text.toLowerCase();
 
 		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) { 
@@ -536,9 +513,7 @@ function testP(param) {
 }
 
 function resolvConfig(options, tab=0, isRegister=false) { 
-	var keys = Object.keys(options);
-	var html = '';
-	// var htmlModal = '';
+	var html = '', keys = Object.keys(options);
 
 	if (isRegister) { 
 		$("body").append(resolvConfigModal(options));
@@ -548,7 +523,6 @@ function resolvConfig(options, tab=0, isRegister=false) {
 			desregistrarConfig(objRegisted[0][objRegisted[0].tipoCampo]);
 		}
 		objRefConfig_Global.push(options);
-		// htmlModal += resolvConfigModal(objRefConfig_Global);
 	}
 
 	for (var i = 0; i < keys.length; i++) { 
@@ -559,7 +533,9 @@ function resolvConfig(options, tab=0, isRegister=false) {
 				: resolvGlobalParam(options[keys[i]], tab, window['resolv' + capitalize(keys[i])](options[keys[i]], tab));
 		} catch(e) { 
 			console.error(e);
-			// console.error('Falha ao tentar rodar função "resolv' + capitalize(keys[i]) + "(" + options[keys[i]] + "," + tab + ")'");
+			// console.error(
+			// 	'Falha ao tentar rodar função "resolv' + capitalize(keys[i]) + "(" + options[keys[i]] + "," + tab + ")'"
+			// );
 		}
 	}
 	return html;
@@ -585,7 +561,6 @@ function resolvPath(id, obj=objRefConfig_Global) {
 		x = key[i];
 		if (typeof(obj[x]) == 'object') { 
 			pathTemp = resolvPath(id, obj[x]);
-
 			if (pathTemp != false && pathTemp.length != 0) { 
 				path.push(x + ( x == 'menu' ? '-' + (obj[x].descForm || 'error') : '') )
 				pathTemp.forEach(function(e) { path.push(e) });
@@ -626,7 +601,6 @@ function resolvGlobalParam(options, tab, html) {
 	if (valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0) { 
 		valid.forEach(function(x) {
 			if ((options[x.param] || '') != '') { 
-
 				do { 
 					random = parseInt( Math.random() * 100000 );
 				} while (registerRandom_Global.indexOf(random) != -1);
@@ -642,21 +616,18 @@ function resolvGlobalParam(options, tab, html) {
 				}
 			}
 		});
-
 		html = ""
 			// + 	" class='" + options.classDiv + "'"
 			+ 	t(tab) 		+ 	"<div" + param + ">"
 			+ 	tAjuste(html,1)
 			+ 	t(tab) 		+ 	"</div>"
 	}
-
 	if ((options.isRow || '') != '') { 
 		html = ""
 			+ 	t(tab) 		+ 	"<div class='row'>"
 			+ 	tAjuste(html,1)
 			+ 	t(tab) 		+ 	"</div>"
 	}
-
 	return html;
 }
 
@@ -666,7 +637,6 @@ function tAjuste(text,ajuste) {
 
 function resolvFindParam(obj, search) { 
 	var keys = Object.keys(obj), isFind = false;
-
 	if (keys.indexOf(search) >= 0) return true;
 
 	for (var i = 0; i < keys.length; i++) { 
@@ -723,7 +693,6 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 	return (negativo ? '-' : '') + formNum + decimal;
 }
 
-
 /* Envetos de teclado */
 $(document).ready(function() { 
 	if (navigator.appName != "Microsoft Internet Explorer")
@@ -738,8 +707,7 @@ $(document).ready(function() {
 
 		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) { 
 			var itens = $(".codigoConsulta");
-
-			$.each(itens, function(i,x){ 
+			$.each(itens, function(i,x) { 
 				if ($(x).is(':focus')) { 
 					window['pesquisa' + $(x).data('ref')]();
 				}
@@ -771,7 +739,6 @@ $(document).ready(function() {
 								j = registerInputFocus.length;
 							}
 						}
-						// console.log(registerInputFocus[proximoIndice]);
 						registerInputFocus[proximoIndice].el[0].focus();
 						setComand = true;
 					} else { 
@@ -780,7 +747,6 @@ $(document).ready(function() {
 				}
 			});
 		}
-
 		if (!setComand) { 
 			registerEventKeyboard.forEach(function(x) { 
 				window[x](e,whichkey);
