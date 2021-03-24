@@ -230,6 +230,15 @@ function resolvVal(id) {
 					setTimeout(function() { 
 						var path = typeof el.obj.upload.path == 'string' ? el.obj.upload.path : el.obj.upload.path();
 						$('#'+ id + 'preview').attr('src', path + '/' + nameFile.replace(/ /g, '_'));
+
+						try { 
+							if ((el.obj.defaultImg || '') != '') { 
+								$('#'+ id + 'preview')[0].onerror = function() { 
+									var comp = typeof el.obj.defaultImg == 'string' ? '' : '.path';
+									eval(`$('#'+ id + 'preview').attr('src', el.obj.defaultImg${comp});`)
+								}
+							}
+						} catch(e) {}
 					},350);
 					// if (path[path.length-1] != '/') path += '/';
 					// console.log(path + '/' + arguments[1]);

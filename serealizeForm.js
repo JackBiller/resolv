@@ -72,7 +72,7 @@ function clearForm(obj) {
 				resolvDisabled(keys[i].descForm,'codigo',false);
 			}
 			else {
-				resolvVal(keys[i].id , (keys[i].obj.value || keys[i].obj.val || ''));
+				resolvVal(keys[i].id , (keys[i].obj.value || keys[i].obj.val || keys[i].obj.defaultImg || ''));
 				resolvDisabled(keys[i].id, (keys[i].obj.disabled || false));
 				$("#" + keys[i].id + "_obs").html('');
 			}
@@ -112,6 +112,7 @@ function setForm(data, obj, options={}) {
 				if (keys[i].parent == 'input' && ['number','tel'].indexOf(keys[i].obj.type) >= 0) {
 					val = String(val).replace(/\./g, (options.dec || ','))
 				}
+
 				resolvVal(keys[i].id, val);
 				$("#" + keys[i].id + "_obs").html('');
 			}

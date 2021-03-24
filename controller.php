@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Sao_Paulo');
+
 include './class/PadraoObjeto.php';
 include './class/funcoes.php';
 
@@ -99,7 +101,6 @@ $modalFunc
 	}(objRefConfig_Global));
 	if (checkModal$modalName && (!checkModalGlobal$modalName || forceSet)) { html += modal$modalName; }
 ";
-
 			}
 		}
 
@@ -114,10 +115,9 @@ $modalFunc
 			if (!$isFindModal) 
 				$modalFuncHTML .= '
 	html += modal' . $modalName . ';';
-
 		}
 
-		$conteudoAdd .=  "
+		$conteudoAdd .= "
 $modalHTML
 
 function resolvConfigModal(obj, forceSet=false) { 
@@ -145,7 +145,6 @@ if (!empty($_POST['listarDiretorio'])) {
 	echo toJson(listDir($path));
 }
 
-
 if (!empty($_POST['criarDiretorioDoc'])) { 
 	mkdir('./resolvDoc');
 	$doc = $_POST['doc'];
@@ -170,6 +169,50 @@ if (!empty($_POST['testeApiDados'])) {
 	}
 	echo toJson($arrayTeste);
 }
+
+/* Enviar arquivo via base64 */
+if (!empty($_POST['sendBase64'])) { 
+	$tempName = !empty($_POST['tempName']) ? $_POST['tempName'] : date('ymdHis').rand(0,100);
+	$base64 = $_POST['base64'];
+
+	if (!is_dir('./temp')) mkdir('./temp');
+
+	$arquivo = fopen('./temp/'.$tempName, 'a');
+	fwrite($arquivo, $base64);
+	fclose($arquivo);
+	echo $tempName;
+}
+
+if (!empty($_POST['doneSendBase64'])) { 
+	$tempName 		= $_POST['tempName'];
+	$fileName 		= $_POST['fileName'];
+	$path 			= $_POST['path'];
+	$ext 			= $_POST['ext'];
+	$arrayExtText 	= array('txt','csv');
+
+	$arquivo = fopen('./temp/'.$tempName, "r") or die("Unable to open file!");
+	$ctx = fread($arquivo, filesize('./temp/'.$tempName));
+	fclose($arquivo);
+
+	$path = resolvPath($path);
+
+	$arquivo2 = fopen($path.$fileName.'.'.$ext, "w") or die("Unable to open file!");
+	if (empty($_POST['no_base64'])) { 
+		if (in_array(strtolower($ext), $arrayExtText)) { 
+			fwrite($arquivo2, utf8_encode(base64_decode($ctx)));
+		} else { 
+			fwrite($arquivo2, base64_decode($ctx));
+		}
+	} else { 
+		fwrite($arquivo2, $ctx);
+	}
+	fclose($arquivo2);
+
+	$file = './temp/'.$tempName;
+	if (is_file($file)) unlink($file);
+	echo '1';
+}
+/* End: Enviar arquivo via base64 */
 
 function ajusteTab($text, $numTab=0, $boolComentario=false) { 
 	$text = explode("\n", str_replace("\r", "", $text));
