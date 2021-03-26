@@ -5093,7 +5093,10 @@ function resolvVal(id) {
 			return el.el[0].checked;
 		}
 
-		if (el.obj.type == 'radio' && arguments[1] != undefined && el.el.attr('id') != id) { 
+		if ((el.obj.type == 'radio' || (el.obj.radio || '') != '') && 
+			arguments[1] != undefined && 
+			el.el.attr('id') != id
+		) { 
 			var setValue = -1;
 			var els = document.getElementsByName(id);
 			for (var i = 0; i < els.length; i++) { 
@@ -5527,6 +5530,25 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 		if (decimal.length == limitDec) decimal = '';
 	}
 	return (negativo ? '-' : '') + formNum + decimal;
+}
+
+function numberTextOrder(num, dec=0) { 
+	if (num == '' || isNaN(num)) return '';
+	num = parseFloat(num).toFixed(dec);
+	num = num.split('.');
+	dec = num.splice(1,1);
+	num = num.join('');
+	dec = dec.join('');
+
+	function action(num) { 
+		var numForm = '', count = -1, aplha = 'abcdefghijklmnopqrstuvwxyz';
+		for (var i = num.length-1; i >= 0; i--) { 
+			count++;
+			numForm = aplha[aplha.length <= count ? aplha.length : count] + num[i] + numForm;
+		}
+		return numForm;
+	}
+	return action(num) + '.' + action(dec);
 }
 
 /* Envetos de teclado */
