@@ -5301,7 +5301,7 @@ function t() {
 	return returnObjIdentado_Global ? tab : '';
 }
 
-function tirarAcentuacao(texto) { 
+function tirarAcentuacao(texto, isParam=false) { 
 	var chars = [ 
 		'áàãäâÃÂÁÀÄéèëêÉÈËÊíìïîÍÌÏÎóòôõöÕÔÓÒÖúùüûÚÙÜÛýÿÝñÑçÇ°º¹²³ÅÂž¡ËØŽƒ‰ŠÐ×—ß÷',
 		'aaaaaAAAAAeeeeEEEEiiiiIIIIoooooOOOOOuuuuuuuuyyYnNcCoo123AAziEOZF%SDX-B/'
@@ -5319,6 +5319,11 @@ function tirarAcentuacao(texto) {
 	texto = texto.replace(/Æ/g, "AE");
 	texto = texto.replace(/™/g, "TM");
 	texto = texto.replace(/…/g, "...");
+
+	if (isParam) { 
+		texto = texto.replace(/ /gi, '_');
+		texto = texto.replace(/[-.=()\[\]\\/*+,!@#$%¨&{}?`^:><ºª°§|¹²³£¢¬"']/g, '');
+	}
 	return texto;
 }
 
