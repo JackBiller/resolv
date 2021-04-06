@@ -17,6 +17,9 @@ function resolvButton(options, tab=0) {
 			title: '' 					-- Texto que aparece quando passa o mouse emcima
 			style: objStyle 			-- Resolve o estilo do botão
 			accesskey: ''				-- tecla de atalho
+			data: { 					-- Parametro do objeto data
+				key: value
+			}
 		}
 	*/
 
@@ -60,6 +63,9 @@ function resolvButton(options, tab=0) {
 								+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
 								+ 	"'"
 							)
+					+ (Object.keys(options.data || {})).map(function(key) { 
+						return " data-" + key + "='" + String(options.data[key]) + "'"
+					}).join('')
 					// + 		((options.click || '') == '' ? '' : " onclick='" + options.class + "'")
 
 
