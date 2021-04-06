@@ -178,6 +178,12 @@ function resolvInputIn(options,tab=0) {
 
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
 
+	var isMoney = false;
+	if (options.type == 'money') { 
+		isMoney = true;
+		options.type = 'tel';
+	}
+
 	var title = ''
 		+ ((options.title || '') == '' && accesskey == '' ? '' : ''
 			+ 	" title='" 
@@ -588,6 +594,15 @@ function resolvInputIn(options,tab=0) {
 			+t(tab+2)	+ 		`}`
 			+t(tab+1)	+ 	`}`
 			+t(tab+1)	+ 	`registerEventKeyboard.push("inputNoTab${random}");`
+		)
+		// ***************************************************************************
+
+
+
+		// ****  verificar se o campo tem mascara ****
+		+ (!isMoney || (options.mask || '') != '' ? '' : ''
+			+ t(tab+1)	+ 	`$("*[data-customerid='input${random}']")`
+						+ 		`.maskMoney({ prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false });`
 		)
 		// ***************************************************************************
 
