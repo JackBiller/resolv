@@ -1496,17 +1496,16 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+5)	+ 							`+ 		\` style='width:100%'\``
 		+t(tab+5)	+ 							`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
 		+t(tab+5)	+ 							`+ 	\`>\``
-		+t(tab+5)	+ 							`+ 		\`<option value=""></option>\`` 
+		+t(tab+5)	+ 							`+ 		\`<option value=""></option>\``
 		+t(tab+5)	+ 							`+ data.map(function(dt) { return \``
 					+ 								`<option value="\${dt.${(options.select || {}).value}}">`
 					+ 									`\${dt.${(options.select || {}).desc}}`
 					+ 								`</option>`
-					+ 							`\`; });`
-		+t(tab+5)	+ 							`+ 	\`</select>\``
+					+ 							`\`; })`
+		+t(tab+5)	+ 							`+ 	\`</select>\`;`
 		+t(tab+4)	+ 						`$("#loadSelect${capitalize(options.descForm)}").html(grade).find('select').select2();`
-		+t(tab+4)	+ 						`console.log("onload");`
 		+t(tab+4)	+ 						`var func = ${String((options.select || {}).onload || function(){})};`
-		+t(tab+4)	+ 						`func();`
+		+t(tab+4)	+ 						`setTimeout(function() { func(); }, (data.length / 10));`
 		+t(tab+3)	+ 					`} else { `
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`}`
@@ -2819,7 +2818,8 @@ function invertPadination(defaultPag, length) {
  * Function Op
  * ************************************************************************************************************/
 var tofloat = function(n) { 
-	return parseFloat(n.replace(/\./g, '').replace(',', '.'));
+	n = n.replace(/\./g, '').split(',');
+	return parseFloat(n[0].replace(/\D/g, '') + '.' + n[1].replace(/\D/g, ''));
 };
 
 function removeHtml(a) { 
@@ -5035,6 +5035,9 @@ function resolvEl(id,cla='') {
 }
 
 function resolvVal(id) { 
+	/*
+		Set codigoConsulta type select: resolvVal('?id', 'SELECT', '?value')
+	*/
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
@@ -5055,7 +5058,7 @@ function resolvVal(id) {
 
 	if (el.parent == 'codigoConsulta') { 
 		var getDesc = arguments[1] == 'selectDesc';
-		var isSelect = arguments[1].indexOf('select') == 0;
+		var isSelect = arguments[1].toLowerCase().indexOf('select') == 0;
 		if (arguments.length > 2 && isSelect) 	return el.el.val(arguments[2]).trigger('change');
 		if (arguments.length > 2) 				return el.el.val(arguments[2]);
 		if (getDesc) 							return el.el[0].options[el.el[0].selectedIndex].innerHTML;
