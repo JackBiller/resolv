@@ -178,6 +178,9 @@ function resolvEl(id,cla='') {
 }
 
 function resolvVal(id) { 
+	/*
+		Set codigoConsulta type select: resolvVal('?id', 'SELECT', '?value')
+	*/
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
@@ -198,7 +201,7 @@ function resolvVal(id) {
 
 	if (el.parent == 'codigoConsulta') { 
 		var getDesc = arguments[1] == 'selectDesc';
-		var isSelect = arguments[1].indexOf('select') == 0;
+		var isSelect = arguments[1].toLowerCase().indexOf('select') == 0;
 		if (arguments.length > 2 && isSelect) 	return el.el.val(arguments[2]).trigger('change');
 		if (arguments.length > 2) 				return el.el.val(arguments[2]);
 		if (getDesc) 							return el.el[0].options[el.el[0].selectedIndex].innerHTML;

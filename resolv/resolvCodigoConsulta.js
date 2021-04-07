@@ -288,17 +288,16 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+5)	+ 							`+ 		\` style='width:100%'\``
 		+t(tab+5)	+ 							`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
 		+t(tab+5)	+ 							`+ 	\`>\``
-		+t(tab+5)	+ 							`+ 		\`<option value=""></option>\`` 
+		+t(tab+5)	+ 							`+ 		\`<option value=""></option>\``
 		+t(tab+5)	+ 							`+ data.map(function(dt) { return \``
 					+ 								`<option value="\${dt.${(options.select || {}).value}}">`
 					+ 									`\${dt.${(options.select || {}).desc}}`
 					+ 								`</option>`
-					+ 							`\`; });`
-		+t(tab+5)	+ 							`+ 	\`</select>\``
+					+ 							`\`; })`
+		+t(tab+5)	+ 							`+ 	\`</select>\`;`
 		+t(tab+4)	+ 						`$("#loadSelect${capitalize(options.descForm)}").html(grade).find('select').select2();`
-		+t(tab+4)	+ 						`console.log("onload");`
 		+t(tab+4)	+ 						`var func = ${String((options.select || {}).onload || function(){})};`
-		+t(tab+4)	+ 						`func();`
+		+t(tab+4)	+ 						`setTimeout(function() { func(); }, (data.length / 10));`
 		+t(tab+3)	+ 					`} else { `
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`}`
