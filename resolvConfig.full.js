@@ -5111,8 +5111,8 @@ function resolvVal(id) {
 			}
 		}
 
-		if (el.obj.type == 'checkbox' && ([0,1]).indexOf(arguments[1]) >= 0) { 
-			value = arguments[1] == 1;
+		if (el.obj.type == 'checkbox' && ([0,1,true,false,'1','0']).indexOf(arguments[1]) >= 0) { 
+			return el.el[0].checked = arguments[1] == 1;
 		} else if (el.obj.type == 'checkbox') { 
 			return el.el[0].checked;
 		}
