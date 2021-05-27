@@ -2819,7 +2819,7 @@ function invertPadination(defaultPag, length) {
  * ************************************************************************************************************/
 var tofloat = function(n) { 
 	n = n.replace(/\./g, '').split(',');
-	return parseFloat(n[0].replace(/\D/g, '') + '.' + n[1].replace(/\D/g, ''));
+	return parseFloat(n[0].replace(/\D/g, '') + '.' + (n[1] || '0').replace(/\D/g, ''));
 };
 
 function removeHtml(a) { 
