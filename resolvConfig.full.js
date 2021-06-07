@@ -3138,6 +3138,12 @@ function resolvInput(options,tab=0) {
 			maskOption: {} 						-- Opções para usar com a mescara
 			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrao, coloca valor correspodente
 			... 								-- Padrao true quando for textarea
+			toggle: (0|1) / { 					-- Define que vai usar a biblioteca toggle do bootstrap
+				on:"Ativo" 						-- Texto que vai aparecer quando estiver ativo
+				off:"Inativo" 					-- Texto que vai aparecer quando estiver inativo
+				onstyle:"success" 				-- Cor que vai aparecer quando estiver ativo
+				offstyle:"danger" 				-- Cor que vai aparecer quando estiver inativo
+			}
 		}
 	*/
 
@@ -3192,6 +3198,7 @@ function resolvInputIn(options,tab=0) {
 	if ((options.onclick || ``) == `` && (options.click || ``) != ``) options.onclick = options.click;
 	if ((options.numKeyVerifAlt || ``) == ``) options.numKeyVerifAlt = (options.text || ``).length;
 
+	var isToggle = (options.toggle || '') != '' && (options.id || '') != '';
 
 	options.ck_blur = (options.ck_blur || ``) == `` ? true : options.ck_blur;
 
@@ -3385,19 +3392,39 @@ function resolvInputIn(options,tab=0) {
 			: ''
 			+ ( ['radio','checkbox'].indexOf(options.type) >= 0 && (options.no_changeLayout || '') == ''
 				? ''
+					+ (!isToggle ? '' : t(tab) + label)
 					+ t(tab)	+ ((options.inline || '' ) == '' 
 						? `<table width="100%">`
 						: `<table style="display:inline-block;padding-right: 20px;">`
 					)
 					+ t(tab+1)	+ 		`<tr>`
-					+ t(tab+2)	+ 			`<td width='15px'>`
+					+ t(tab+2)	+ 			`<td width='55px'>`
 					+ t(tab*0)	+ 				tAjuste(input,3)
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+2)	+ 			`<td align="left" style="vertical-align:bottom;padding-left:5px;">`
-					+ t(tab*0)	+ 				tAjuste(label,3)
+					+ (isToggle ? '' : ''
+						+ t(tab*0) + 				tAjuste(label,3)
+					)
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+1)	+ 		`</tr>`
 					+ t(tab)	+ 	`</table>`
+					+ (!isToggle ? '' : ''
+						+ t(tab)	+ 	"<style>"
+						+ t(tab+1)	+ 		".toggle,.toggle-group,.toggle-on,.toggle-off,.toggle-handle {"
+						+ t(tab+2)	+ 			"border-radius: 20px !important;"
+						+ t(tab+1)	+ 		"}"
+						+ t(tab)	+ 	"</style>"
+						+ t(tab)	+ 	"<script>"
+						+ t(tab+1)	+ 		"$(function () {"
+						+ t(tab+2)	+ 			"$('#" + options.id + "').bootstrapToggle({"
+						+ t(tab+3)	+ 				"on: '" + ((options.toggle || {}).on || 'Ativo') + "',"
+						+ t(tab+3)	+ 				"off: '" + ((options.toggle || {}).off || 'Inativo') + "',"
+						+ t(tab+3)	+ 				"onstyle: '" + ((options.toggle || {}).onstyle || 'success') + "',"
+						+ t(tab+3)	+ 				"offstyle: '" + ((options.toggle || {}).offstyle || 'danger') + "',"
+						+ t(tab+2)	+ 			"});"
+						+ t(tab+1)	+ 		"});"
+						+ t(tab)	+ 	"</"+"script>"
+					)
 				: (options.type == 'file' && (options.upload || '') != ''
 					? ''
 						+ t(tab)	+ 	`<table width="100%">`
