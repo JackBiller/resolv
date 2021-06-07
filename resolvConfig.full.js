@@ -5139,6 +5139,21 @@ function resolvVal(id) {
 		}
 
 		if (el.obj.type == 'checkbox' && ([0,1,true,false,'1','0']).indexOf(arguments[1]) >= 0) { 
+ 			if ((el.obj.id || '') != '' && (el.obj.toggle || '') != '') {
+				if (arguments[1] == 1) {
+					if ($('#' + el.obj.id).parent().attr('class').indexOf('off') >= 0) {
+						$('#' + el.obj.id).parent().removeClass('off');
+						$('#' + el.obj.id).parent().removeClass('btn-danger');
+						$('#' + el.obj.id).parent().addClass('btn-success');
+					}
+				} else {
+					if ($('#' + el.obj.id).parent().attr('class').indexOf('off') < 0) {
+						$('#' + el.obj.id).parent().addClass('off');
+						$('#' + el.obj.id).parent().removeClass('btn-success');
+						$('#' + el.obj.id).parent().addClass('btn-danger');
+					}
+				}
+			}
 			return el.el[0].checked = arguments[1] == 1;
 		} else if (el.obj.type == 'checkbox') { 
 			return el.el[0].checked;
