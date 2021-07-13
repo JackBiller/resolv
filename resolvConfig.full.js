@@ -3103,6 +3103,10 @@ function resolvInput(options,tab=0) {
 				ajax: '' 						-- Função ajax que vai enviar o arquivo
 				path: (function|'') 			-- Caminho para salvar o arquivo
 				... 		 					-- Função caso precisa pegar algum valor dinamico
+				aws: { 							-- Parametro de referencia caso use arquivos salvas na AWS
+					bucket: '' 					-- Nome do bucket S3 que está os arquivo
+					region: '' 					-- Região onde está os arquivos
+				}
 				fileName: '' 					-- Nome do arquivo a ser salvo (padrao é vir o nome original)
 				param: { } 						-- Parametros adicionais para enviar no ajax 
 				no_alert: (0|1) 				-- Não mostra um alerta quando termina de enviar o arquivo
@@ -3598,6 +3602,9 @@ function resolvInputIn(options,tab=0) {
 			+ ((options.upload.param || '') == '' ? '' : ''
 				+ t(tab+3)	+ 		`param: ${jsonToStringParam(options.upload.param, tab+3, returnObjIdentado_Global)},`
 			)
+			+ ((options.upload.aws || '') == '' ? '' : ''
+				+ t(tab+3)	+ 		`aws: ${jsonToStringParam(options.upload.aws, tab+3, returnObjIdentado_Global)},`
+			)
 			+ t(tab+3)	+ 			`path,`
 			+ t(tab+3)	+ 			`onstart: function(data='') { `
 			+ t(tab+4)	+ 				`$("#${options.id}_btnUpload").attr('disabled', true);`
@@ -3723,23 +3730,23 @@ function readURL(input, id, idPreview='') {
 		return;
 	} */
 
-	if (input.files && input.files[0]) { 
+	if (input.files && input.files[0]) {
 		var reader = new FileReader();
-		reader.onload = function(e) { 
+		reader.onload = function(e) {
 			var indice = base64Foto_Global.map(function(e) { return e.id; }).indexOf(id);
 			var nome = $("#" + id).val().split('.');
 			var ext = (nome.splice(nome.length-1,1)).join('');
 			nome = nome.join('.').replace(/\\/g, "/");
 			nome = nome.substring(nome.lastIndexOf('/')+1, nome.length);
 
-			if (indice < 0) { 
+			if (indice < 0) {
 				indice = base64Foto_Global.length;
 				base64Foto_Global.push({ id, base64: e.target.result, ext, nome: nome });
-			} else { 
+			} else {
 				base64Foto_Global[indice].base64 = e.target.result;
 				base64Foto_Global[indice].ext = ext;
 			}
-			if (idPreview != '') { 
+			if (idPreview != '') {
 				$("#" + idPreview).attr('src',base64Foto_Global[indice].base64);
 			}
 		}
