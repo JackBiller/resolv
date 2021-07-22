@@ -636,9 +636,10 @@ function resolvGlobalParam(options, tab, html) {
 					window['click'+random] = options[x.param];
 					param += ` ${x.attr}="click${random}();"`;
 				} else { 
+					var funcAux = x.attr == 'class' ? 'resolvClassDiv' : '';
 					result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
 					result = `${(x.valid || '')}(${ result })`;
-					param += ` ${x.attr}="${eval( result )}"`;
+					param += ` ${x.attr}="${(eval(funcAux + '(' + result + ')'))}"`;
 				}
 			}
 		});
