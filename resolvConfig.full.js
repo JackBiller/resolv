@@ -1452,7 +1452,8 @@ function resolvCodigoConsulta(options, tab=0) {
 									+ 	`>`
 									+ 		(el[j].text || '')
 									+ 	(riquered || ['C','D','S'].indexOf(el[j].codigo) == -1 ? '' : (riquered = true, '')
-										+ 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<i style='color:red;' class='fa fa-asterisk'></i>`)
+										// + 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<i style='color:red;' class='fa fa-asterisk'></i>`)
+										+ 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<span style="color:red;">*</span>`)
 									)
 									+ 		el[j].resolv
 						+t(tab+1)	+ 	`</div>`
@@ -1751,9 +1752,11 @@ function resolvDiv(options, tab=0) {
 			text: '' 		-- Texto de conteudo dentro da div
 		}
 	*/
+	var classDiv = resolvClassDiv(options.class || '');
+
 	var html = ''
 		+t(tab)		+ 	"<div"
-					+ 		" class='" + (options.class || '') + "'"
+					+ 		(classDiv == '' ? '' : " class='" + classDiv + "'")
 					+ 		((options.id || '') == '' ? '' : " id='" + options.id + "'")
 					+ 		((options.style || '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
 					+ 	">"
@@ -1762,6 +1765,43 @@ function resolvDiv(options, tab=0) {
 		+t(tab)		+ 	"</div>"
 
 	return html;
+}
+
+function resolvClassDiv(classDiv) {
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	if (bootstrap == '4') {
+		// Valida o col-xs
+		if (classDiv.indexOf('col-xs-') > -1) {
+			classDiv = classDiv.replace(/col-xs-/gi, 'col-');
+		}
+		// Valida o offset
+		if (classDiv.indexOf('col-offset') > -1) {
+			classDiv = classDiv.replace(/col-offset-/gi, 'offset-');
+		}
+	}
+
+	if (bootstrap == '3') {
+		// Valida o col-xs
+		if (classDiv.search(/col-([1-9][1-9]|[1-9])/) > -1) {
+			var classDivRef = classDiv.search(/col-([1-9][1-9]|[1-9])/);
+			classDivRef = classDiv.slice(classDivRef, classDivRef + 6);
+			classDiv = classDiv.replace(/col-([1-9][1-9]|[1-9])/gi, 
+				classDivRef.replace(' ', '').replace('col-', 'col-xs-')
+			);
+		}
+
+		// Valida o offset
+		classDiv = classDiv.split('offset');
+		classDiv.forEach(function(c, i) {
+			if (classDiv.length > 1 && i != classDiv.length-1
+				&& c.lastIndexOf('col-') != (c.length-4)
+			) {
+				classDiv[i] += 'col-';
+			}
+		});
+		classDiv = classDiv.join('offset');
+	}
+	return classDiv;
 }
 
 function resolvFotos(options, tab=0) { 
@@ -3256,7 +3296,8 @@ function resolvInputIn(options,tab=0) {
 						+	`>`
 			+t(tab+1)	+ 		returnDescAccesskey(options.text, options)
 			// + 		returnDesc(options.text, options)
-						+ 		((options.required || ``) == `` ? `` : ` <i style="color:red;" class="fa fa-asterisk"></i>`)
+						// + 		((options.required || ``) == `` ? `` : ` <i style="color:red;" class="fa fa-asterisk"></i>`)
+						+ 		((options.required || ``) == `` ? `` : `&nbsp;<span style="color:red;">*</span>`)
 			+t(tab)		+ 	`</label>`
 		)
 		// ***************************************************************************
@@ -5527,9 +5568,10 @@ function resolvGlobalParam(options, tab, html) {
 					window['click'+random] = options[x.param];
 					param += ` ${x.attr}="click${random}();"`;
 				} else { 
+					var funcAux = x.attr == 'class' ? 'resolvClassDiv' : '';
 					result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
 					result = `${(x.valid || '')}(${ result })`;
-					param += ` ${x.attr}="${eval( result )}"`;
+					param += ` ${x.attr}="${(eval(funcAux + '(' + result + ')'))}"`;
 				}
 			}
 		});
