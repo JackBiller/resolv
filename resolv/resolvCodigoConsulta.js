@@ -244,7 +244,8 @@ function resolvCodigoConsulta(options, tab=0) {
 									+ 	`>`
 									+ 		(el[j].text || '')
 									+ 	(riquered || ['C','D','S'].indexOf(el[j].codigo) == -1 ? '' : (riquered = true, '')
-										+ 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<i style='color:red;' class='fa fa-asterisk'></i>`)
+										// + 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<i style='color:red;' class='fa fa-asterisk'></i>`)
+										+ 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<span style="color:red;">*</span>`)
 									)
 									+ 		el[j].resolv
 						+t(tab+1)	+ 	`</div>`

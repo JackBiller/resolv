@@ -214,7 +214,8 @@ function resolvInputIn(options,tab=0) {
 						+	`>`
 			+t(tab+1)	+ 		returnDescAccesskey(options.text, options)
 			// + 		returnDesc(options.text, options)
-						+ 		((options.required || ``) == `` ? `` : ` <i style="color:red;" class="fa fa-asterisk"></i>`)
+						// + 		((options.required || ``) == `` ? `` : ` <i style="color:red;" class="fa fa-asterisk"></i>`)
+						+ 		((options.required || ``) == `` ? `` : `&nbsp;<span style="color:red;">*</span>`)
 			+t(tab)		+ 	`</label>`
 		)
 		// ***************************************************************************
