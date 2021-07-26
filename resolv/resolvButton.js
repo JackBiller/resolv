@@ -37,11 +37,30 @@ function resolvButton(options, tab=0) {
 	, 	classBootstrap = [ 
 		'primary','success','danger','warning','info','default',	// v3
 		'secondary','light','dark','link', 							// v4
+		'outline-primary','outline-secondary','outline-info', 		// v4 outline
+		'outline-success','outline-danger','outline-warning',
+		'outline-light','outline-dark','outline-link',
 	].find(function(i) { 
 		return (classBtn == i || classBtn.indexOf(i+' ') == 0);
 	}) || '';
 
 	classBtn = classBootstrap != '' ? 'btn btn-' + classBtn : classBtn;
+
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	if (bootstrap == '4') {
+		if (classBtn.indexOf('btn-default') >= 0) {
+			classBtn = classBtn.replace('btn-default', 'btn-light');
+		}
+	}
+	if (bootstrap == '3') {
+		if (classBtn.indexOf('btn-outline') >= 0) {
+			classBtn = classBtn.replace(/btn-outline/gi, 'btn');
+		}
+		if (classBtn.search(/btn-(secondary|light|dark)/) > -1) {
+			classBtn = classBtn.replace(/btn-(secondary|light|dark)/gi, 'btn-default');
+		}
+	}
+
 
 	var html = ''
 		+ ((options.preText || '') == '' ? '' : t(tab) + options.preText)
