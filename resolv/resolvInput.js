@@ -106,6 +106,14 @@ function resolvInput(options,tab=0) {
 				onstyle:"success" 				-- Cor que vai aparecer quando estiver ativo
 				offstyle:"danger" 				-- Cor que vai aparecer quando estiver inativo
 			}
+			group: [ 							-- Monta um input group
+				"i" 							-- Informa para colocar o input
+				OR "text" 						-- Informa o texto que vai acompanhar o input
+				OR {
+					"text": "" 					-- Informa o texto que vai acompanhar o input
+					"click": "" 				-- Evento de click no text
+				}
+			]
 		}
 	*/
 
@@ -319,11 +327,6 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab) 	+ 	`</select>`
 		)
 
-		// **** Descrição de requerimento ****
-		+ 	(!options.requiredFull ? `` : ``
-			+ t(tab) 	+ `<div style="color:red;" id="${options.id}_obs"></div>`
-		)
-
 
 	// **** preview de imagem caso input for type file em formato de imagem ****
 	var fileType = ''
@@ -345,6 +348,72 @@ function resolvInputIn(options,tab=0) {
 						+ 		`>`
 			+t(tab+0)	+ 	`</div>`
 		);
+
+
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+
+	/* <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> */
+	if ((options.group || '') != '') {
+		var indexOpGroup = -1;
+		options.group.forEach(function(op,index) {
+			if (op == 'i') { indexOpGroup = index }
+		});
+
+
+		input = ''
+			+ (bootstrap == '4'
+				? '<div class="input-group mb-3">'
+				: '<div class="input-group">'
+			)
+			+ options.group.map(function(op,index) {
+				if (op == 'i') return input;
+
+				var text;
+				var classInput = indexOpGroup < index ? 'append' : 'prepend';
+
+				if (typeof op == 'string') {
+					text = ''
+						+ (bootstrap == '4'
+							? ''
+							+ 	`<div class="input-group-${classInput}">`
+							+ 		`<span class="input-group-text" id="basic-addon${random}">`
+							+ 			`${op}`
+							+ 		`</span>`
+							+ 	`</div>`
+							: ''
+							+ 	`<span class="input-group-addon" id="basic-addon${random}">${op}</span>`
+						)
+				} else {
+					text = ''
+						+ (bootstrap != '4' ? '' : ''
+							+ `<div class="input-group-${classInput}">`
+							// + `<div class="input-group-append">`
+						)
+						+ 	`<span id="basic-addon${random}"`
+						+ ((op.click || '') == '' ? '' : ''
+							+ 	` onclick="${op.click}"`
+						)
+						+ 		` class="input-group-` + (bootstrap == '4' ? 'text' : 'addon')
+						+ 			((op.class || '') == '' ? '' : ` ${op.class}`)
+						+		`"`
+						+	`>`
+						+		`${op.text}`
+						+	`</span>`
+						+ (bootstrap != '4' ? '' : ''
+							+ `</div>`
+						)
+				}
+				return text;
+				// + '<input type="text" class="form-control" aria-describedby="basic-addon' + random + '">'
+			}).join('')
+			+ '</div>'
+	}
+
+	input += ''
+		// **** Descrição de requerimento ****
+		+ 	(!options.requiredFull ? `` : ``
+			+ t(tab) 	+ `<div style="color:red;" id="${options.id}_obs"></div>`
+		)
 
 
 	var html = ''
