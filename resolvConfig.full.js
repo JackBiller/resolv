@@ -217,11 +217,30 @@ function resolvButton(options, tab=0) {
 	, 	classBootstrap = [ 
 		'primary','success','danger','warning','info','default',	// v3
 		'secondary','light','dark','link', 							// v4
+		'outline-primary','outline-secondary','outline-info', 		// v4 outline
+		'outline-success','outline-danger','outline-warning',
+		'outline-light','outline-dark','outline-link',
 	].find(function(i) { 
 		return (classBtn == i || classBtn.indexOf(i+' ') == 0);
 	}) || '';
 
 	classBtn = classBootstrap != '' ? 'btn btn-' + classBtn : classBtn;
+
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	if (bootstrap == '4') {
+		if (classBtn.indexOf('btn-default') >= 0) {
+			classBtn = classBtn.replace('btn-default', 'btn-light');
+		}
+	}
+	if (bootstrap == '3') {
+		if (classBtn.indexOf('btn-outline') >= 0) {
+			classBtn = classBtn.replace(/btn-outline/gi, 'btn');
+		}
+		if (classBtn.search(/btn-(secondary|light|dark)/) > -1) {
+			classBtn = classBtn.replace(/btn-(secondary|light|dark)/gi, 'btn-default');
+		}
+	}
+
 
 	var html = ''
 		+ ((options.preText || '') == '' ? '' : t(tab) + options.preText)
@@ -1769,6 +1788,8 @@ function resolvDiv(options, tab=0) {
 
 function resolvClassDiv(classDiv) {
 	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	var orderClass = ['xs','sm','md','lg','xl'];
+
 	if (bootstrap == '4') {
 		// Valida o col-xs
 		if (classDiv.indexOf('col-xs-') > -1) {
@@ -1778,6 +1799,31 @@ function resolvClassDiv(classDiv) {
 		if (classDiv.indexOf('col-offset') > -1) {
 			classDiv = classDiv.replace(/col-offset-/gi, 'offset-');
 		}
+		// Valida o hidden para d- (display)
+		if (classDiv.search(/hidden-(xs|sm|md|lg)/) > -1) {
+			var indexOrderClass = -1;
+			orderClass.forEach(function(order, i) {
+				if (classDiv.indexOf('hidden-' + order) >= 0) indexOrderClass = i;
+			});
+			classDiv = classDiv.replace(/hidden-(xs|sm|md|lg)/gi, ''
+				+ 'd-' + orderClass[indexOrderClass].replace('xs','')
+				+ (indexOrderClass == 0 ? '' : '-') + 'none '
+				+ 'd-' + orderClass[indexOrderClass+1] + '-block'
+			);
+		}
+		// Valida o visible para d- (display)
+		if (classDiv.search(/visible-(xs|sm|md|lg)/) > -1) {
+			var indexOrderClass = -1;
+			orderClass.forEach(function(order, i) {
+				if (classDiv.indexOf('visible-' + order) >= 0) indexOrderClass = i;
+			});
+			classDiv = classDiv.replace(/visible-(xs|sm|md|lg)/gi, ''
+				+ (indexOrderClass == 0 ? '' : 'd-none ')
+				+ 'd-' + orderClass[indexOrderClass+1] + '-none'
+				+ ' d' + (indexOrderClass == 0 ? '' : '-')
+				+ orderClass[indexOrderClass].replace('xs','')
+			);
+		}
 	}
 
 	if (bootstrap == '3') {
@@ -1785,21 +1831,55 @@ function resolvClassDiv(classDiv) {
 		if (classDiv.search(/col-([1-9][1-9]|[1-9])/) > -1) {
 			var classDivRef = classDiv.search(/col-([1-9][1-9]|[1-9])/);
 			classDivRef = classDiv.slice(classDivRef, classDivRef + 6);
-			classDiv = classDiv.replace(/col-([1-9][1-9]|[1-9])/gi, 
+			classDiv = classDiv.replace(/col-([1-9][1-9]|[1-9])/gi,
 				classDivRef.replace(' ', '').replace('col-', 'col-xs-')
 			);
 		}
 
+
+		/*
+			bootstrap 3 	|	bootstrap 4
+			----------------------------------------------
+			.visible-xs-*	|	.d-* .d-sm-none
+			.visible-sm-*	|	.d-none .d-sm-* .d-md-none
+			.visible-md-*	|	.d-none .d-md-* .d-lg-none
+			.visible-lg-*	|	.d-none .d-lg-* .d-xl-none
+			.visible-xl-*	|	.d-none .d-xl-*
+			.hidden-xs		|	.d-none .d-sm-*
+			.hidden-sm		|	.d-sm-none .d-md-*
+			.hidden-md		|	.d-md-none .d-lg-*
+			.hidden-lg		|	.d-lg-none .d-xl-*
+			.hidden-xl		|	.d-xl-none
+
+			bootstrap 3: * = [block,inline,inline-block]
+			bootstrap 4: * = [inline,inline-block,block,table,table-row,table-cell,flex,inline-flex]
+		*/
 		// Valida o offset
-		classDiv = classDiv.split('offset');
-		classDiv.forEach(function(c, i) {
-			if (classDiv.length > 1 && i != classDiv.length-1
-				&& c.lastIndexOf('col-') != (c.length-4)
-			) {
-				classDiv[i] += 'col-';
-			}
-		});
-		classDiv = classDiv.join('offset');
+		// classDiv = classDiv.split('offset');
+		// classDiv.forEach(function(c, i) {
+		// 	if (classDiv.length > 1 && i != classDiv.length-1
+		// 		&& c.lastIndexOf('col-') != (c.length-4)
+		// 	) {
+		// 		classDiv[i] += 'col-';
+		// 	}
+		// });
+		// classDiv = classDiv.join('offset');
+
+		// Valida o hidden para d- (display)
+		// if (classDiv.search(/(d-none|d-(sm|md|lg)-none)/) > -1) {
+		// 	classDiv = classDiv.replace(/(d-none|d-(sm|md|lg)-none)/gi, '');
+		// }
+		// if (classDiv.search(/d-(sm|md|lg)-block/) > -1) {
+		// 	var indexOrderClass = -1;
+		// 	orderClass.forEach(function(order, i) {
+		// 		if (classDiv.indexOf('d-' + order) >= 0) indexOrderClass = i;
+		// 	});
+		// 	classDiv = classDiv.replace(/d-(sm|md|lg)-(block|inline|inline-block)/gi,
+		// 		'hidden-' + orderClass[indexOrderClass-1]
+		// 	);
+		// }
+
+		classDiv = classDiv.replace(/-xl/gi, '-lg');
 	}
 	return classDiv;
 }
@@ -2145,7 +2225,7 @@ function resolvGrade(data, option) {
 		{
 			  tamanhoFont: 			11
 			, fontFamily: 			"NomeDaFont"
-			, classTable: 			"table table-bordered stripe table-hover table-condensed table-responsive backTeste"
+			, classTable: 			"table table-bordered stripe table-hover table-condensed backTeste" // table-responsive
 			, titleTableBgColor: 	"#D5DEE3"
 			, titleTableColor: 		"black"
 			, titleTableWeight: 	"bold"
@@ -2263,7 +2343,7 @@ function resolvGrade(data, option) {
 				+				(((option.class || {}).tbody || {}).tr || '')
 				+ 			`'`
 				+ 			` style='`
-				+ 				resolvStyleGrade ( 
+				+ 				resolvStyleGrade(
 									$.extend({}, (((option.style || {}).tbody || {}).tr || {}), (((option.inputs[i] || {}).style || {}).tr || {})) , data[i]
 								)
 				+ 			`'`
@@ -2398,7 +2478,8 @@ function resolvGrade(data, option) {
 		grade += ``
 			+ 	`</table>`
 
-		grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
+		// grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
+		grade = '<div style="overflow-x: scroll;" id="divTable' + option.descForm + '">' + grade + '</div>'
 	} else { 
 		grade = `<b>Debug != OK</b>`;
 	}
@@ -3188,6 +3269,14 @@ function resolvInput(options,tab=0) {
 				onstyle:"success" 				-- Cor que vai aparecer quando estiver ativo
 				offstyle:"danger" 				-- Cor que vai aparecer quando estiver inativo
 			}
+			group: [ 							-- Monta um input group
+				"i" 							-- Informa para colocar o input
+				OR "text" 						-- Informa o texto que vai acompanhar o input
+				OR {
+					"text": "" 					-- Informa o texto que vai acompanhar o input
+					"click": "" 				-- Evento de click no text
+				}
+			]
 		}
 	*/
 
@@ -3401,11 +3490,6 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab) 	+ 	`</select>`
 		)
 
-		// **** Descrição de requerimento ****
-		+ 	(!options.requiredFull ? `` : ``
-			+ t(tab) 	+ `<div style="color:red;" id="${options.id}_obs"></div>`
-		)
-
 
 	// **** preview de imagem caso input for type file em formato de imagem ****
 	var fileType = ''
@@ -3427,6 +3511,72 @@ function resolvInputIn(options,tab=0) {
 						+ 		`>`
 			+t(tab+0)	+ 	`</div>`
 		);
+
+
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+
+	/* <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> */
+	if ((options.group || '') != '') {
+		var indexOpGroup = -1;
+		options.group.forEach(function(op,index) {
+			if (op == 'i') { indexOpGroup = index }
+		});
+
+
+		input = ''
+			+ (bootstrap == '4'
+				? '<div class="input-group mb-3">'
+				: '<div class="input-group">'
+			)
+			+ options.group.map(function(op,index) {
+				if (op == 'i') return input;
+
+				var text;
+				var classInput = indexOpGroup < index ? 'append' : 'prepend';
+
+				if (typeof op == 'string') {
+					text = ''
+						+ (bootstrap == '4'
+							? ''
+							+ 	`<div class="input-group-${classInput}">`
+							+ 		`<span class="input-group-text" id="basic-addon${random}">`
+							+ 			`${op}`
+							+ 		`</span>`
+							+ 	`</div>`
+							: ''
+							+ 	`<span class="input-group-addon" id="basic-addon${random}">${op}</span>`
+						)
+				} else {
+					text = ''
+						+ (bootstrap != '4' ? '' : ''
+							+ `<div class="input-group-${classInput}">`
+							// + `<div class="input-group-append">`
+						)
+						+ 	`<span id="basic-addon${random}"`
+						+ ((op.click || '') == '' ? '' : ''
+							+ 	` onclick="${op.click}"`
+						)
+						+ 		` class="input-group-` + (bootstrap == '4' ? 'text' : 'addon')
+						+ 			((op.class || '') == '' ? '' : ` ${op.class}`)
+						+		`"`
+						+	`>`
+						+		`${op.text}`
+						+	`</span>`
+						+ (bootstrap != '4' ? '' : ''
+							+ `</div>`
+						)
+				}
+				return text;
+				// + '<input type="text" class="form-control" aria-describedby="basic-addon' + random + '">'
+			}).join('')
+			+ '</div>'
+	}
+
+	input += ''
+		// **** Descrição de requerimento ****
+		+ 	(!options.requiredFull ? `` : ``
+			+ t(tab) 	+ `<div style="color:red;" id="${options.id}_obs"></div>`
+		)
 
 
 	var html = ''
