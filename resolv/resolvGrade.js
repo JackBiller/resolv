@@ -173,7 +173,7 @@ function resolvGrade(data, option) {
 		{
 			  tamanhoFont: 			11
 			, fontFamily: 			"NomeDaFont"
-			, classTable: 			"table table-bordered stripe table-hover table-condensed table-responsive backTeste"
+			, classTable: 			"table table-bordered stripe table-hover table-condensed backTeste" // table-responsive
 			, titleTableBgColor: 	"#D5DEE3"
 			, titleTableColor: 		"black"
 			, titleTableWeight: 	"bold"
@@ -291,7 +291,7 @@ function resolvGrade(data, option) {
 				+				(((option.class || {}).tbody || {}).tr || '')
 				+ 			`'`
 				+ 			` style='`
-				+ 				resolvStyleGrade ( 
+				+ 				resolvStyleGrade(
 									$.extend({}, (((option.style || {}).tbody || {}).tr || {}), (((option.inputs[i] || {}).style || {}).tr || {})) , data[i]
 								)
 				+ 			`'`
@@ -426,7 +426,8 @@ function resolvGrade(data, option) {
 		grade += ``
 			+ 	`</table>`
 
-		grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
+		// grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
+		grade = '<div style="overflow-x: scroll;" id="divTable' + option.descForm + '">' + grade + '</div>'
 	} else { 
 		grade = `<b>Debug != OK</b>`;
 	}
