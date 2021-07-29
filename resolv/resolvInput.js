@@ -395,6 +395,7 @@ function resolvInputIn(options,tab=0) {
 						)
 						+ 		` class="input-group-` + (bootstrap == '4' ? 'text' : 'addon')
 						+ 			((op.class || '') == '' ? '' : ` ${op.class}`)
+						+ 			((op.click || '') == '' ? '' : ' btn btn-' + (bootstrap == '4' ? 'light' : 'default'))
 						+		`"`
 						+	`>`
 						+		`${op.text}`

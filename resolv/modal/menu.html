@@ -1,12 +1,23 @@
 <script>
 function mudarPagina(el, divId, name, nameDiv) {
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
 	var elementoMenu = document.getElementsByName(name);
 	var elementoContMenu = document.getElementsByName(nameDiv);
 	for (var i = 0; i < elementoMenu.length; i++) {
-		$(elementoMenu[i]).attr('class','');
+		if (bootstrap == '4') {
+			$(elementoMenu[i]).find('a').attr('class','nav-link');
+		} else {
+			$(elementoMenu[i]).attr('class','');
+		}
 		$(elementoContMenu[i]).css('display','none');
 	}
-	$(el).attr('class','active');
+
+	if (bootstrap == '4') {
+		$(el).find('a').attr('class','nav-link active');
+	} else {
+		$(el).attr('class','active');
+	}
+
 	$("#" + divId).css('display','block');
 }
 </script>

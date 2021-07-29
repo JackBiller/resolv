@@ -34,8 +34,19 @@ function resolvClassDiv(classDiv) {
 			classDiv = classDiv.replace(/col-xs-/gi, 'col-');
 		}
 		// Valida o offset
-		if (classDiv.indexOf('col-offset') > -1) {
-			classDiv = classDiv.replace(/col-offset-/gi, 'offset-');
+		while (classDiv.search(/(col-offset|col-(xs|sm|md|lg)-offset)/) > -1) {
+			var indexOrderClass = -1;
+			orderClass.forEach(function(order, i) {
+				if (classDiv.indexOf('col-' + order + '-offset') >= 0
+					&& indexOrderClass == -1
+				) {
+					indexOrderClass = i;
+				}
+			});
+			classDiv = classDiv.replace(
+				(indexOrderClass == -1 ? /col-offset/ : /col-(xs|sm|md|lg)-offset/)
+				, 'offset-' + (orderClass[indexOrderClass] || '').replace('xs','')
+			);
 		}
 		// Valida o hidden para d- (display)
 		if (classDiv.search(/hidden-(xs|sm|md|lg)/) > -1) {

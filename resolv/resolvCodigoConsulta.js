@@ -72,6 +72,8 @@ function resolvCodigoConsulta(options, tab=0) {
 	var param = resolvParamAjax(options);
 	var descRef = '';
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	var classBtn = bootstrap == '4' ? 'light' : 'default';
 
 	var title = accesskey == '' ? '' : " title='Alt + " + accesskey + "'";
 
@@ -154,7 +156,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ 		`<spam style="color:white">.</spam>`
 				+t(tab+2)	+ 	`</label>`
 				+t(tab+2)	+ 	`<br>`
-				+t(tab+2)	+ 	`<button class="btn btn-default btn-block"`
+				+t(tab+2)	+ 	`<button class="btn btn-${classBtn} btn-block"`
 				+t(tab+3)	+ 		` onclick=\"pesquisa${capitalize(options.descForm)}();"`
 				+t(tab+3)	+ 		` data-customerid='btn${random}'`
 							+ 		(descRef == 'D' ? title : '')
@@ -183,7 +185,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ 		`<spam style="color:white;">.</spam>`
 				+t(tab+2)	+ 	`</label>`
 				+t(tab+2)	+ 	`<br>`
-				+t(tab+2)	+ 	`<button class="btn btn-default btn-block"`
+				+t(tab+2)	+ 	`<button class="btn btn-${classBtn} btn-block"`
 				+t(tab+3)	+ 		` onclick="clear${capitalize(options.descForm)}(true);"`
 				+t(tab+2)	+ 	`>`
 				+t(tab+3)	+ 		`<i class="fa fa-times"></i>`
@@ -227,23 +229,26 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 			`<input type="hidden">`
 		+t(tab+2)	+		`</div>`
 		+ (function (el, dist) {
-			var html = '', riquered = false;
+			var html = '', required = false, classDiv;
 
 			for (var i = 0; i < dist.length; i++) { 
 				for (var j = 0; j < el.length; j++) { 
 					if (dist[i] == el[j].codigo) { 
+						classDiv = `${(el[j].class || '')}`
+							+ 	((options.xs || '') == '' ? '' : ' col-xs-' + options.xs.split('-')[i] )
+							+ 	((options.sm || '') == '' ? '' : ' col-sm-' + options.sm.split('-')[i] )
+							+ 	((options.md || '') == '' ? '' : ' col-md-' + options.md.split('-')[i] )
+							+ 	((options.lg || '') == '' ? '' : ' col-lg-' + options.lg.split('-')[i] )
+							+ 	((options.xl || '') == '' ? '' : ' col-xl-' + options.xl.split('-')[i] )
+							+ 	((options.xxl|| '') == '' ? '' : ' col-xxl-'+ options.xxl.split('-')[i] );
+						classDiv =	resolvClassDiv(classDiv);
+
 						html += ``
-						+t(tab+1)	+ 	`<div`
-									+ 		` class="${(el[j].class || '')}`
-									+ 			((options.xs || '') == '' ? '' : ' col-xs-' + options.xs.split('-')[i] )
-									+ 			((options.sm || '') == '' ? '' : ' col-sm-' + options.sm.split('-')[i] )
-									+ 			((options.md || '') == '' ? '' : ' col-md-' + options.md.split('-')[i] )
-									+ 			((options.lg || '') == '' ? '' : ' col-lg-' + options.lg.split('-')[i] )
-									+ 		`"`
+						+t(tab+1)	+ 	`<div class="${classDiv}"`
 									+ 		` style='padding:0 !important;padding-right:${(i < dist.length-1 ? '5px' : '0')} !important;'`
 									+ 	`>`
 									+ 		(el[j].text || '')
-									+ 	(riquered || ['C','D','S'].indexOf(el[j].codigo) == -1 ? '' : (riquered = true, '')
+									+ 	(required || ['C','D','S'].indexOf(el[j].codigo) == -1 ? '' : (required = true, '')
 										// + 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<i style='color:red;' class='fa fa-asterisk'></i>`)
 										+ 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<span style="color:red;">*</span>`)
 									)
