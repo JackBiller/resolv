@@ -97,6 +97,7 @@ function resolvInput(options,tab=0) {
 				value: desc 					-- Ex: <option value="value">desc</option>
 			}
 			mask: '' 							-- Usar Mascara no campo
+			no_mask_money: (0/1) 				-- Desabilitar o prefixo do campo money
 			maskOption: {} 						-- Opções para usar com a mescara
 			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrao, coloca valor correspodente
 			... 								-- Padrao true quando for textarea
@@ -707,7 +708,10 @@ function resolvInputIn(options,tab=0) {
 		// ****  verificar se o campo tem mascara ****
 		+ (!isMoney || (options.mask || '') != '' ? '' : ''
 			+ t(tab+1)	+ 	`$("*[data-customerid='input${random}']")`
-						+ 		`.maskMoney({ prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false });`
+						+ 		`.maskMoney({`
+						+ 			` prefix:'${(options.no_mask_money || '') == '' ? 'R$ ' : ''}',`
+						+ 			` allowNegative: true, thousands:'.', decimal:',', affixesStay: false`
+						+ 		`});`
 		)
 		// ***************************************************************************
 
