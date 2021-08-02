@@ -1,32 +1,32 @@
 
-function resolvMenu(options={}, tab=0) { 
+function resolvMenu(options={}, tab=0) {
 	/*
 		options: {
 			descForm: '' 					-- Identificador
-			no_link: (0|1) 					-- Não linqua no menu para redirecionar o conteudo
+			no_link: (0|1) 					-- Não linca no menu para redirecionar o conteúdo
 			isLateral: (0|1) 				-- Caso quera resolver um menu lateral
-			selected: indice 				-- Escolher qual aba vai começar ativa, padrão 0
+			selected: index 				-- Escolher qual aba vai começar ativa, padrão 0
 			abas: [
 				{
-					text: '' 				-- Descricao Menu
-					icon: '' 				-- icone para acompanha a descricao
+					text: '' 				-- Descrição Menu
+					icon: '' 				-- ícone para acompanha a descrição
 					click: '' / function 	-- Função para chamar quando clicar na aba do menu
-					ctx: {} 				-- Conteudo Referente
+					ctx: {} 				-- Conteúdo Referente
 				}
 			]
-			xs / sm / md / lg: '3-9' 		-- Class bootstrap, referencia disposição dos componetes (isLateral == true)
+			xs / sm / md / lg: '3-9' 		-- Class bootstrap, referencia disposição dos componentes (isLateral == true)
 		}
 	*/
 
 	if ((options.descForm || '') == '') return '';
 
 	var random;
-	do { 
-		random = parseInt( Math.random() * 100000 );
+	do {
+		random = parseInt(Math.random() * 100000);
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
 
-	options = $.extend({}, { 
+	options = $.extend({}, {
 		xs: '3-9',
 	}, options);
 
@@ -52,7 +52,7 @@ function resolvMenu(options={}, tab=0) {
 					+ 		((options.abas || []).length < 2 ? 'style="display:none"' : '' )
 					+ 	'>'
 
-	for (var i = 0; i < (options.abas || []).length; i++) { 
+	for (var i = 0; i < (options.abas || []).length; i++) {
 		html += ''
 		+ (!isLateral || i == 0 ? '' : ''
 			+t(tab+TA+1) + '<br>'
@@ -73,8 +73,8 @@ function resolvMenu(options={}, tab=0) {
 					+ 		"'"
 					+ 		" class='nav-item" + (i == selected && bootstrap != '4' ? ' active' : '') + "'"
 					+ 	">"
-		+t(tab+TA+2)	
-		+ ((options.no_link || '') == '' 
+		+t(tab+TA+2)
+		+ ((options.no_link || '') == ''
 			? 				"<a href=\"#" + options.descForm + "Ctx" + i + "\""
 			: 				"<a href=\"javascript:void(0)\""
 		)
@@ -98,12 +98,12 @@ function resolvMenu(options={}, tab=0) {
 		+ (!isLateral || (options.abas || []).length < 2 ? '' : ''
 			+t(tab+0) 	+ 	'</div>'
 			+t(tab+0) 	+ 	'<style>'
-			+t(tab+1) 	+ 		'#' + options.descForm + ' .active a { '
+			+t(tab+1) 	+ 		'#' + options.descForm + ' .active a {'
 			+t(tab+2) 	+ 			'border-bottom: 1px solid #ddd !important;'
 			+t(tab+2) 	+ 			'border-bottom-left-radius: 5px;'
 			+t(tab+2) 	+ 			'border-bottom-right-radius: 5px;'
 			+t(tab+1) 	+ 		'}'
-			+t(tab+1) 	+ 		'#' + options.descForm + ' { '
+			+t(tab+1) 	+ 		'#' + options.descForm + ' {'
 			+t(tab+2) 	+ 			'border-bottom: none;'
 			+t(tab+2) 	+ 			'border-right: 1px solid #ddd;'
 			+t(tab+1) 	+ 		'}'
@@ -119,7 +119,7 @@ function resolvMenu(options={}, tab=0) {
 		)
 		+t(tab+TA)		+ '<script>'
 		+ (options.abas || []).map(function(aba, i) { return ''
-			+t(tab+TA+1)	+ 	`function clickMenu${random}${i}(el) { `
+			+t(tab+TA+1)	+ 	`function clickMenu${random}${i}(el) {`
 			+t(tab+TA+2)	+ 		`resolvEvento('click','${options.descForm}');`
 			+t(tab+TA+2)	+ (typeof(aba.click) != 'function' ? '' : ''
 							+ `var func = ${String(aba.click)};`

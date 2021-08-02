@@ -1,12 +1,12 @@
 
-function resolvTextarea(options,tab=0) { 
+function resolvTextarea(options,tab=0) {
 	options.isTextarea = true;
 	options.no_tab = true;
-	options.style = $.extend({}, { 'resize':'vertical' },  options.style);
+	options.style = $.extend({}, { 'resize':'vertical' }, options.style);
 	return resolvInput(options,tab);
 }
 
-function resolvInput(options,tab=0) { 
+function resolvInput(options,tab=0) {
 	/*
 		options: {
 			text: '' 							-- Texto de acompanhamento
@@ -23,7 +23,7 @@ function resolvInput(options,tab=0) {
 			autocomplete: '' 					-- Autocomplete do campo
 			autofocus: (0|1) 					-- Autofocus do campo
 			accesskey: '' 						-- Accesskey do campo, atalho para focar no campo ou clicar no botão
-			data: { 							-- Acresenta o atributos data no campo (data-key='value')
+			data: { 							-- Acrescenta o atributos data no campo (data-key='value')
 				key: value
 			}
 
@@ -36,22 +36,22 @@ function resolvInput(options,tab=0) {
 			style: {} 							-- Objeto com atributos cujo os nomes são os atributos do CSS
 			styleLabel: {} 						-- Objeto com atributos cujo os nomes são os atributos do CSS para Label
 			required: '' 						-- Se o campo é obrigatório
-			maxlength: '' 						-- Limite maximo de caracteres
+			maxlength: '' 						-- Limite máximo de caracteres
 
-			onchange: function 					-- Metodo chamado ao mudar valor
+			onchange: function 					-- Método chamado ao mudar valor
 
 			numKeyVerifAlt: text.length 		-- Verificar até tantos caracteres percorrer para achar um math com accesskey
 			classDiv: '' 						-- Deixa o input por volta de um div
 			onEnter: function(e,whichkey) 		-- Função disparada quando o campo está focado e aperta o ENTER
-			... 								-- e = evento do click | whichkey = codigo da tecla
-			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descricao na frente
-			radio: [ {} ] 						-- Array de objetos input, com caracteristicas herdadas do obj pai
+			... 								-- e = evento do click | whichkey = código da tecla
+			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descrição na frente
+			radio: [ {} ] 						-- Array de objetos input, com características herdadas do obj pai
 			inline: (0|1) / num 				-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
 			... 								-- Quando > 1 significa o numero de campos que vai mostrar por linhas
 			no_desc: (0|1) 						-- Sem Label
 			datalist: { 						-- Colocar um autocomplete no campo
 				ajax: '' 						-- Se a listar vai vir dinamicamente do servidor
-				param: { key: value } 			-- Parametros da requisição
+				param: { key: value } 			-- Parâmetros da requisição
 				input: '' 						-- Campo usado para identificar value dos options
 			}
 			fileType: ('img') 					-- Caso o input for do tipo file, pode delimitar o tipo de arquivo
@@ -60,27 +60,27 @@ function resolvInput(options,tab=0) {
 			upload: { 							-- Caso tipo campo seja file, são as configurações de upload
 				ajax: '' 						-- Função ajax que vai enviar o arquivo
 				path: (function|'') 			-- Caminho para salvar o arquivo
-				... 		 					-- Função caso precisa pegar algum valor dinamico
-				aws: { 							-- Parametro de referencia caso use arquivos salvas na AWS
+				... 		 					-- Função caso precisa pegar algum valor dinâmico
+				aws: { 							-- Parâmetros de referencia caso use arquivos salvas na AWS
 					bucket: '' 					-- Nome do bucket S3 que está os arquivo
 					region: '' 					-- Região onde está os arquivos
 				}
-				fileName: '' 					-- Nome do arquivo a ser salvo (padrao é vir o nome original)
-				param: { } 						-- Parametros adicionais para enviar no ajax 
+				fileName: '' 					-- Nome do arquivo a ser salvo (padrão é vir o nome original)
+				param: { } 						-- Parâmetros adicionais para enviar no ajax 
 				no_alert: (0|1) 				-- Não mostra um alerta quando termina de enviar o arquivo
 				onsend: function() 				-- Validar se pode ou não enviar aquivo
-				ondone: function(options, data) -- Dipara quando termina de enviar o arquivo
+				ondone: function(options, data) -- Dispara quando termina de enviar o arquivo
 				... 							-- 	Var data é o retorno do ajax
 				... 							-- 	Obj options
 				... 							-- 		"id":"id"
 				... 							-- 		"div":"#div_id"
 				... 							-- 		"fileName":"name"
 				... 							-- 		"path":"./path/"
-				... 							-- 		"onstart":function(data='') { 
-				... 							-- 			(o data do parametro é esse mesmo objeto data)
+				... 							-- 		"onstart":function(data='') {
+				... 							-- 			(o data do parâmetro é esse mesmo objeto data)
 				... 							-- 		}
-				... 							-- 		"ondone":function(data) { 
-				... 							-- 			(o data do parametro é esse mesmo objeto data)
+				... 							-- 		"ondone":function(data) {
+				... 							-- 			(o data do parâmetro é esse mesmo objeto data)
 				... 							-- 		}
 				... 							-- 		"totalChart":num
 				... 							-- 		"limitChar":7000000 (default)
@@ -99,8 +99,8 @@ function resolvInput(options,tab=0) {
 			mask: '' 							-- Usar Mascara no campo
 			no_mask_money: (0/1) 				-- Desabilitar o prefixo do campo money
 			maskOption: {} 						-- Opções para usar com a mescara
-			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrao, coloca valor correspodente
-			... 								-- Padrao true quando for textarea
+			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrão, coloca valor correspondente
+			... 								-- Padrão true quando for textarea
 			toggle: (0|1) / { 					-- Define que vai usar a biblioteca toggle do bootstrap
 				on:"Ativo" 						-- Texto que vai aparecer quando estiver ativo
 				off:"Inativo" 					-- Texto que vai aparecer quando estiver inativo
@@ -120,13 +120,13 @@ function resolvInput(options,tab=0) {
 
 	var html = '';
 
-	if ((options.type || 'radio') == 'radio' && (options.radio || '') != '') { 
+	if ((options.type || 'radio') == 'radio' && (options.radio || '') != '') {
 		options.type = 'radio';
 		var isCheck = options.radio.map(function(e) { return e.checked; }).indexOf(true);
 		if (isCheck < 0) isCheck = 0;
 
-		for (var i = 0; i < options.radio.length; i++) { 
-			if (options.radio[i].checked) { 
+		for (var i = 0; i < options.radio.length; i++) {
+			if (options.radio[i].checked) {
 				options.value = options.radio[i].value || '';
 			}
 		}
@@ -135,8 +135,8 @@ function resolvInput(options,tab=0) {
 
 		if (cols) html += t(tab) + '<table>';
 
-		for (var i = 0; i < options.radio.length; i++) { 
-			if (cols) { 
+		for (var i = 0; i < options.radio.length; i++) {
+			if (cols) {
 				if (i == 0 || (i != 0 && i % cols == 0)) html += t(tab+1) + '<tr>';
 				html += t(tab+2) + '<td>';
 			}
@@ -146,21 +146,21 @@ function resolvInput(options,tab=0) {
 				, tab + (cols ? 3 : 0)
 			);
 
-			if (cols) { 
-				html += t(tab+2) + '</td>'; 
-				if (i == options.radio.length-1 || ((i+1) % cols == 0)) html += t(tab+1) + '</tr>'; 
+			if (cols) {
+				html += t(tab+2) + '</td>';
+				if (i == options.radio.length-1 || ((i+1) % cols == 0)) html += t(tab+1) + '</tr>';
 			}
 		}
 
 		if (cols) html += t(tab) + '</table>';
-	} else { 
+	} else {
 		html = resolvInputIn(options, tab);
 	}
 
 	return html
 }
 
-function resolvInputIn(options,tab=0) { 
+function resolvInputIn(options,tab=0) {
 	var defaultImg = (options.defaultImg || '');
 	if (defaultImg != '' && typeof defaultImg == 'string') defaultImg = { path: defaultImg };
 
@@ -181,7 +181,7 @@ function resolvInputIn(options,tab=0) {
 	if (options.isTextarea || false) options.value = (options.value || '').replace(/\r/g,'').replace(/\n/g, '<br>');
 
 	var random;
-	do { 
+	do {
 		random = parseInt( Math.random() * 100000 );
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
@@ -199,7 +199,7 @@ function resolvInputIn(options,tab=0) {
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
 
 	var isMoney = false;
-	if (options.type == 'money') { 
+	if (options.type == 'money') {
 		isMoney = true;
 		options.type = 'tel';
 	}
@@ -207,14 +207,14 @@ function resolvInputIn(options,tab=0) {
 	var title = ''
 		+ ((options.title || '') == '' && accesskey == '' ? '' : ''
 			+ 	" title='" 
-			+ 		(options.title || '') 
-			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
+			+ 		(options.title || '')
+			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n')
 			+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
 			+ 	"'"
 		);
 
 	var label = ''
-		// **** configurar elemtno label que complementa o campo de entrada ****
+		// **** configurar tag label que complementa o campo de entrada ****
 		+ ((options.text || ``) == `` ? `` : ``
 			+t(tab)		+ 	`<label`
 						+ 		title
@@ -233,16 +233,16 @@ function resolvInputIn(options,tab=0) {
 		// **** verifica se é mês ****
 		+ (options.type != 'month' ? '' : (options.isMonth = true, options.type = 'hidden', '')
 			+t(tab+0)	+ 	`<input id="${(options.id || '')}Datepicker" name="dataPiker" autocomplete="off" class='Default form-control' type="text"`
-						// + 		` onchange="console.log(this.value);" `
+						// + 		` onchange="console.log(this.value);"`
 						+ 	`/>`
 			+t(tab+0)	+ 	`<script>`
-			+t(tab+1)	+ 		`$('#${(options.id || '')}Datepicker').datepicker({ `
+			+t(tab+1)	+ 		`$('#${(options.id || '')}Datepicker').datepicker({`
 			+t(tab+2)	+ 			`format: "MM de yyyy"`
 			+t(tab+2)	+ 			`, formatData: "yyyy-mm"`
 			+t(tab+2)	+ 			`, viewMode: "months"`
 			+t(tab+2)	+ 			`, minViewMode: "months"`
-			+t(tab+2)	+ 			`, onchange: function(data) { `
-			+t(tab+3)	+ 				`if ($("#${(options.id || '')}").val() != data) { `
+			+t(tab+2)	+ 			`, onchange: function(data) {`
+			+t(tab+3)	+ 				`if ($("#${(options.id || '')}").val() != data) {`
 			+t(tab+4)	+ 					`$("#${(options.id || '')}").val(data);`
 			+t(tab+4)	+ 					`try { $("#${(options.id || '')}")[0].onchange(this); } catch(e){}` // chama a função de change
 			+t(tab+4)	+ 					`try { $("#${(options.id || '')}")[0].onblur(this); } catch(e){}` 	// chama a função de blur
@@ -250,7 +250,7 @@ function resolvInputIn(options,tab=0) {
 			+t(tab+3)	+ 				`}`
 			+t(tab+2)	+ 			`},`
 			+t(tab+1)	+ 		`});`
-			+t(tab+1)	+ 		`setTimeout(function(){ resolvVal('${(options.id || '')}','${(options.value || '')}'); }, 500);`
+			+t(tab+1)	+ 		`setTimeout(function() { resolvVal('${(options.id || '')}','${(options.value || '')}'); }, 500);`
 			+t(tab+0)	+ 	`</script>`
 		)
 
@@ -273,18 +273,18 @@ function resolvInputIn(options,tab=0) {
 		+ 	` data-customerid="input${random}"`
 		+ 	` class="`
 		+ 		`form-control`
-		+ 		(options.class 	|| ``)
+		+ 		(options.class || ``)
 		+ 	`"`
 		+ ((options.style || ``) == `` && ['number','tel'].indexOf(options.type) < 0
-			? `` 
+			? ``
 			: ` style="${
-					resolvStyle($.extend({}, 
+					resolvStyle($.extend({},
 						(['number','tel'].indexOf(options.type) < 0 ? {} : { 'text-align': 'right' } ),
 						(options.style || {})
 					))
 				}"`
 		)
-		+ ((options.datalist || '') == '' 
+		+ ((options.datalist || '') == ''
 			? ((options.list || '') == '' ? '' : ' list="' + options.list + '"')
 			: ' list="' + (options.id || '') + 'datalist"'
 		)
@@ -293,7 +293,7 @@ function resolvInputIn(options,tab=0) {
 		)
 
 
-		// **** configurar as chamadas dos metodos ****
+		// **** configurar as chamadas dos métodos ****
 		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) {
@@ -353,10 +353,9 @@ function resolvInputIn(options,tab=0) {
 
 	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
 
-	/* <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> */
 	if ((options.group || '') != '') {
 		var indexOpGroup = -1;
-		options.group.forEach(function(op,index) {
+		options.group.forEach(function(op, index) {
 			if (op == 'i') { indexOpGroup = index }
 		});
 
@@ -406,7 +405,6 @@ function resolvInputIn(options,tab=0) {
 						)
 				}
 				return text;
-				// + '<input type="text" class="form-control" aria-describedby="basic-addon' + random + '">'
 			}).join('')
 			+ '</div>'
 	}
@@ -421,23 +419,24 @@ function resolvInputIn(options,tab=0) {
 	var html = ''
 		+ ((options.firstImg || '') == '' ? '' : fileType)
 
-		+ ((options.no_desc || '') != '' 
+		+ ((options.no_desc || '') != ''
 			? input
 			: ''
 			+ ( ['radio','checkbox'].indexOf(options.type) >= 0 && (options.no_changeLayout || '') == ''
 				? ''
 					+ (!isToggle ? '' : t(tab) + label)
-					+ t(tab)	+ ((options.inline || '' ) == '' 
+					+ t(tab)	+ ((options.inline || '' ) == ''
 						? `<table width="100%">`
-						: `<table style="display:inline-block;padding-right: 20px;">`
+						// : `<table style="display:inline-block;padding-right: 20px;">`
+						: `<table style="display:inline-block;padding-right: 20px;border: 1px solid #A7B0B6;border-radius:5px;padding-left:5px;">`
 					)
 					+ t(tab+1)	+ 		`<tr>`
-					+ t(tab+2)	+ 			`<td width='55px'>`
+					+ t(tab+2)	+ 			`<td width='20px'>`
 					+ t(tab*0)	+ 				tAjuste(input,3)
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+2)	+ 			`<td align="left" style="vertical-align:bottom;padding-left:5px;">`
 					+ (isToggle ? '' : ''
-						+ t(tab*0) + 				tAjuste(label,3)
+						+ t(tab*0) + 			tAjuste(label,3)
 					)
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+1)	+ 		`</tr>`
@@ -493,14 +492,14 @@ function resolvInputIn(options,tab=0) {
 		+ t(tab)	+ 	`<script>`
 
 		+ (!options.requiredFull ? `` : ``
-			+ t(tab+1) 	+ 	`function check${random}() { `
+			+ t(tab+1) 	+ 	`function check${random}() {`
 			+ t(tab+2) 	+ 		`var op = arguments.length > 0 ? arguments[0] : 'check';`
 			// + (typeof(options.required) == 'function' 
 			// 	? t(tab+2) + "return (" + String(options.required) + "());"
 			// 	: t(tab+2) + "return (resolvVal(\"" + options.id + "\") == '' ? 'Informe " + options.text + "' : true);"
 			// )
 			+ t(tab+2) 	+ 		`return (`
-			+ t(tab+3) 	+ 			`resolvVal("${options.id}") == '' `
+			+ t(tab+3) 	+ 			`resolvVal("${options.id}") == ''`
 			+ t(tab+4) 	+ 				`? "Informe ${options.text}"`
 			+ t(tab+4) 	+ 				`: ${typeof(options.required) == `function` ? `${String(options.required)}(op)` : `true`}`
 			+ t(tab+2) 	+ 		`);`
@@ -510,11 +509,11 @@ function resolvInputIn(options,tab=0) {
 
 
 
-		// ****  configurar as funções chamada pelos metodos ****
+		// ****  configurar as funções chamada pelos métodos ****
 		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ''
-				+ t(tab+1)	+ 	`function ${opt + random}(el) { `
+				+ t(tab+1)	+ 	`function ${opt + random}(el) {`
 				+ t(tab+2)	+ (
 								(typeof(options[opt]) == `string`)
 								? options[opt]
@@ -528,9 +527,9 @@ function resolvInputIn(options,tab=0) {
 
 
 		// ****  correção do bug de quebra de linha como valor padrão no textarea ****
-		+ ((options.isTextarea || false) 
+		+ ((options.isTextarea || false)
 			? ''
-			+ t(tab+1)	+ 	`setTimeout(function() { `
+			+ t(tab+1)	+ 	`setTimeout(function() {`
 			+ t(tab+2)	+ 		`$("#${options.id}").val($("#${options.id}").val().replace(/<br>/gi, "\\n"));`
 			+ t(tab+1)	+ 	`},1000);`
 			: ''
@@ -542,8 +541,8 @@ function resolvInputIn(options,tab=0) {
 		// ****  registrar eventos do teclado ****
 		// + ( [`month`,`date`].indexOf(options.type) != -1 && (options.id || ``) != `` ? `` : `` )
 		+ ( [`month`,`date`].indexOf(options.type) == -1 || (options.id || ``) == `` ? `` : ``
-			+ t(tab+1)	+ 	`function momentMonth${capitalize(options.id)}(e,whichkey) { `
-			+ t(tab+2)	+ 		`if (whichkey == 114 && $("#${options.id}").is(":focus")) { `
+			+ t(tab+1)	+ 	`function momentMonth${capitalize(options.id)}(e,whichkey) {`
+			+ t(tab+2)	+ 		`if (whichkey == 114 && $("#${options.id}").is(":focus")) {`
 			+ t(tab+3)	+ 			`e.preventDefault();`
 			+ t(tab+3)	+ 			`$("#${options.id}").val(moment().format("${(options.type == `month` ? `Y-MM` : `Y-MM-DD`)}"));`
 			+ t(tab+2)	+ 		`}`
@@ -560,8 +559,8 @@ function resolvInputIn(options,tab=0) {
 			(options.id || ``) == `` || options.type == `hidden`
 			? ``
 			: ((options.onEnter || '') == '' ? '' : ''
-				+ t(tab+1)	+ 	`function onEnter${capitalize(options.id)}(e,whichkey) { `
-				+ t(tab+2)	+ 		`if (whichkey == 13 && $("#${options.id}").is(":focus")) { `
+				+ t(tab+1)	+ 	`function onEnter${capitalize(options.id)}(e,whichkey) {`
+				+ t(tab+2)	+ 		`if (whichkey == 13 && $("#${options.id}").is(":focus")) {`
 				// + t(tab+3)	+ 			`e.preventDefault();`
 				+ t(tab+3)	+ 			`var func = ${String(options.onEnter)}; func(e,whichkey);`
 				+ t(tab+2)	+ 		`}`
@@ -579,18 +578,18 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se tem que construir um datalist ****
 		+ ((options.datalist || '') == '' ? '' : ''
-			+ t(tab+1)	+ 	`function onDataList${capitalize(options.id)}() { `
+			+ t(tab+1)	+ 	`function onDataList${capitalize(options.id)}() {`
 			// + t(tab+2)	+ 		`${(options.datalist.ajax || 'ajax')}(`
-			+ t(tab+2)	+ (typeof(options.datalist.ajax || 'ajax') == 'string' 
-							? (options.datalist.ajax || 'ajax') 
-							: `window[(function(){ var func = ${String(options.datalist.ajax)}; return func(); })()]`
+			+ t(tab+2)	+ (typeof(options.datalist.ajax || 'ajax') == 'string'
+							? (options.datalist.ajax || 'ajax')
+							: `window[(function() { var func = ${String(options.datalist.ajax)}; return func(); })()]`
 						) + `({`
 			+ t(tab+3)	+ 			`param: ` + jsonToStringParam(options.datalist.param || {}) + `,`
-			+ t(tab+3)	+ 			`done: function(data) { `
+			+ t(tab+3)	+ 			`done: function(data) {`
 			+ t(tab+4)	+ 				`data = JSON.parse(data);`
 			+ t(tab+4)	+ 				`var grade = "<datalist id=\\"${(options.id || '')}datalist\\">";`
-			+ t(tab+4)	+ 				`if (data[0].debug == "OK") { `
-			+ t(tab+5)	+ 					`grade += data.map(function(dt) { `
+			+ t(tab+4)	+ 				`if (data[0].debug == "OK") {`
+			+ t(tab+5)	+ 					`grade += data.map(function(dt) {`
 			+ t(tab+6)	+ 						`return "<option value=\\"" + dt.${(options.datalist.input || 'id')} + "\\">"`
 			+ t(tab+5)	+ 					`}).join("");`
 			+ t(tab+4)	+ 				`}`
@@ -606,41 +605,41 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se tem que fazer upload de aquivo ****
 		+ ((options.type || 'text') != 'file' || (options.upload || '') == '' ? '' : ''
-			+ t(tab+1)	+ 	`function enviarArquivo${options.id}() { `
-			+ t(tab+2)	+ 		`if (getBase64("${options.id}") == false) { `
+			+ t(tab+1)	+ 	`function enviarArquivo${options.id}() {`
+			+ t(tab+2)	+ 		`if (getBase64("${options.id}") == false) {`
 			+ t(tab+3)	+ 			`return alert("Informe o arquivo!");`
 			+ t(tab+2)	+ 		`} `
 			+ t(tab+2)	+ 		`var validOnSend = ` + String(options.upload.onsend || function() { return true; }) + `;`
 			+ t(tab+2)	+ 		`validOnSend = validOnSend();`
-			+ t(tab+2)	+ 		`if (validOnSend != true) { `
+			+ t(tab+2)	+ 		`if (validOnSend != true) {`
 			+ t(tab+3)	+ 			`if (typeof(validOnSend) == "string") alert(validOnSend);`
 			+ t(tab+3)	+ 			`return;`
 			+ t(tab+2)	+ 		`} `
-			+ (typeof options.upload.path == 'string' 
+			+ (typeof options.upload.path == 'string'
 				? ''
 				+ t(tab+2)	+ 	`var path = '${options.upload.path}';`
 				: ''
 				+ t(tab+2)	+ 	`var path = ${String(options.upload.path)};`
 				+ t(tab+2)	+ 	`path = path();`
 			)
-			+ t(tab+2)	+ 		`sendBase64({ `
+			+ t(tab+2)	+ 		`sendBase64({`
 			+ t(tab+3)	+ 			`id: '${options.id}',`
 			+ t(tab+3)	+ 			`div: '#${options.id}_progressFile',`
 			+ ((options.upload.fileName || '') == '' ? '' : ''
 				+ t(tab+3)	+ 		`fileName: '${options.upload.fileName}',`
 			)
 			+ ((options.upload.param || '') == '' ? '' : ''
-				+ t(tab+3)	+ 		`param: ${jsonToStringParam(options.upload.param, tab+3, returnObjIdentado_Global)},`
+				+ t(tab+3)	+ 		`param: ${jsonToStringParam(options.upload.param, tab+3, returnObjIndentado_Global)},`
 			)
 			+ ((options.upload.aws || '') == '' ? '' : ''
-				+ t(tab+3)	+ 		`aws: ${jsonToStringParam(options.upload.aws, tab+3, returnObjIdentado_Global)},`
+				+ t(tab+3)	+ 		`aws: ${jsonToStringParam(options.upload.aws, tab+3, returnObjIndentado_Global)},`
 			)
 			+ t(tab+3)	+ 			`path,`
-			+ t(tab+3)	+ 			`onstart: function(data='') { `
+			+ t(tab+3)	+ 			`onstart: function(data='') {`
 			+ t(tab+4)	+ 				`$("#${options.id}_btnUpload").attr('disabled', true);`
 			+ t(tab+4)	+ 				`$("#${options.id}").attr('disabled', true);`
 			+ t(tab+3)	+ 			`},`
-			+ t(tab+3)	+ 			`ondone: function(opt, data) { `
+			+ t(tab+3)	+ 			`ondone: function(opt, data) {`
 			+ t(tab+4)	+ 				`$("#${options.id}_btnUpload").attr('disabled', false);`
 			// + ((options.fileType || '') != 'img' ? '' : ''
 			// 	// + t(tab+4)	+ 			`$("#${options.id}preview").attr('src', opt.path+'/'+opt.fileName+'.'+opt.ext);`
@@ -654,8 +653,8 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+3)	+ 			`},`
 			+ t(tab+2)	+ 		`});`
 			+ t(tab+1)	+ 	`}`
-			+ t(tab+1)	+ 	`setTimeout(function() { `
-			+ t(tab+2)	+ 		`$("#${options.id}").change(function() { `
+			+ t(tab+1)	+ 	`setTimeout(function() {`
+			+ t(tab+2)	+ 		`$("#${options.id}").change(function() {`
 			+ t(tab+3)	+ 			`setBase64(this, '${options.id}'`
 						+ 				`${(options.fileType || '') == 'img' ? `, '${options.id}preview'` : ''}`
 						+ 			`);`
@@ -668,8 +667,8 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se o campo tem accesskey ****
 		+ (accesskey == '' ? '' : ''
-			+t(tab+1)	+ 	`function inputClickAccesskey${random}(e) { `
-			+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}") { `
+			+t(tab+1)	+ 	`function inputClickAccesskey${random}(e) {`
+			+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}") {`
 			+t(tab+3)	+ 			`e.preventDefault();`
 			+t(tab+3)	+ 			`try { $("*[data-customerid='input${random}']")[0].focus(); } catch(e) { }`
 			+t(tab+2)	+ 		`}`
@@ -682,21 +681,21 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se o campo tem accesskey ****
 		+ ((options.no_tab || '') == '' ? '' : ''
-			+t(tab+1)	+ 	`function inputNoTab${random}(e) { `
-			+t(tab+2)	+ 		`try { `
+			+t(tab+1)	+ 	`function inputNoTab${random}(e) {`
+			+t(tab+2)	+ 		`try {`
 			+t(tab+3)	+ 			`var input = $("*[data-customerid='input${random}']")[0];`
 			+t(tab+2)	+ 		`} catch(e) { return; }`
-			+t(tab+2)	+ 		`if ($(input).is(':focus') && e.keyCode === 9) { `
+			+t(tab+2)	+ 		`if ($(input).is(':focus') && e.keyCode === 9) {`
 			+t(tab+3)	+ 			`e.preventDefault();`
-			+t(tab+3)	+ 			`var inicioDaSelecao = input.selectionStart,`
-			+t(tab+4)	+ 				`fimDaSelecao = input.selectionEnd,`
+			+t(tab+3)	+ 			`var inicioDaSelection = input.selectionStart,`
+			+t(tab+4)	+ 				`fimDaSelection = input.selectionEnd,`
 			+t(tab+4)	+ 				`recuo = '\\t'; // Experimente também com '    '`
-			+t(tab+3)	+ 			`input.value = [ `
-			+t(tab+4)	+ 				`input.value.substring(0, inicioDaSelecao),`
+			+t(tab+3)	+ 			`input.value = [`
+			+t(tab+4)	+ 				`input.value.substring(0, inicioDaSelection),`
 			+t(tab+4)	+ 				`recuo,`
-			+t(tab+4)	+ 				`input.value.substring(fimDaSelecao)`
+			+t(tab+4)	+ 				`input.value.substring(fimDaSelection)`
 			+t(tab+3)	+ 			`].join('');`
-			+t(tab+3)	+ 			`input.selectionEnd = inicioDaSelecao + recuo.length; `
+			+t(tab+3)	+ 			`input.selectionEnd = inicioDaSelection + recuo.length; `
 			+t(tab+2)	+ 		`}`
 			+t(tab+1)	+ 	`}`
 			+t(tab+1)	+ 	`registerEventKeyboard.push("inputNoTab${random}");`
@@ -730,14 +729,14 @@ function resolvInputIn(options,tab=0) {
 		+ ((options.id || '') == '' || defaultImg == '' || (options.upload || '') == '' ? '' : ''
 			+ t(tab+1)	+ 	`var target${options.id} = $("#${options.id}preview").parent()[0];`
 			+ t(tab+1)	+ 	`var fileInput${options.id} = $("*[data-customerid='input${random}']")[0];`
-			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragover', function(e) { `
+			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragover', function(e) {`
 			+ t(tab+2)	+ 		`e.preventDefault();`
 			+ t(tab+2)	+ 		`target${options.id}.classList.add('dragging_resolvInput');`
 			+ t(tab+1)	+ 	`});`
-			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragleave', function() { `
+			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragleave', function() {`
 			+ t(tab+2)	+ 		`target${options.id}.classList.remove('dragging_resolvInput');`
 			+ t(tab+1)	+ 	`});`
-			+ t(tab+1)	+ 	`target${options.id}.addEventListener('drop', function(e) { `
+			+ t(tab+1)	+ 	`target${options.id}.addEventListener('drop', function(e) {`
 			+ t(tab+2)	+ 		`e.preventDefault();`
 			+ t(tab+2)	+ 		`target${options.id}.classList.remove('dragging_resolvInput');`
 			+ t(tab+2)	+ 		`if (e.dataTransfer.files.length > 1) return alert('Selecione apenas um arquivo!');`
@@ -755,8 +754,8 @@ function resolvInputIn(options,tab=0) {
 
 
 var base64Foto_Global = [];
-function setBase64(input, id, idPreview='') {  readURL(input, id, idPreview); }
-function readURL(input, id, idPreview='') { 
+function setBase64(input, id, idPreview='') { readURL(input, id, idPreview); }
+function readURL(input, id, idPreview='') {
 	/* if (idCategoria_Global == -1) {
 		alert('Selecione o Registro!');
 		$("#" + id).val('');
@@ -766,44 +765,44 @@ function readURL(input, id, idPreview='') {
 	if (input.files && input.files[0]) {
 		var reader = new FileReader();
 		reader.onload = function(e) {
-			var indice = base64Foto_Global.map(function(e) { return e.id; }).indexOf(id);
+			var index = base64Foto_Global.map(function(e) { return e.id; }).indexOf(id);
 			var nome = $("#" + id).val().split('.');
 			var ext = (nome.splice(nome.length-1,1)).join('');
 			nome = nome.join('.').replace(/\\/g, "/");
 			nome = nome.substring(nome.lastIndexOf('/')+1, nome.length);
 
-			if (indice < 0) {
-				indice = base64Foto_Global.length;
+			if (index < 0) {
+				index = base64Foto_Global.length;
 				base64Foto_Global.push({ id, base64: e.target.result, ext, nome: nome });
 			} else {
-				base64Foto_Global[indice].base64 = e.target.result;
-				base64Foto_Global[indice].ext = ext;
+				base64Foto_Global[index].base64 = e.target.result;
+				base64Foto_Global[index].ext = ext;
 			}
 			if (idPreview != '') {
-				$("#" + idPreview).attr('src',base64Foto_Global[indice].base64);
+				$("#" + idPreview).attr('src',base64Foto_Global[index].base64);
 			}
 		}
 		reader.readAsDataURL(input.files[0]);
 	}
 }
 
-function getBase64(id, param='base64') { 
-	var indice = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
-	if (indice < 0) return false;
+function getBase64(id, param='base64') {
+	var index = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
+	if (index < 0) return false;
 	if (param.toLowerCase() == 'obj')
-		return base64Foto_Global[indice];
+		return base64Foto_Global[index];
 	if (param.toLowerCase() == 'base64')
-		return base64Foto_Global[indice].base64.split(';base64,')[1];
+		return base64Foto_Global[index].base64.split(';base64,')[1];
 
-	return base64Foto_Global[indice][param];
+	return base64Foto_Global[index][param];
 }
 
-function clearBase64(id) { 
-	var indice = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
-	base64Foto_Global.splice(indice,1);
+function clearBase64(id) {
+	var index = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
+	base64Foto_Global.splice(index,1);
 }
 
-function sendBase64(options) { 
+function sendBase64(options) {
 	/*
 		options: {
 			id: '' 					// achar o base64
@@ -814,8 +813,8 @@ function sendBase64(options) {
 			path: '' 				// caminho para salvar o arquivo
 			limitChar: 7000000 		// quantos caracteres vai ser enviado por vez
 			url: '' 				// para onde vai o arquivo
-			no_base64: (0|1) 		// se o conteudo do arquivo não for base64
-			param: { } 				// parametros adicionais para enviar por ajax
+			no_base64: (0|1) 		// se o conteúdo do arquivo não for base64
+			param: { } 				// parâmetros adicionais para enviar por ajax
 		}
 
 		base64Foto_Global: {
@@ -825,25 +824,25 @@ function sendBase64(options) {
 			nome: ''
 		}
 	*/
-	var indice = base64Foto_Global.map(function(i) { return i.id; }).indexOf(options.id);
-	if (indice < 0) return false;
+	var index = base64Foto_Global.map(function(i) { return i.id; }).indexOf(options.id);
+	if (index < 0) return false;
 
-	if (base64Foto_Global[indice].base64.length == 0) { 
-		options.fileName = (options.fileName || base64Foto_Global[indice].nome.replace(/ /g, '_'));
-		options.ext = base64Foto_Global[indice].ext;
-		base64Foto_Global.splice(indice, 1);
+	if (base64Foto_Global[index].base64.length == 0) {
+		options.fileName = (options.fileName || base64Foto_Global[index].nome.replace(/ /g, '_'));
+		options.ext = base64Foto_Global[index].ext;
+		base64Foto_Global.splice(index, 1);
 		doneSendBase64(options);
 		return true;
 	}
 
-	if ((options.tempName || '') == '') { 
+	if ((options.tempName || '') == '') {
 		if (typeof(options.onstart) == 'function') options.onstart(options);
 		if ((options.no_base64 || '') == '')
-			base64Foto_Global[indice].base64 = base64Foto_Global[indice].base64.split(';base64,')[1];
-		options.totalChart = base64Foto_Global[indice].base64.length;
+			base64Foto_Global[index].base64 = base64Foto_Global[index].base64.split(';base64,')[1];
+		options.totalChart = base64Foto_Global[index].base64.length;
 	}
 
-	var progress = (base64Foto_Global[indice].base64.length*100) / options.totalChart;
+	var progress = (base64Foto_Global[index].base64.length*100) / options.totalChart;
 	progress = 100 - progress;
 	$(options.div).html(''
 		+ 	`<div class="progress">`
@@ -857,18 +856,18 @@ function sendBase64(options) {
 
 	if ((options.limitChar || '') == '') options.limitChar = 7000000;
 
-	ajax({ 
+	ajax({
 		// url: (options.url || '../controller/controller.php'),
-		param: { 
+		param: {
 			'sendBase64': true,
 			'tempName': (options.tempName || ''),
-			'base64': base64Foto_Global[indice].base64.substring(0, options.limitChar),
+			'base64': base64Foto_Global[index].base64.substring(0, options.limitChar),
 		},
 		error: function() { alert('Falha ao enviar arquivo!'); },
-		done: function(data) { 
+		done: function(data) {
 			console.log(data);
-			base64Foto_Global[indice].base64 = base64Foto_Global[indice].base64
-				.substring(options.limitChar, base64Foto_Global[indice].base64.length);
+			base64Foto_Global[index].base64 = base64Foto_Global[index].base64
+				.substring(options.limitChar, base64Foto_Global[index].base64.length);
 
 			options.tempName = data;
 			sendBase64(options);
@@ -876,11 +875,11 @@ function sendBase64(options) {
 	});
 }
 
-function doneSendBase64(options) { 
+function doneSendBase64(options) {
 	$(options.div).html('Salvando Arquivo...');
-	ajax({ 
+	ajax({
 		// url: (options.url || '../controller/controller.php'),
-		param: $.extend({ 
+		param: $.extend({
 			'doneSendBase64': true,
 			'tempName': options.tempName,
 			'fileName': options.fileName,
@@ -889,7 +888,7 @@ function doneSendBase64(options) {
 			'no_base64': (options.no_base64 || ''),
 		}, (options.param || {}) ),
 		error: function() { alert('Falha ao enviar arquivo!'); },
-		done: function(data) { 
+		done: function(data) {
 			console.log(data);
 			$(options.div).html('');
 			if (typeof options.ondone == 'function') options.ondone(options, data);

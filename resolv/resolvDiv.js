@@ -1,12 +1,12 @@
 
-function resolvDiv(options, tab=0) { 
+function resolvDiv(options, tab=0) {
 	/*
 		options: {
 			class: '' 		-- Class da div
 			id: '' 			-- Id da div
-			ctx: '' 		-- Conteudo div
+			ctx: '' 		-- Conteúdo div
 			style: obj 		-- Objeto CSS
-			text: '' 		-- Texto de conteudo dentro da div
+			text: '' 		-- Texto de conteúdo dentro da div
 		}
 	*/
 	var classDiv = resolvClassDiv(options.class || '');
@@ -26,7 +26,7 @@ function resolvDiv(options, tab=0) {
 
 function resolvClassDiv(classDiv) {
 	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
-	var orderClass = ['xs','sm','md','lg','xl'];
+	var orderClass = ['xs','sm','md','lg','xl','xxl'];
 
 	if (bootstrap == '4') {
 		// Valida o col-xs

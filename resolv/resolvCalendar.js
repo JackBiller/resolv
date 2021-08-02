@@ -3,14 +3,14 @@
 function resolvCalendar(options) { 
 	/*
 		options: {
-			descForm: '' 						-- Paramentro de identificação
-			events: { 							-- Agendamento que vão ser mostrados no calendario
+			descForm: '' 						-- Parâmetro de identificação
+			events: { 							-- Agendamento que vão ser mostrados no calendário
 				title: '' 						-- Título do evento
 				start: '' 						-- Onde inicia o evento model: Y-MM-DD HH:mm:ss
-				end: '' 						-- Onde terimina o evento model: Y-MM-DD HH:mm:ss
+				end: '' 						-- Onde termina o evento model: Y-MM-DD HH:mm:ss
 				textColor: '' 					-- Cor do texto
 				color: '' 						-- Cor do agendamento
-				rendering: '' 					-- Modo de renderizar, usado no feriado para rederiza em 'background'
+				rendering: '' 					-- Modo de renderizar, usado no feriado para renderiza em 'background'
 			}
 			data: "today" 						-- Data padrão calendário ex: Y-MM-DD
 			view: "month" 						-- Type view (month,agendaWeek,agendaDay)
@@ -25,7 +25,7 @@ function resolvCalendar(options) {
 				date: '' 						-- Dia do feriado
 			}
 			minTime: [time,type] 				-- Minimo de tempo que cada agendamento deve ter, ex. type = 'minute'
-			click: function(event) { } 			-- Envento de click
+			click: function(event) { } 			-- Evento de click
 			editable: (0|1) 					-- Se vai poder editar os agendamento do calendário
 		}
 	*/
@@ -39,7 +39,7 @@ function resolvCalendar(options) {
 		});
 	}
 
-	var minTime = function(start, end) { return end }, envet, end;
+	var minTime = function(start, end) { return end }, event, end;
 	var time = (options.minTime || [])[0]
 	, 	type = (options.minTime || [])[1]
 
@@ -52,9 +52,9 @@ function resolvCalendar(options) {
 	}
 
 	for (var i = 0; i < events.length; i++) {
-		envet = events[i];
-		end = minTime(envet.start.replace('T',' '), envet.end.replace('T',' '), time, type);
-		envet.textColor = CheckLumaColor(envet.color) ? '#fff' : '#000';
+		event = events[i];
+		end = minTime(event.start.replace('T',' '), event.end.replace('T',' '), time, type);
+		event.textColor = CheckLumaColor(event.color) ? '#fff' : '#000';
 		events[i].end = end;
 	}
 
@@ -123,7 +123,7 @@ function resolvCalendar(options) {
 		+t(5)+ 							"+ mom.format('ddd') + '<br><h3 style=\"margin:0\">' + mom.format('D') + '</h3>'"
 		+t(5)+ 							"+ '</div>';"
 		+t(2)+ 			'},'
-		+t(2)+ 			"timeFormat: ' '," // 'H(:mm)',  // remover o horario que aparece na frente da drecicao do agendamento
+		+t(2)+ 			"timeFormat: ' '," // 'H(:mm)',  // remover o horário que aparece na frente da descrição do agendamento
 		+t(2)+ 			"events: " + JSON.stringify(events) + ","
 		+t(2)+ 			"eventResizeStart: function() { return false; },"
 		+t(2)+ 			"eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) { "
@@ -224,8 +224,8 @@ function CheckLumaColor(c) {
 		}
 	}
 
-	function colourName2Hex(colour) { 
-		return { 
+	function colourName2Hex(colour) {
+		return {
 			"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
 			"beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
 			"cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff",
@@ -253,8 +253,8 @@ function CheckLumaColor(c) {
 		}[colour.toLowerCase()] || false;
 	}
 
-	function hex(x) { 
-		var hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]; 
+	function hex(x) {
+		var hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
 		return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
 	}
 

@@ -1,6 +1,6 @@
 
 /*
-	Dependencias 
+	Dependências 
 	
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="print">
@@ -14,7 +14,7 @@
 */
 
 /* GER */
-function resolvGrade(data, option) { 
+function resolvGrade(data, option) {
 	/*
 		objParamGrade: {
 			tamanhoFont: 		11
@@ -31,7 +31,7 @@ function resolvGrade(data, option) {
 			footTableWeight: 	"bold"
 			stripTableColors: 	[{bgcolor: "white"}]
 			hoverTrTableColor: 	"lightblue"
-			padination: 		[15,25]
+			pagination: 		[15,25]
 			isMobile_Global: 	false
 			no_scrollX: 		true
 			languageJson: 		''
@@ -46,87 +46,87 @@ function resolvGrade(data, option) {
 				{
 					head: ''																// Descrição no titulo da tabela
 
-					param: '' 																// Parametro a ser mostrado na celula OR
-					param: function(data, option, indice) 									// Parametro a ser mostrado por function usará como callback, 
-					... 																	// 		o option é referente as opções do input e o indice é dos dados OR
-					param: { 																// Parametro mais personalizado para mostrar valores
+					param: '' 																// Parâmetro a ser mostrado na célula OR
+					param: function(data, option, index) 									// Parâmetro a ser mostrado por function usará como callback,
+					... 																	// 		o option é referente as opções do input e o índice é dos dados OR
+					param: { 																// Parâmetro mais personalizado para mostrar valores
 						op: (CONCAT|SUM), 													// operação a ser realizada pelos valores
 						val: [ { attr,literal } ] 											// valores a serem trabalhos para mostrar
 					}
 
-					align: 'left' 															// Alinhamento da celula (left | right), default: 'center'
-					alignHead: '' 															// Alinhamento do cabeçario (left | right), 
-					... 																	// OBS: herarquia de configuração:  this > defaultAlignHead > align > 'center'
+					align: 'left' 															// Alinhamento da célula (left | right), default: 'center'
+					alignHead: '' 															// Alinhamento do cabeçario (left | right),
+					... 																	// OBS: hierarquia de configuração:  this > defaultAlignHead > align > 'center'
 					dateFormat: { 															// Indica que o campo é data
 						format: 'DD/MM/Y' 													// Define com vai ser impresso o formato da data
-						format: function(data, option, indice) 								// Pode usar como callback, similar ao atributo param
+						format: function(data, option, index) 								// Pode usar como callback, similar ao atributo param
 						useDataTable: 														// (0|1) default: 1
 					}
 					format: { 																// Indica que o campo é um número
 						casas: 	  0 														// numero de casas decimais
-						dec: 	',' 														// separedor decimal
-						mili: 	'.' 														// separedor de milhar
+						dec: 	',' 														// separador decimal
+						mili: 	'.' 														// separador de milhar
 					}
-					OR format: 'c0|d,|m.' 													// Pode usar format como codigo separando por "|"
+					OR format: 'c0|d,|m.' 													// Pode usar format como código separando por "|"
 					default: '' 															// substitui o undefined
-					setDefaultValZero: (0|1) 												// quando for campo numerico (format) e o valor for zero
-					... 																	// , vai imprimir o valor padrão 
+					setDefaultValZero: (0|1) 												// quando for campo numérico (format) e o valor for zero
+					... 																	// , vai imprimir o valor padrão
 					foot: { 																// se este for enviado como objeto vazio '{}', será usado o valor de param
 						op: 'SUM,MEDIA|expression|personalizado|literal' 					// padrão SUM
 						val: { 																// caso omitido será usado o param do próprio input
-						... 																// , pode ser enviado um array tambem
+						... 																// , pode ser enviado um array também
 							attr: '' 														// nome do atributo a ser usado
-							op: 'SUM,MEDIA|expression' 										// operação valor 
+							op: 'SUM,MEDIA|expression' 										// operação valor
 						}
-						OR val: '' 															// String no caso de ser literal vai replicar o valor extamente que está escrito
-						... 																// Caso seja expressão e attr val for omitido, 
+						OR val: '' 															// String no caso de ser literal vai replicar o valor exatamente que está escrito
+						... 																// Caso seja expressão e attr val for omitido,
 						... 																// usa o seguinte padrão [{attr: option.param}]
 						algin: '' 															// caso omitido será usado o align do próprio input
 						format: { 															// caso omitido será usado o format do próprio input
 							casas: 	  0 													// numero de casas decimais
-							dec: 	',' 													// separedor decimal
-							mili: 	'.' 													// separedor de milhar
+							dec: 	',' 													// separador decimal
+							mili: 	'.' 													// separador de milhar
 						}
-						OR format: 'c0|d,|m.' 												// Pode usar format como codigo separando por "|"
+						OR format: 'c0|d,|m.' 												// Pode usar format como código separando por "|"
 						mask: '%0%' 														// mascara do campo
-						ignoreNull: (0|1) 													// para media vai ignorar os valores undfined na hora de divir, default: false
+						ignoreNull: (0|1) 													// para media vai ignorar os valores undefined na hora de dividir, default: false
 					}
 					style: {} 																// props de css podendo passar int, string e funcs de callback
 					...																		// OBS: os nomes dos attrs deve ser iguais ao do css
-					... 																	// Quando callback chama-se func(dt,el=inputs[i],indice)
-					... { thead: { td: { style } } }										// É possivel confecionar o estilo do head
+					... 																	// Quando callback chama-se func(dt,el=inputs[i],índice)
+					... { thead: { td: { style } } }										// É possível confecionar o estilo do head
 
-					mask: '%0%' 															// substiui o %0% pelo valor correspondentes e coloca o restante do texto
+					mask: '%0%' 															// substitui o %0% pelo valor correspondentes e coloca o restante do texto
 					... 																	// , ex: (R$ %0% || %0% %)
 
 					tooltip: function(data,element){} 										// mandar callback direto com padrão de posição como bottom OR
-					tooltip: { 																// parametro para colocar balão demostrativo quando passar o mouse emcima
+					tooltip: { 																// parâmetro para colocar balão demostrativo quando passar o mouse encima
 						pos: 'bottom'														// posição que vai aparecer (top | right | bottom | left)
-						html: function(data,element){} 										// callback para resowlver o conteudo do balão
+						html: function(data,element){} 										// callback para resolver o conteúdo do balão
 					}
-					tdClick: { 																// Click na celula
+					tdClick: { 																// Click na célula
 						desc: 'func(%0%)' 													// nome da função a ser executada
 						val: [ { (attr | index | obj) } ] 									// valores de referencia, default: [{obj:true}]
-						... 																// caso for obj ira retorna um parametro unico com todos os dados
+						... 																// caso for obj ira retorna um parâmetro único com todos os dados
 					}
 					OR tdClick: 'funcName' 													// quando string value default: [{desc: 'funcName', val: [{obj:true}]}]
 					... 																	// funcName recebe '(%0%)' dinamicamente caso não tenha
-					tdHeadClick: { 
+					tdHeadClick: {
 						desc: 'func()' 														// Função quando clica no cabecario da grade
 					}
 					no_render: (0|1) 														// Para indicar se tem que renderizar a coluna ou não
 				}
 			],
 			defaultAlignHead: 'center' 														// align default of header
-			ck_edit: (0|1) 																	// Button com função editar + descForm e passando indice no paramtro
-			ck_delete: (0|1) 																// Button com função apagar + descForm e passando indice no paramtro
+			ck_edit: (0|1) 																	// Button com função editar + descForm e passando índice no parâmetro
+			ck_delete: (0|1) 																// Button com função apagar + descForm e passando índice no parâmetro
 			div: '#id' 																		// Nome do elemento que vai ser para renderizar a grade
 			... 																			// Caso não informado considera returnHTML como sendo verdadeiro
-			descForm: '' 																	// referica para a função de editar e apagar registros
-			languageJson: Inutilizado 														// caminho do objeto JSON para traduzir a grade para PoRtugues ou outro idioma
+			descForm: '' 																	// referencia para a função de editar e apagar registros
+			languageJson: Inutilizado 														// caminho do objeto JSON para traduzir a grade para Português ou outro idioma
 			objParamGrade: '' 																// objeto de estilização do qualidade
-			returnHTML: (0|1) 																// se vai retornar ou não um HTML, 
-			... 																			// em caso verdadeiro não precisa definir o parametro div
+			returnHTML: (0|1) 																// se vai retornar ou não um HTML,
+			... 																			// em caso verdadeiro não precisa definir o parâmetro div
 			order: [[0,"asc"]] 																// opção de inicialização de ordenação
 			class: { 																		// Setar classes no geral
 				thead: { tr | td }
@@ -135,32 +135,32 @@ function resolvGrade(data, option) {
 			}
 			style: { 																		// Setar style no geral
 				thead: { tr | td }
-				tbody: { tr | td } 															// no td aceita callback passando por parametro dt e el = (inputs[i])
+				tbody: { tr | td } 															// no td aceita callback passando por parâmetro dt e el = (inputs[i])
 				tfoot: { tr | td }
 			}
 			trClick: { 																		// onclick na tag tr da grade
 				desc: 'func(%0%)' 															// nome da função a ser executada
 				val: [ { (attr | index | obj) } ] 											// valores de referencia, default: [{obj:true}]
-				... 																		// caso for obj ira retorna um parametro unico com todos os dados
+				... 																		// caso for obj ira retorna um parâmetro único com todos os dados
 			}
 			OR trClick: 'funcName' 															// quando string value default: [{desc: 'funcName', val: [{obj:true}]}]
 			... 																			// funcName recebe '(%0%)' dinamicamente caso não tenha
-			trClickFoot: { 																	// onclick na tag tr do rodape
-				desc: 'funct()' 															// nome da função a ser executada
+			trClickFoot: { 																	// onclick na tag tr do rodapé
+				desc: 'function()' 															// nome da função a ser executada
 			}
 			search: '' 																		// Campo de busca inicializado com valor
 			onOrder: function(e, settings, data){  } 										// Evento disparado quando ordenar
 			onSearch: function(e, settings, data){  } 										// Evento disparado quando procura
-			onPage: function(e, settings, data){  } 										// Envento disparado quando mudar paginação
-			no_scrollX: (0|1) 																// Remover parametro da grade scrollX (bug do cabaçalho desalhiado)
-			invertPadination: (0|1) 														// Inverter Paginação da Grade
+			onPage: function(e, settings, data){  } 										// Evento disparado quando mudar paginação
+			no_scrollX: (0|1) 																// Remover parâmetro da grade scrollX (bug do cabeçario desalinhado)
+			invertPagination: (0|1) 														// Inverter Paginação da Grade
 
 			no_tableSetWidth: (0|1) 														// Não seta width da tabela com 100%
 			no_dataTable: (0|1) 															// Não usa lib dataTable
-			initComplete: function(){} 														// Função diparada quando termina de carregar a grade
+			initComplete: function(){} 														// Função disparada quando termina de carregar a grade
 			initCompleteSearch: (0|1) 														// Caso true e initComplete undefined, inicia grade focando na pesquisa
-			setDefaultValZero: (0|1) 														// quando for campo numerico (format) e o valor for zero
-			... 																			// , vai imprimir o valor padrão 
+			setDefaultValZero: (0|1) 														// quando for campo numérico (format) e o valor for zero
+			... 																			// , vai imprimir o valor padrão
 			title: ''																		// titulo para exportação de dados
 			dom: ''																			// definição de layout da table
 				+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
@@ -169,7 +169,7 @@ function resolvGrade(data, option) {
 		}
 	*/
 
-	var objParamGrade = $.extend({}, 
+	var objParamGrade = $.extend({},
 		{
 			  tamanhoFont: 			11
 			, fontFamily: 			"NomeDaFont"
@@ -185,7 +185,7 @@ function resolvGrade(data, option) {
 			, footTableWeight: 		"bold"
 			, stripTableColors: 	[{bgcolor: "white"}]
 			, hoverTrTableColor: 	"lightblue"
-			, padination: 			[15,25]
+			, pagination: 			[15,25]
 			, isMobile_Global: 		window['isMobile_Global'] || false
 			, no_scrollX: 			true
 			// , languageJson: 		''
@@ -194,13 +194,13 @@ function resolvGrade(data, option) {
 									+ "<'row'<'col-sm-12'tr>>"
 									+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
 		},
-		(window['objParamGrade_Global'] || {}), 
+		(window['objParamGrade_Global'] || {}),
 		(option.objParamGrade || {})
 	)
 	, 	title = option.title || 'Exportar Grade'
 	, 	ck_tFoot = false
 	, 	ck_tooltip = false
-	, 	language = { 
+	, 	language = {
 		"sProcessing":   "A processar...",
 		"sLengthMenu":   "Mostrar _MENU_ registros",
 		"sZeroRecords":  "Não foram encontrados resultados",
@@ -218,21 +218,21 @@ function resolvGrade(data, option) {
 		}
 	};
 
-	if ((option.initComplete || '') == '' && (option.initCompleteSearch || false)) { 
-		eval(`option.initComplete = function() { 
+	if ((option.initComplete || '') == '' && (option.initCompleteSearch || false)) {
+		eval(`option.initComplete = function() {
 			$("#divTable${option.descForm}").find('input')[0].focus();
 		}`);
 	}
 
-	if (typeof(data) == 'string') { 
-		try { 
+	if (typeof(data) == 'string') {
+		try {
 			data = JSON.parse(data);
-		} catch(e) { 
+		} catch(e) {
 			return false;
 		}
 	}
 	var grade = '<br>' + ((data[0] || {}).debug || 'Nenhum resultado encontrado!');
-	if ( (data.length > 0 && (data[0].debug || '') == '') || data[0].debug == "OK" ) { 
+	if ((data.length > 0 && (data[0].debug || '') == '') || data[0].debug == "OK") {
 		grade = ``
 			// + 	`<br>`
 			// + 	`<table class='table' id='tabela${option.descForm || ''}' border='1'>`
@@ -255,7 +255,7 @@ function resolvGrade(data, option) {
 			+ 		`'`
 			+ 	`>`
 
-			+ option.inputs.map(function(input) { 
+			+ option.inputs.map(function(input) {
 				return (input.no_render || '') != '' ? '' : ``
 					+ 	`<td`
 					+ 		` align='${input.alignHead || option.defaultAlignHead || input.align || 'center'}'`
@@ -280,7 +280,7 @@ function resolvGrade(data, option) {
 			+ 		`</thead>`
 			+ 		`<tbody>`
 
-		for (var i = 0; i < data.length; i++) { 
+		for (var i = 0; i < data.length; i++) {
 			grade += ``
 				+ 		`<tr`
 				+ ((option.trClick || '') == '' ? '' : ''
@@ -297,13 +297,13 @@ function resolvGrade(data, option) {
 				+ 			`'`
 				+ 		`>`
 
-				+ option.inputs.map(function(input) { 
+				+ option.inputs.map(function(input) {
 					input  = $.extend({}, { setDefaultValZero: (option.setDefaultValZero || false) }, input);
 
-					if (typeof(input.format) == 'string') 
+					if (typeof(input.format) == 'string')
 						input.format = resolvCodigoFormatGrade(input.format);
 
-					var style 			= $.extend( {}, (((option.style || {}).tbody || {}).td || {}), ((input.style || {}).td || {}) )
+					var style 			= $.extend({}, (((option.style || {}).tbody || {}).td || {}), ((input.style || {}).td || {}))
 					, 	valPrint 		= resolveValPrint(input, data[i], i)
 					, 	defaultAling 	= 	(input.format 		|| '') != '' ? 'right'
 										: 	(input.dateFormat 	|| '') != '' ? 'center'
@@ -330,7 +330,7 @@ function resolvGrade(data, option) {
 							? valPrint  					// não é tooltip
 							: (ck_tooltip = true, '') 		// caso for tooltip
 							+ 	`<div data-toggle='tooltip' data-html='true'`
-							+ (typeof(input.tooltip) == 'function' 
+							+ (typeof(input.tooltip) == 'function'
 								? ''
 								+ 	` data-placement='bottom'`
 								// + 	` title='${(input.tooltip(data[i], input) || '').replace(/\"/g, '\\\"')}'`
@@ -376,12 +376,12 @@ function resolvGrade(data, option) {
 			+ 		`</tbody>`
 
 
-		if (ck_tFoot) { 
+		if (ck_tFoot) {
 
 			grade += ``
 				+ 	`<tfoot>`
-				// + 		`<tr bgcolor='${objParamGrade.footTableBgColor}' `
-				// + 			`style='font-weight:${objParamGrade.footTableWeight};color:${objParamGrade.footTableColor}'>`
+				// + 		`<tr bgcolor='${objParamGrade.footTableBgColor}'`
+				// + 			` style='font-weight:${objParamGrade.footTableWeight};color:${objParamGrade.footTableColor}'>`
 				+ 	`<tr`
 				+ 		` class='${(((option.class || {}).tfoot || {}).tr || '') + (((option.trClickFoot || {}).desc || '') == '' ? '' : ' cursorClick')}'`
 				+ 		` style='`
@@ -392,19 +392,19 @@ function resolvGrade(data, option) {
 				+ 		`'`
 				+ 		(((option.trClickFoot || {}).desc || '') == '' ? '' : ` onclick="${option.trClickFoot.desc}"`)
 				+ 	`>`
-				+ option.inputs.map(function(input) { 
-					const align = ((input.foot || {}).align || input.align || 
+				+ option.inputs.map(function(input) {
+					const align = ((input.foot || {}).align || input.align ||
 						((input.format || '') != '' ? 'right' : ((input.dateFormat || '') != '' ? 'center' : 'left')))
 
-					if (typeof(input.format) == 'string') 
+					if (typeof(input.format) == 'string')
 						input.format = resolvCodigoFormatGrade(input.format);
 
 					var valPrint = '';
-					if ((input.foot || '') != '') { 
-						if (typeof(input.foot.format) == 'string') 
+					if ((input.foot || '') != '') {
+						if (typeof(input.foot.format) == 'string')
 							input.foot.format = resolvCodigoFormatGrade(input.foot.format);
 
-						if ((input.foot.val || '') == '') { 
+						if ((input.foot.val || '') == '') {
 							input.foot.val = {};
 							input.foot.val.attr = input.param;
 						}
@@ -428,30 +428,32 @@ function resolvGrade(data, option) {
 
 		// grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
 		grade = '<div style="overflow-x: scroll;" id="divTable' + option.descForm + '">' + grade + '</div>'
-	} else { 
+	} else {
 		grade = `<b>Debug != OK</b>`;
 	}
 
-	if ((option.no_dataTable || '') != '') { 
-		if ((option.div || '') != '') { 
+	if ((option.no_dataTable || '') != '') {
+		if ((option.div || '') != '') {
 			$((option.div || '')).html(grade);
 			return true;
-		} else if ([false,0].indexOf(option.returnHTML) < 0) { 
+		} else if ([false,0].indexOf(option.returnHTML) < 0) {
 			return grade;
 		}
 	};
 
 	var cont = 0;
-	option.inputs.forEach(function(input, i) { 
+	option.inputs.forEach(function(input, i) {
 		option.inputs[i].indice = cont;
 		if ((input.no_render || '') == '') cont++;
 	});
 
-	var padination = (objParamGrade.padination || [])
+	var pagination = (objParamGrade.pagination || objParamGrade.padination || [])
 		.filter(function(v) { return v <= data.length; })
 		.filter(function(v,i,a) { return a.indexOf(v) === i; });
-	if ((option.invertPadination || '') != '') padination = invertPadination((objParamGrade.padination || []), data.length);
-	if (padination.indexOf(data.length) < 0) padination.push(data.length);
+	if ((option.invertPadination || '') != '' || (option.invertPagination || '') != '') {
+		pagination = invertPagination((objParamGrade.pagination || []), data.length);
+	}
+	if (pagination.indexOf(data.length) < 0) pagination.push(data.length);
 
 	var stripeClasses = (objParamGrade.stripTableColors || []).map(function(dt,i) { return 'stripe'+i; });
 
@@ -464,25 +466,25 @@ function resolvGrade(data, option) {
 		.map(function(el) { return el.indice; });
 
 	// Setinhas da grade
-	if ((option.trClick || '') != '') { 
-		window['tableEventKeyboard' + option.descForm] = function(e, whichkey) { 
+	if ((option.trClick || '') != '') {
+		window['tableEventKeyboard' + option.descForm] = function(e, whichkey) {
 			if ($("#divTable" + option.descForm).find('input').is(":focus") 
 				|| $("#divTable" + option.descForm).find('.pagination').find('a').is(':focus')
 			) { 
-				if (whichkey == 38 || whichkey == 40 || whichkey == 13) { 
+				if (whichkey == 38 || whichkey == 40 || whichkey == 13) {
 					e.preventDefault();
 					var elTable = $("#divTable" + option.descForm);
 					var pagination = $(elTable).find('.pagination')[0];
 					var indice = -1
 					var trs = $(elTable).find('tr.cursorClick');
-					for (var i = 0; i < trs.length; i++) { 
+					for (var i = 0; i < trs.length; i++) {
 						if ($(trs[i]).find('td').attr('class').indexOf('active') >= 0) indice = i;
 					}
 
 					if (whichkey == 38) { // UP
 						indice = indice-1;
-						if (indice < 0) { 
-							if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) { 
+						if (indice < 0) {
+							if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) {
 								$(pagination).find(".previous").click();
 								indice = $(elTable).find('tr.cursorClick').length-1;
 							} else { 
@@ -492,23 +494,23 @@ function resolvGrade(data, option) {
 					}
 					else if (whichkey == 40) { // DOWN
 						indice = indice+1;
-						if (indice >= $(elTable).find('tr.cursorClick').length) { 
-							if ($(pagination).find('.next').attr('class').indexOf('disabled') < 0) { 
+						if (indice >= $(elTable).find('tr.cursorClick').length) {
+							if ($(pagination).find('.next').attr('class').indexOf('disabled') < 0) {
 								$(pagination).find(".next").click();
 								indice = 0;
-							} else { 
+							} else {
 								indice = $(elTable).find('tr.cursorClick').length-1;
 							}
 						}
 					}
 
 					trs = $(elTable).find('tr.cursorClick');
-					for (var i = 0; i < trs.length; i++) { 
+					for (var i = 0; i < trs.length; i++) {
 						$(trs[i]).find('td').attr('class', $(trs[i]).find('td').attr('class').replace('active',''));
 					}
 
 					var tds = $($(elTable).find('tr.cursorClick')[indice]).find('td');
-					for (var i = 0; i < tds.length; i++) { 
+					for (var i = 0; i < tds.length; i++) {
 						$(tds[i]).attr('class', $(tds[i]).attr('class') + ' active');
 					}
 
@@ -523,14 +525,14 @@ function resolvGrade(data, option) {
 	}
 	// End: Setinhas da grade
 
-	if ((option.returnHTML || false) || (option.div || '') == '') { 
+	if ((option.returnHTML || false) || (option.div || '') == '') {
 		return grade
 			+ 	`<script>`
 			+ 		(ck_tooltip ? `$('[data-toggle="tooltip"]').tooltip();` : '')
 			+ 		`$("#tabela${(option.descForm || '')}").DataTable({`
 			// + 			`  'language' 		: {'url': '${(option.languageJson || objParamGrade.languageJson || '../lb/DataTables-1.10.18/Portuguese.json')}'}`
 			+ 			`  'language' 		: ${JSON.stringify(language)}`
-			+ 			`, 'lengthMenu' 	: ${JSON.stringify(padination)}`
+			+ 			`, 'lengthMenu' 	: ${JSON.stringify(pagination)}`
 			+ 			`, 'autoWidth' 		: false`
 			+ 			`, 'order' 			: ${JSON.stringify(option.order || [[0,"asc"]])}`
 			+ 			`, 'stripeClasses' 	: ${JSON.stringify(stripeClasses)}`
@@ -577,15 +579,15 @@ function resolvGrade(data, option) {
 			//   "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
 			//   "language": 		{ "url": "../lb/DataTables-1.10.18/Portuguese.json" }
 			language
-			, "lengthMenu": 	padination
+			, "lengthMenu": 	pagination
 			, "order":			(option.order || [[0,"asc"]]) // order = VLR_DEVOLUCAO_MES : desc
 			, 'autoWidth': 		false
 			, 'stripeClasses':  stripeClasses
-			, 'columnDefs': [ 
+			, 'columnDefs': [
 				{ "sType":"mynumeric","aTargets":mynumeric }
 				, { "sType":"mynumericTooltip","aTargets":mynumericTooltip }
 			]
-			, 'scrollX': (ck_tooltip  || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
+			, 'scrollX': (ck_tooltip || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
 				+ "'" + (option.scrollX || objParamGrade.isMobile_Global ? "100%" : false) + "'"
 			)
 			, 'search': { 
@@ -604,9 +606,9 @@ function resolvGrade(data, option) {
 			// , "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>>"
 			// , "dom": '<Blf<t>ip>'
 			// , "dom": 'Blfrtip'
-			, "dom": (option.dom || objParamGrade.dom || '' 
-					+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>" 
-					+ "<'row'<'col-sm-12'tr>>" 
+			, "dom": (option.dom || objParamGrade.dom || ''
+					+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
+					+ "<'row'<'col-sm-12'tr>>"
 					+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
 			)
 			, 'buttons': [
@@ -621,13 +623,13 @@ function resolvGrade(data, option) {
 	}
 }
 
-function resolvCodigoFormatGrade(format) { 
+function resolvCodigoFormatGrade(format) {
 	var formatTemp = format.split('|'), keys, vlr;
 	format = {};
 
-	formatTemp = formatTemp.map(function(cod) { 
+	formatTemp = formatTemp.map(function(cod) {
 		vlr = cod.substring(1, cod.length);
-		switch(cod.substring(0,1)) { 
+		switch(cod.substring(0,1)) {
 			case 'c': return { casas: 	parseInt(vlr) };
 			case 'd': return { dec: 	vlr };
 			case 'm': return { mili: 	vlr };
@@ -635,19 +637,20 @@ function resolvCodigoFormatGrade(format) {
 		}
 	});
 
-	formatTemp.forEach(function(param) { 
+	formatTemp.forEach(function(param) {
 		keys = Object.keys(param);
-		if (keys.length) 
+		if (keys.length) {
 			keys.forEach(function(key) { format[key] = param[key]; });
+		}
 	});
 	return format;
 }
 
-function resolvStyleGrade(obj,dt={},el={},indice=-1) { 
+function resolvStyleGrade(obj,dt={},el={},indice=-1) {
 	var html = '', keys = Object.keys(obj), func, htmlTemp;
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (typeof(obj[keys[i]]) == 'function') { 
+	for (var i = 0; i < keys.length; i++) {
+		if (typeof(obj[keys[i]]) == 'function') {
 			func = obj[keys[i]];
 			htmlTemp = func(dt,el,indice);
 		}
@@ -656,48 +659,47 @@ function resolvStyleGrade(obj,dt={},el={},indice=-1) {
 	return html;
 }
 
-function resolveValPrint(option, data, indice) { 
+function resolveValPrint(option, data, indice) {
 	var mask = (data[option.param] == undefined) ? '%0%' : (option.mask || '%0%');
 
 	var valData = '';
-	if (typeof(option.param) == 'function') { 
+	if (typeof(option.param) == 'function') {
 		valData = option.param(data, option, indice)
 	}
-	else if (typeof(option.param) == 'object') { 
+	else if (typeof(option.param) == 'object') {
 		if (['sum'].indexOf(option.param.op) < 0) valData = 0;
 
-		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') { 
+		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') {
 			valData = option.param.val.map(function(val) { return val.literal || data[val.attr]; }).join('');
 		}
-		if (option.param.op.toUpperCase() == 'SUM') { 
+		if (option.param.op.toUpperCase() == 'SUM') {
 			valData = option.param.val
 				.map(function(val) { return parseFloat(val.literal || data[val.attr] || 0) })
 				.reduce(function(t,v) { return t + v; }, 0);
 		}
 	}
-	else { 
+	else {
 		valData = (data[option.param] || '');
 	}
 
 	var val = '';
-	if ((option.format || '') != '') { 
+	if ((option.format || '') != '') {
 		var { casas, dec, mili } = option.format;
 
-		if (
-			(typeof(option.param) == 'function' && valData == '') || 
+		if ((typeof(option.param) == 'function' && valData == '') ||
 			(typeof(option.param) != 'function' && data[option.param] == undefined)
-		) { 
+		) {
 			valData = option.default || '';
-		} else { 
+		} else {
 			valData = (valData || 0);
-			if (valData == 0 && (option.setDefaultValZero || false)) { 
+			if (valData == 0 && (option.setDefaultValZero || false)) {
 				val = option.default || '';
-			} else { 
+			} else {
 				val = number_format(valData, (casas || 0), (dec || ','), (mili || '.'));
 			}
 		}
 	}
-	else if ((option.dateFormat || '') != '') { 
+	else if ((option.dateFormat || '') != '') {
 		option.dateFormat.format = ((option.dateFormat || {}).format || 'DD/MM/Y')
 		var valHide = "<spam style='display:none;'>%0%</spam>";
 		try { valHide = valHide.replace('%0%', moment(valData).format('Y-MM-DD')); } catch(e) { }
@@ -711,14 +713,14 @@ function resolveValPrint(option, data, indice) {
 		}
 		val = valHide + valData;
 	}
-	else { 
+	else {
 		val = valData || option.default || '';
 	}
 
 	return mask.replace(/%0%/g, val);
 }
 
-function resolveClick(data, objClick, indice) { 
+function resolveClick(data, objClick, indice) {
 	if (typeof objClick == 'string') {
 		if (objClick.indexOf('%0%') < 0) objClick += '(%0%)';
 		objClick = { desc: objClick, val: [{ obj: true }] };
@@ -728,7 +730,7 @@ function resolveClick(data, objClick, indice) {
 	if ((objClick.val || '') == '') objClick.val = [{ obj: true }];
 	if (Object.keys(objClick.val)[0] != '0') objClick.val = [objClick.val];
 
-	(objClick.val || []).forEach(function(val, i) { 
+	(objClick.val || []).forEach(function(val, i) {
 			 if ((val.obj 	|| '') != '') 	value = JSON.stringify(data).replace(/\'/g,"");
 		else if ((val.index || '') != '') 	value = indice;
 		else 								value = data[val.attr];
@@ -738,47 +740,47 @@ function resolveClick(data, objClick, indice) {
 	return html;
 }
 
-function resolveParam(data, format, options) { 
-	var param = '', val = '', valIf = '', cont = 0, 
+function resolveParam(data, format, options) {
+	var param = '', val = '', valIf = '', cont = 0,
 		setIf, setIfFunc, isTrueValid, isTrue, exclamacao, notSet;
 
-	for (var i = 0; i < data.length; i++) { 
+	for (var i = 0; i < data.length; i++) {
 		val = format;
 		setIf = true;
 		setIfFunc = true;
 
-		for (var j = 0; j < (options.if || []).length; j++) { 
+		for (var j = 0; j < (options.if || []).length; j++) {
 			// [ notSet ]
-			if ((options.if[j].notSet || '') != '') { 
+			if ((options.if[j].notSet || '') != '') {
 				notSet = options.if[j].notSet;
 				exclamacao = notSet[0] == '!' ? (notSet = notSet.substring(1,notSet.length), true) : false;
 				setIf = (data[i][notSet] || false) ? exclamacao : (exclamacao ? false : setIf);
 			}
 
 			// [ first ]
-			if ((options.if[j].first || '') != '') { 
+			if ((options.if[j].first || '') != '') {
 				valIf = options.if[j].first.split('?');
 				valIf = cont == 0 ? valIf[0] : valIf[1];
 			}
 
 			// [ isTrue ]
-			if ((options.if[j].isTrue || '') != '') { 
+			if ((options.if[j].isTrue || '') != '') {
 
 				isTrueValid = options.if[j].isTrue[0] == '!';
 				if (isTrueValid) options.if[j].isTrue = options.if[j].isTrue.substring(1,options.if[j].isTrue.length);
 				isTrue = (data[i][options.if[j].isTrue] || false);
 				if (isTrueValid) isTrue = !isTrue;
 
-				if ((options.if[j].setFunc || '') != '') { 
+				if ((options.if[j].setFunc || '') != '') {
 					setIfFunc = false;
-					if (isTrue) { 
+					if (isTrue) {
 						val = resolveParamSetFunc(val, options.if[j], j);
 						// val.replace(new RegExp('#'+j+'#', 'gi'), valIf);
-					} else { 
+					} else {
 						val = val.replace(new RegExp('#'+j, 'gi'), '');
 						val = val.replace(new RegExp(j+'#', 'gi'), '');
 					}
-				} else { 
+				} else {
 					valIf = options.if[j].set.split('?');
 					valIf =  isTrue ? valIf[0] : valIf[1];
 				}
@@ -790,11 +792,11 @@ function resolveParam(data, format, options) {
 			valIf = '';
 		}
 
-		for (var j = 0; j < (options.val || []).length; j++) { 
-			if ((options.val[j].default || '') != '') { 
-				val = val.replace(new RegExp('%'+j+'%', 'gi'), resolveParamDefault(data[i], options.val[j]) );
-			} else { 
-				val = val.replace(new RegExp('%'+j+'%', 'gi'), data[i][options.val[j].attr] );
+		for (var j = 0; j < (options.val || []).length; j++) {
+			if ((options.val[j].default || '') != '') {
+				val = val.replace(new RegExp('%'+j+'%', 'gi'), resolveParamDefault(data[i], options.val[j]));
+			} else {
+				val = val.replace(new RegExp('%'+j+'%', 'gi'), data[i][options.val[j].attr]);
 			}
 		}
 		val = setIf ? (cont++, val) : '';
@@ -807,14 +809,14 @@ function resolveParam(data, format, options) {
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123)'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste);'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123...456) ? "continua" : "ou não";'}, 0)
-function resolveParamSetFunc(val, options, indice) { 
+function resolveParamSetFunc(val, options, indice) {
 	// setFunc =  "func'('pre_param'...'pos_param')'pos_func"
 
-	var pre_param = '', pos_param = '', 
-		setFunc = options.setFunc, 
+	var pre_param = '', pos_param = '',
+		setFunc = options.setFunc,
 		isParamPre = false, isEtc = false, isParamPos = false;
 
-	if (setFunc.indexOf('...') != -1) { 
+	if (setFunc.indexOf('...') != -1) {
 		pre_param = setFunc.split('...')[0];
 		setFunc = setFunc.split('...');
 		setFunc.splice(0,1);
@@ -822,7 +824,7 @@ function resolveParamSetFunc(val, options, indice) {
 		setFunc = '';
 		isEtc = true;
 	}
-	else if (setFunc.indexOf('(') != -1) { 
+	else if (setFunc.indexOf('(') != -1) {
 		pre_param = setFunc.split('(')[0];
 		setFunc = setFunc.split('(');
 		setFunc.splice(0,1);
@@ -830,7 +832,7 @@ function resolveParamSetFunc(val, options, indice) {
 		isParamPre = true;
 	}
 	
-	if (!isEtc && setFunc.indexOf(')') != -1) { 
+	if (!isEtc && setFunc.indexOf(')') != -1) {
 		if (isParamPre) pre_param += "(" + setFunc.split(')')[0];
 		else 			pre_param += setFunc.split(')')[0] + "(";
 		pos_param = setFunc.split(')')[1];
@@ -839,7 +841,7 @@ function resolveParamSetFunc(val, options, indice) {
 		// setFunc.splice(0,1);
 	}
 
-	if (!isEtc && !isParamPre && !isParamPos) { 
+	if (!isEtc && !isParamPre && !isParamPos) {
 		pre_param = setFunc + "(";
 		pos_param = ")";
 	}
@@ -856,27 +858,27 @@ function resolveParamSetFunc(val, options, indice) {
 	return val;
 }
 
-function resolveParamDefault(data, options) { 
+function resolveParamDefault(data, options) {
 	var val = '';
 
-	if ((options.default || '') != '') { 
-		switch (typeof(options.default)) { 
-			case 'string': 
+	if ((options.default || '') != '') {
+		switch (typeof(options.default)) {
+			case 'string':
 				val = (data[options.attr] || options.default);
 				break;
-			case 'object': 
+			case 'object':
 				val = (data[options.attr] || resolveParamDefault(data, options.default));
 				break;
 		}
-	} else { 
+	} else {
 		val = data[options.attr]
 	}
 	return val;
 }
 
-function invertPadination(defaultPag, length) { 
+function invertPagination(defaultPag, length) {
 	var pag = [length];
-	for (var i = defaultPag.length-1; i >= 0; i--) { 
+	for (var i = defaultPag.length-1; i >= 0; i--) {
 		if (length <= defaultPag[i]) return (pag.push(length), pag);
 		else pag.push(defaultPag[i]);
 	}
@@ -886,31 +888,31 @@ function invertPadination(defaultPag, length) {
 /**************************************************************************************************************
  * Function Op
  * ************************************************************************************************************/
-var tofloat = function(n) { 
+var tofloat = function(n) {
 	n = n.replace(/\./g, '').split(',');
 	return parseFloat(n[0].replace(/\D/g, '') + '.' + (n[1] || '0').replace(/\D/g, ''));
 };
 
-function removeHtml(a) { 
+function removeHtml(a) {
 	a = a.split('">');
 	a = a[a.length-1];
 	a = a.split('</')[0];
 	return a;
 }
 
-$(document).ready(function() { 
-	try { 
-		$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) { 
+$(document).ready(function() {
+	try {
+		$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) {
 			a = tofloat(((a || '') == '' ? String(0) : a));
 			b = tofloat(((b || '') == '' ? String(0) : b));
 			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
 		};
-		$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) { 
+		$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) {
 			a = tofloat(((a || '') == '' ? String(0) : a));
 			b = tofloat(((b || '') == '' ? String(0) : b));
 			return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
 		};
-		$.fn.dataTableExt.oSort['mynumericTooltip-asc']  = function(a, b) { 
+		$.fn.dataTableExt.oSort['mynumericTooltip-asc'] = function(a, b) {
 			a = (a == '' ? String(0) : removeHtml(a));
 			b = (b == '' ? String(0) : removeHtml(b));
 
@@ -919,7 +921,7 @@ $(document).ready(function() {
 
 			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
 		};
-		$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) { 
+		$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) {
 			a = (a == '' ? String(0) : removeHtml(a));
 			b = (b == '' ? String(0) : removeHtml(b));
 
@@ -937,9 +939,9 @@ $(document).ready(function() {
 /**************************************************************************************************************
  * Resolve Foot
  * ************************************************************************************************************/
-function resolveFoot(data,option,defaultOption={}) { 
+function resolveFoot(data,option,defaultOption={}) {
 	/*
-		option: 
+		option:
 		{
 			op: 'SUM|MEDIA|expression|personalizado|literal' 	// expression = (ex: "%0% + n") | default: SUM
 
@@ -957,22 +959,22 @@ function resolveFoot(data,option,defaultOption={}) {
 	*/
 	var valPrint = '';
 
-	if (['pesonalizado','personalizado'].indexOf(option.op || '') >= 0) 
+	if (['pesonalizado','personalizado'].indexOf(option.op || '') >= 0)
 		valPrint = resolveFootPersonalizado(data, option, defaultOption);
-	else if ((option.op || '') == 'literal') 
+	else if ((option.op || '') == 'literal')
 		valPrint = (typeof(option.val) == 'string' ? option.val : '');
-	else 
+	else
 		valPrint = resolveFormatVal( resolveFootAction(data, option), option, defaultOption );
 
 	return valPrint;
 }
 
-function resolveFormatVal(val, option, defaultOption={}) { 
+function resolveFormatVal(val, option, defaultOption={}) {
 	// var 	mask = (option.mask || (defaultOption.mask || '%0%'))
 	var 	mask = (option.mask || '%0%')
 
-	return formatMask( 
-		number_format( val
+	return formatMask(
+		number_format(val
 			, ((option.format || {}).casas 	|| (defaultOption.format || {}).casas 	||  0 )
 			, ((option.format || {}).dec 	|| (defaultOption.format || {}).dec 	|| ',')
 			, ((option.format || {}).mili 	|| (defaultOption.format || {}).mili 	|| '.')
@@ -980,7 +982,7 @@ function resolveFormatVal(val, option, defaultOption={}) {
 	)
 }
 
-function resolveFootAction(data, option, defaultOption={}) { 
+function resolveFootAction(data, option, defaultOption={}) {
 	var val = [], newOption;
 
 	if (['SUM',''].indexOf((option.op || '').toUpperCase()) != -1) 	return resolveSumNull(data, option);
@@ -989,14 +991,14 @@ function resolveFootAction(data, option, defaultOption={}) {
 	if ((option.val || '') == '') option.val = [{ attr: defaultOption.param }];
 	if ((option.val.attr || '') != '') option.val = [option.val];
 
-	for (var i = 0; i < option.val.length; i++) { 
+	for (var i = 0; i < option.val.length; i++) {
 		newOption = $.extend({}, option, { val: { attr: option.val[i].attr }, op: (option.val[i].op || '') })
-		val.push( resolveFootAction(data, newOption, defaultOption) );
+		val.push(resolveFootAction(data, newOption, defaultOption));
 	}
 	return resolveExpression(val, option.op);
 }
 
-function resolveFootPersonalizado(data, option, defaultOption={}) { 
+function resolveFootPersonalizado(data, option, defaultOption={}) {
 	/*
 		Quando a op do obj foot for igual a personalizado
 		option: {
@@ -1008,30 +1010,30 @@ function resolveFootPersonalizado(data, option, defaultOption={}) {
 	*/
 	var val = (option.mask || '%0%');
 
-	for (var i = 0; i < option.val.length; i++) 
+	for (var i = 0; i < option.val.length; i++)
 		val = val.replace(
 			new RegExp('%'+i+'%', 'gi'),
-			resolveFoot( data, option.val[i], defaultOption )
+			resolveFoot(data, option.val[i], defaultOption)
 		);
 
 	return val;
 }
 
-function formatMask(val, mask) { 
+function formatMask(val, mask) {
 	return mask.replace(/%0%/g, val);
 }
 
-function resolveExpression(vals, ex) { 
-	vals.forEach(function(val, i) { 
-		ex = ex.replace( new RegExp('%'+String(i)+'%', 'gi'), String(val) );
+function resolveExpression(vals, ex) {
+	vals.forEach(function(val, i) {
+		ex = ex.replace(new RegExp('%'+String(i)+'%', 'gi'), String(val));
 	});
 	return eval(ex);
 }
 
-function resolveSumNull(data, option, type='val') { 
+function resolveSumNull(data, option, type='val') {
 	var val = 0, nulls = 0, attrs = resolvAttrArray(option);
-	data.forEach(function(dt) { 
-		attrs.forEach(function(attr) { 
+	data.forEach(function(dt) {
+		attrs.forEach(function(attr) {
 			val += parseFloat((dt[attr] || 0));
 			if (dt[attr] != 0 && (dt[attr] || '') == '') nulls++;
 		});
@@ -1039,7 +1041,7 @@ function resolveSumNull(data, option, type='val') {
 	return type == 'val' ? val : { val, nulls };
 }
 
-function resolveFootMedia(data, option) { 
+function resolveFootMedia(data, option) {
 	var objSum = resolveSumNull(data, option, 'obj')
 	, 	numRows = data.length
 	, 	val = objSum.val
@@ -1049,7 +1051,7 @@ function resolveFootMedia(data, option) {
 	return numRows == 0 ? 0 : val / numRows;
 }
 
-function resolvAttrArray(option) { 
+function resolvAttrArray(option) {
 	var attr = [];
 	if ((option.val.attr || '') != '') 				attr.push(option.val.attr);
 	else {
@@ -1057,8 +1059,8 @@ function resolvAttrArray(option) {
 	}
 	return attr;
 }
-/* 
-Testes: 
+/*
+Testes:
 
 // output: 17.5 § 2.875
 resolveFoot([{v1:1,v2:6},{v1:2,v2:7},{v1:3,v2:8},{v1:4,v2:9},{v1:5,v2:10}],

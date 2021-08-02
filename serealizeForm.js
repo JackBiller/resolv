@@ -1,14 +1,14 @@
 
-function getForm(obj,options={}) { 
+function getForm(obj,options={}) {
 	return serealizeForm(obj,options);
 }
 
-function serealizeForm(obj,options={}) { 
+function serealizeForm(obj,options={}) {
 	/*
 		options: {
 			options do valid 		-- Opções descritas na função returnInputValid()
-			onlyValue: (0|1) 	-- Buscar somente valores do formulario
-			onlyValuePre: (0|1) 	-- Buscar valores predefinido no formulario
+			onlyValue: (0|1) 	-- Buscar somente valores do formulário
+			onlyValuePre: (0|1) 	-- Buscar valores predefinido no formulário
 		}
 	*/
 	options = $.extend({},{ }, options);
@@ -16,40 +16,39 @@ function serealizeForm(obj,options={}) {
 	var inputs = returnInputObj(obj);
 	if ((options.onlyValuePre || '') == '' && (options.onlyValue || '') == '') {
 		var valid = returnInputValid(inputs, options);
-	} else { 
+	} else {
 		var valid = true;
 	}
 	var keys = returnIdObj(obj);
 	var param = {}, paramAdd;
 	var input = {};
 
-	for (var i = 0; i < keys.length; i++) { 
-		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
+	for (var i = 0; i < keys.length; i++) {
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
 			paramAdd = ['codigoConsulta'].indexOf(keys[i].parent) < 0 ? '' : ',"id"'
 			if ((options.onlyValuePre || '') == '') {
 				param[keys[i].id] = eval(`resolvVal(keys[i].id ${paramAdd});`);
-			} else { 
+			} else {
 				param[keys[i].id] = keys[i].obj.value != undefined ? keys[i].obj.value : eval(`resolvVal(keys[i].id ${paramAdd});`);
 			}
 		}
 
-		if (
-			(keys[i].obj.input || '') != '' || 
-			((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
+		if ((keys[i].obj.input || '') != ''
+			|| ((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
 		) { 
-			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) { 
+			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) {
 				if ((options.onlyValuePre || '') == '') {
 					input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
-				} else { 
+				} else {
 					input[keys[i].obj.input] = keys[i].obj.value;
 				}
 			} else {
-				if ((options.onlyValuePre || '') == '') { 
+				if ((options.onlyValuePre || '') == '') {
 					try { input[keys[i].obj.id] 			= eval(`resolvVal(keys[i].id,"id");`); 		} catch(e) {}
 					try { input[keys[i].obj.codigo.input] 	= eval(`resolvVal(keys[i].id,"codigo");`); 	} catch(e) {}
 					try { input[keys[i].obj.desc.input] 	= eval(`resolvVal(keys[i].id,"desc");`); 	} catch(e) {}
 					try { input[keys[i].obj.select.value] 	= eval(`resolvVal(keys[i].id,"select");`); 	} catch(e) {}
-				} else { 
+				} else {
 					input[(keys[i].obj.id || keys[i].obj.codigo.input)] = keys[i].obj.value;
 				}
 			}
@@ -58,7 +57,7 @@ function serealizeForm(obj,options={}) {
 	return { valid , inputs , param , input };
 }
 
-function clearForm(obj) { 
+function clearForm(obj) {
 	var keys = returnIdObj(obj);
 	for (var i = 0; i < keys.length; i++) {
 		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
@@ -84,17 +83,17 @@ function clearForm(obj) {
 	}
 }
 
-function setForm(data, obj, options={}) { 
+function setForm(data, obj, options={}) {
 	/*
 		options: {
-			dec: ',' 	-- Caso valor seja numerico formatará o separador decimal
+			dec: ',' 	-- Caso valor seja numérico formatará o separador decimal
 		}
 	*/
 	clearForm(obj);
 	var keys = returnIdObj(obj);
-	for (var i = 0; i < keys.length; i++) { 
-		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
-			if (keys[i].parent == 'codigoConsulta') { 
+	for (var i = 0; i < keys.length; i++) {
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
+			if (keys[i].parent == 'codigoConsulta') {
 				try { resolvVal(keys[i].id , 'id'		, (data[keys[i].obj.id || keys[i].obj.codigo.input] || '')); } catch(e){}
 				try { resolvVal(keys[i].id , 'codigo'	, (data[keys[i].obj.codigo.input] 	|| '')); } catch(e){}
 				try { resolvVal(keys[i].id , 'desc'		, (data[keys[i].obj.desc.input] 	|| '')); } catch(e){}
@@ -103,9 +102,9 @@ function setForm(data, obj, options={}) {
 					window[capitalize(keys[i].descForm) + 'Selected_Global'] = (data[(keys[i].codigo || {}).input] || '');
 				} catch(e){}
 			}
-			else { 
+			else {
 				var val = data[keys[i].obj.input];
-				if (data[keys[i].obj.input] == undefined) { 
+				if (data[keys[i].obj.input] == undefined) {
 					val = (keys[i].obj.value || keys[i].obj.val || '');
 				}
 
@@ -124,14 +123,14 @@ function setForm(data, obj, options={}) {
 	}
 }
 
-function disabledForm(obj, disabled=true) { 
+function disabledForm(obj, disabled=true) {
 	var keys = returnIdObj(obj);
-	for (var i = 0; i < keys.length; i++) { 
-		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
-			if (keys[i].parent == 'codigoConsulta') { 
+	for (var i = 0; i < keys.length; i++) {
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
+			if (keys[i].parent == 'codigoConsulta') {
 				resolvDisabled(keys[i].id, 'id', disabled);
 			}
-			else { 
+			else {
 				resolvDisabled(keys[i].id, disabled);
 				$("#" + keys[i].id + "_obs").html('');
 			}
@@ -139,21 +138,21 @@ function disabledForm(obj, disabled=true) {
 	}
 }
 
-function returnInputValid(inputs,options={}) { 
+function returnInputValid(inputs,options={}) {
 	/*
 		options: {
-			paramReq: 'required' | ['required'] 		-- Parametro para informar quais atributos devem ser vistos com obrigatório
+			paramReq: 'required' | ['required'] 		-- Parâmetro para informar quais atributos devem ser vistos com obrigatório
 		}
 	*/
 	var paramReqArray = (options.paramReq || 'required'), paramReq;
 	if (typeof(paramReqArray) == 'string') paramReqArray = [paramReqArray];
 
 	var valid, msm;
-	for (var i = 0; i < inputs.length; i++) { 
-		for (var j = 0; j < paramReqArray.length; j++) { 
+	for (var i = 0; i < inputs.length; i++) {
+		for (var j = 0; j < paramReqArray.length; j++) {
 			paramReq = paramReqArray[j];
 
-			if ((inputs[i][paramReq] || '') != '') { 
+			if ((inputs[i][paramReq] || '') != '') {
 
 				if (typeof(inputs[i][paramReq]) == 'function') {
 
@@ -166,7 +165,7 @@ function returnInputValid(inputs,options={}) {
 					if (msm == '') // Caso o campo esteja preenchido verifica a função de validação
 						msm = (inputs[i][paramReq]('valid') || '');
 
-					if (typeof(msm) == 'string' && msm != ''){
+					if (typeof(msm) == 'string' && msm != '') {
 						alert(msm);
 						msm = false;
 					} else {
@@ -209,7 +208,7 @@ function returnInputValid(inputs,options={}) {
 	return true;
 }
 
-function focusInput(obj) { 
+function focusInput(obj) {
 	var paramIDs = returnRefId(),
 		id = (obj || {})[Object.keys(obj).filter(function(e) { return paramIDs.indexOf(e) != -1; })[0]],
 		path = resolvPath(id);
@@ -227,7 +226,7 @@ function focusInput(obj) {
 	if (obj.tipoCampo == 'codigoConsulta') {
 		try {
 			$("#" + obj.descForm).find('.codigo').find('input')[0].focus();
-		} catch(e){ 
+		} catch(e){
 			try {
 				$("#" + obj.descForm).find('button')[0].focus();
 			} catch(e){}
@@ -235,19 +234,19 @@ function focusInput(obj) {
 	}
 }
 
-function returnInputObj(obj) { 
+function returnInputObj(obj) {
 	return returnFromEl(obj, returnRefInputObj());
 }
 
-function returnRefInputObj() { 
+function returnRefInputObj() {
 	return ['input','select','codigoConsulta','textarea'];
 }
 
-function returnRefId() { 
+function returnRefId() {
 	return ['descForm','id','name'];
 }
 
-function returnIdObj(obj) { 
+function returnIdObj(obj) {
 	var ref = returnRefId();
 	var el = returnFromEl(obj, ref, { first: true });
 	var map = el.map(function(e) {
@@ -259,7 +258,7 @@ function returnIdObj(obj) {
 	return el;
 }
 
-function returnFromEl(obj, types) { 
+function returnFromEl(obj, types) {
 	/*
 		options: {
 			first: false 	-- Server para quando tiver pesquisando as chaves do objeto parar no primeiro que encontrar
@@ -270,13 +269,13 @@ function returnFromEl(obj, types) {
 	var keys 		= Object.keys(obj);
 	var options 	= $.extend( {}, { first: false }, (arguments[2] || {}) );
 
-	for (var i = 0; i < types.length; i++) { 
-		if (obj[types[i]] != undefined) { 
+	for (var i = 0; i < types.length; i++) {
+		if (obj[types[i]] != undefined) {
 			inputs.push(
 				$.extend(
 					{},
-					(typeof(obj[types[i]]) == 'object' 
-						? obj[types[i]] 
+					(typeof(obj[types[i]]) == 'object'
+						? obj[types[i]]
 						: JSON.parse("{\"" + types[i] + "\":\"" + String(obj[types[i]]) + "\"}")
 					),
 					{ tipoCampo: types[i], parent: (arguments[3] || ''), obj: obj }
@@ -286,8 +285,8 @@ function returnFromEl(obj, types) {
 		}
 	}
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (types.indexOf(keys[i]) == -1 && typeof(obj[keys[i]]) == 'object') { 
+	for (var i = 0; i < keys.length; i++) {
+		if (types.indexOf(keys[i]) == -1 && typeof(obj[keys[i]]) == 'object') {
 			temp = returnFromEl(obj[keys[i]], types, options, keys[i]);
 			for (j = 0; j < temp.length; j++) inputs.push(temp[j]);
 		}

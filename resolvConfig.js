@@ -1,6 +1,6 @@
 
 /*
-	Dependencias:
+	Dependências:
 		jQuery 
 		bootstrap 3 
 		moment
@@ -8,7 +8,7 @@
 		jquery.browser.detection
 		datatables
 
-		scriptCofing.js
+		scriptConfig.js
 		scriptQualidade.js
 		scriptGrade.js
 */
@@ -16,7 +16,7 @@
 /*
 	Tipos de Operação: 
 		- blur 		: Disparado quando der blur no campo
-		- check 	: Disparado quando for checar campo, nome padrão para quando não tem especificação do parametro
+		- check 	: Disparado quando for checar campo, nome padrão para quando não tem especificação do parâmetro
 		- valid 	: Disparado quando tiver validado o campo no serialize
 */
 
@@ -48,7 +48,7 @@ var registerEventAll 		= [];
 var returnObjIdentado_Global = true;
 var isMobile_Global = isMobile();
 
-var fa_icon_Global = [ 
+var fa_icon_Global = [
 	"address-book","address-book-o","address-card","address-card-o","adjust","american-sign-language-interpreting",
 	"anchor","archive","area-chart","arrows","arrows-h","arrows-v","asl-interpreting","assistive-listening-systems",
 	"asterisk","at","automobile","audio-description","balance-scale","ban","bank","bar-chart","bar-chart-o","barcode",
@@ -138,11 +138,11 @@ var fa_icon_Global = [
 	"play-circle-o","step-backward","step-forward","stop","stop-circle","stop-circle-o"
 ];
 
-function isMobile() { 
+function isMobile() {
 	var userAgent = String(navigator.userAgent).toUpperCase()
 	, 	plataformasMobile = ['ANDROID','IOS'];
 
-	for (var i = 0; i < plataformasMobile.length; i++) { 
+	for (var i = 0; i < plataformasMobile.length; i++) {
 		if (userAgent.indexOf(plataformasMobile[i]) != -1) return true;
 	}
 	return false;
@@ -156,50 +156,50 @@ function capitalize(s) {
 // funções de resolução
 // fim função de resolução
 
-function resolvEl(id,cla='') { 
+function resolvEl(id,cla='') {
 	var ids 		= returnIdObj(objRefConfig_Global);
 	var map 		= ids.map(function(e){ return e.id; });
 	var objReturn 	= ids[map.indexOf(id)];
 
-	if (ids[map.indexOf(id)].parent == 'codigoConsulta') { 
+	if (ids[map.indexOf(id)].parent == 'codigoConsulta') {
 		cla = cla.indexOf('select') == 0 ? 'select' : cla;
 		objReturn.el = $("#" + id).find("." + cla).find(cla == 'select' ? 'select' : "input");
-	} else if (objReturn.parent == 'input' && objReturn.obj.type == "radio") { 
+	} else if (objReturn.parent == 'input' && objReturn.obj.type == "radio") {
 		var els = document.getElementsByName(objReturn.obj.name);
-		for (var i = 0; i < els.length; i++) { 
+		for (var i = 0; i < els.length; i++) {
 			if (els[i].checked) objReturn.el = $(els[i]);
 		}
-	} else if (objReturn.parent == 'preview') { 
+	} else if (objReturn.parent == 'preview') {
 		objReturn.el = $("#textareaJson" + id);
-	} else { 
+	} else {
 		objReturn.el = $("#" + id);
 	}
 	return objReturn;
 }
 
-function resolvVal(id) { 
+function resolvVal(id) {
 	/*
 		Set codigoConsulta type select: resolvVal('?id', 'SELECT', '?value')
 	*/
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
-	if (el.parent == 'menu') { 
+	if (el.parent == 'menu') {
 		var val = arguments[1];
-		if (val === 0 || ((val || '') != '' && !isNaN(val))) { 
-			try { 
+		if (val === 0 || ((val || '') != '' && !isNaN(val))) {
+			try {
 				$("#" + id + val).click();
 			} catch(e) { console.error(e); }
 		}
 
-		var itensMenu = document.getElementsByName(id), indiceMenu = -1;
-		for (var i = 0; i < itensMenu.length; i++) { 
-			if (itensMenu[i].className.indexOf('active') >= 0) indiceMenu = i;
+		var itensMenu = document.getElementsByName(id), indexMenu = -1;
+		for (var i = 0; i < itensMenu.length; i++) {
+			if (itensMenu[i].className.indexOf('active') >= 0) indexMenu = i;
 		}
-		return indiceMenu;
+		return indexMenu;
 	}
 
-	if (el.parent == 'codigoConsulta') { 
+	if (el.parent == 'codigoConsulta') {
 		var getDesc = arguments[1] == 'selectDesc';
 		var isSelect = arguments[1].toLowerCase().indexOf('select') == 0;
 		if (arguments.length > 2 && isSelect) 	return el.el.val(arguments[2]).trigger('change');
@@ -209,7 +209,7 @@ function resolvVal(id) {
 	} else { 
 		var value = (arguments[1] != undefined ? arguments[1] : el.obj.value);
 
-		switch ((((el.obj || {}).style || {})["text-transform"] || '').toLowerCase()) { 
+		switch ((((el.obj || {}).style || {})["text-transform"] || '').toLowerCase()) {
 			case 'uppercase': 	value = (value || '').toUpperCase(); break;
 			case 'lowercase': 	value = (value || '').toLowerCase(); break;
 			case 'capitalize': 	value = capitalize((value || '')); break;
@@ -217,26 +217,26 @@ function resolvVal(id) {
 
 		if (['div','span'].indexOf(el.parent) != -1) func = 'html';
 
-		if ((el.obj.isMonth || false) && arguments[1] != undefined) { 
-			if ((value || '') == '') { 
+		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
+			if ((value || '') == '') {
 				$("#"+id+'Datepicker').val('');
 			} else { 
 				$("#"+id+'Datepicker').datepicker('setDate', new Date(value+'-02'));
 			}
 		}
 
-		if (el.obj.type == 'file') { 
-			if (arguments[1] != undefined) { 
+		if (el.obj.type == 'file') {
+			if (arguments[1] != undefined) {
 				$('#' + id + '_desc_file').html(arguments[1]);
-				if (el.obj.fileType == 'img') { 
+				if (el.obj.fileType == 'img') {
 					var nameFile = arguments[1];
-					setTimeout(function() { 
+					setTimeout(function() {
 						var path = typeof el.obj.upload.path == 'string' ? el.obj.upload.path : el.obj.upload.path();
 						$('#'+ id + 'preview').attr('src', path + '/' + nameFile.replace(/ /g, '_'));
 
-						try { 
-							if ((el.obj.defaultImg || '') != '') { 
-								$('#'+ id + 'preview')[0].onerror = function() { 
+						try {
+							if ((el.obj.defaultImg || '') != '') {
+								$('#'+ id + 'preview')[0].onerror = function() {
 									var comp = typeof el.obj.defaultImg == 'string' ? '' : '.path';
 									eval(`$('#'+ id + 'preview').attr('src', el.obj.defaultImg${comp});`)
 								}
@@ -246,7 +246,7 @@ function resolvVal(id) {
 					// if (path[path.length-1] != '/') path += '/';
 				}
 				return;
-			} else { 
+			} else {
 				var val = el.el[func]().replace(/\\/g, '/');
 				val = val.substring(val.lastIndexOf('/')+1, val.length);
 				if (val == '') val = $('#' + id + '_desc_file').html();
@@ -254,7 +254,7 @@ function resolvVal(id) {
 			}
 		}
 
-		if (el.obj.type == 'checkbox' && ([0,1,true,false,'1','0']).indexOf(arguments[1]) >= 0) { 
+		if (el.obj.type == 'checkbox' && ([0,1,true,false,'1','0']).indexOf(arguments[1]) >= 0) {
  			if ((el.obj.id || '') != '' && (el.obj.toggle || '') != '') {
 				if (arguments[1] == 1) {
 					if ($('#' + el.obj.id).parent().attr('class').indexOf('off') >= 0) {
@@ -271,41 +271,41 @@ function resolvVal(id) {
 				}
 			}
 			return el.el[0].checked = arguments[1] == 1;
-		} else if (el.obj.type == 'checkbox') { 
+		} else if (el.obj.type == 'checkbox') {
 			return el.el[0].checked;
 		}
 
-		if ((el.obj.type == 'radio' || (el.obj.radio || '') != '') && 
-			arguments[1] != undefined && 
-			el.el.attr('id') != id
+		if ((el.obj.type == 'radio' || (el.obj.radio || '') != '')
+			&& arguments[1] != undefined
+			&& el.el.attr('id') != id
 		) { 
 			var setValue = -1;
 			var els = document.getElementsByName(id);
-			for (var i = 0; i < els.length; i++) { 
-				if (els[i].value == arguments[1]) { 
+			for (var i = 0; i < els.length; i++) {
+				if (els[i].value == arguments[1]) {
 					els[i].checked = true;
 					setValue = i;
 				}
 			}
 			if (setValue >= 0) return els[setValue];
 		}
-		if (arguments.length > 1) 	return el.el[func]( value );
+		if (arguments.length > 1) 	return el.el[func](value);
 									return el.el[func]();
 	}
 }
 
-function resolvDisabled(id, cla='') { 
+function resolvDisabled(id, cla='') {
 	var el = resolvEl(id, cla);
 
-	if (el.parent == 'codigoConsulta') { 
-		if (arguments.length > 2) { 
+	if (el.parent == 'codigoConsulta') {
+		if (arguments.length > 2) {
 			$("#"+id).find('button').attr('disabled',(arguments[2] || false))
 			return el.el			.attr('disabled',(arguments[2] || false));
-		} else { 
+		} else {
 			$("#"+id).find('button').attr('disabled',true);
 			return el.el			.attr('disabled',true);
 		}
-	} else { 
+	} else {
 		if (['div','spam'].indexOf(el.parent) < 0) { // se NÃO for div
 			if ((el.obj.isMonth || false)) $("#"+id+'Datepicker').attr('disabled', (arguments[1] || false));
 
@@ -315,19 +315,19 @@ function resolvDisabled(id, cla='') {
 	}
 }
 
-function resolvFocus(id, cla='') { 
+function resolvFocus(id, cla='') {
 	var el = resolvEl(id, cla);
 
-	function resolvFocusAction(el, op="focus") { 
+	function resolvFocusAction(el, op="focus") {
 		try { el[0][op](); } catch(e) { }
 	}
 
-	if (el.parent == 'codigoConsulta') { 
+	if (el.parent == 'codigoConsulta') {
 		var isBtn = (el.obj.dist || 'B').indexOf('B') >= 0 && (el.obj.dist || 'C').indexOf('C') < 0;
 		return resolvFocusAction(isBtn ? $("#"+id).find('button') : el.el);
 	} 
 
-	if (['input','button'].indexOf(el.parent) >= 0) { 
+	if (['input','button'].indexOf(el.parent) >= 0) {
 		if ((el.obj.isMonth || false)) {
 			return resolvFocusAction($("#"+id+'Datepicker'));
 		}
@@ -335,18 +335,18 @@ function resolvFocus(id, cla='') {
 	}
 }
 
-function resolvVisibled(id, cla='') { 
+function resolvVisibled(id, cla='') {
 	var el = resolvEl(id, cla);
 
-	if (el.parent == 'codigoConsulta') { 
+	if (el.parent == 'codigoConsulta') {
 		return el.el.parent().parent().css('display', (arguments[2] || 'none'));
-	} else { 
+	} else {
 		if (['div','spam'].indexOf(el.parent) < 0) { // se NÃO for div
 			var keys = Object.keys(el.obj);
 			var tiposDiv = ['idDiv','classDiv','styleDiv','clickDiv','isRow'];
 
-			for (var i = 0; i < keys.length; i++) { 
-				if (tiposDiv.indexOf(keys[i]) >= 0) { 
+			for (var i = 0; i < keys.length; i++) {
+				if (tiposDiv.indexOf(keys[i]) >= 0) {
 					return el.el.parent().css('display',(arguments[1] || 'none'));
 				}
 			}
@@ -358,15 +358,15 @@ function resolvVisibled(id, cla='') {
 	}
 }
 
-function resolvEvento(ev, id) { 
+function resolvEvento(ev, id) {
 	/*
 		registerEventAll: {
 			evento: '' 			evento esperado
 			id: ''				campo esperado
 			func: function 		a rotina em si
 		}
-		Eventos: 
-			menu: 
+		Eventos:
+			menu:
 				click
 			input:
 				onchange
@@ -376,15 +376,15 @@ function resolvEvento(ev, id) {
 			codigoConsutla:
 				trigger
 	*/
-	registerEventAll.forEach(function(evento) { 
-		if (evento.evento == ev && evento.id == id) { 
+	registerEventAll.forEach(function(evento) {
+		if (evento.evento == ev && evento.id == id) {
 			evento.func();
 		}
 	});
 }
 
-function resolvIcon(icon) { 
-	var classFa = fa_icon_Global.find(function(i) { 
+function resolvIcon(icon) {
+	var classFa = fa_icon_Global.find(function(i) {
 		return i != 'fa' && (icon == i || icon.indexOf(i+' ') == 0);
 	}) || '';
 
@@ -394,14 +394,14 @@ function resolvIcon(icon) {
 	);
 }
 
-function jsonToStringParam(obj,tab=0,indent=false) { 
+function jsonToStringParam(obj,tab=0,indent=false) {
 	var objParam = {}, val, func, keys = Object.keys(obj);
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (typeof(obj[keys[i]]) == 'function') { 
+	for (var i = 0; i < keys.length; i++) {
+		if (typeof(obj[keys[i]]) == 'function') {
 			func = obj[keys[i]];
 			val = func();
-		} else { 
+		} else {
 			val = obj[keys[i]];
 		}
 		objParam[keys[i]] = val;
@@ -409,17 +409,16 @@ function jsonToStringParam(obj,tab=0,indent=false) {
 	return jsonToString(objParam, tab, indent);
 }
 
-function jsonToString(obj, tab=0, indent=false) { 
+function jsonToString(obj, tab=0, indent=false) {
 	if (typeof(obj) != 'object') return false;
 
 	var keys = Object.keys(obj);
 	var isObj = isNaN(keys[0] || 0) || JSON.stringify(obj).substring(0,1) == '{';
 	var text = (isObj  ? '{' : '['); // (indent ? t(tab) : '') +
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (
-			['undefined','null','xml'].indexOf(typeof(obj[keys[i]])) != -1 ||
-			obj[keys[i]] == null
+	for (var i = 0; i < keys.length; i++) {
+		if (['undefined','null','xml'].indexOf(typeof(obj[keys[i]])) != -1
+			|| obj[keys[i]] == null
 		) continue;
 
 		text += ''
@@ -427,13 +426,13 @@ function jsonToString(obj, tab=0, indent=false) {
 			+ (indent ? t(tab+1) : '')
 			+ (isObj ? "\"" + keys[i] + "\":" : '')
 
-		switch (typeof(obj[keys[i]])) { 
+		switch (typeof(obj[keys[i]])) {
 			case 'number': 
 			case 'boolean': text += obj[keys[i]]; 								break;
 			case 'string': 	text += "\"" + obj[keys[i]] + "\""; 				break;
 			case 'object': 	text += jsonToString(obj[keys[i]],tab+1,indent); 	break;
 				// text += (indent ? t(tab+1) : '') + jsonToString(obj[keys[i]],tab+1,indent); break;
-			case 'function': 
+			case 'function':
 				text += indent ? ajusteTabFunc(obj[keys[i]],tab+1) : String(obj[keys[i]]); break;
 		}
 	}
@@ -441,29 +440,29 @@ function jsonToString(obj, tab=0, indent=false) {
 	return text;
 }
 
-function ajusteTabFunc(func,tab=0,initTab=false) { 
+function ajusteTabFunc(func,tab=0,initTab=false) {
 	if (typeof func == 'function') func = String(func);
 
 	func = func.replace(/&nbsp;/g, '[&nb;]');
 	func = func.replace(/ /g, '&nbsp;');
 	func = func.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 
-	while (func.indexOf('&nbsp;') == 0) { 
+	while (func.indexOf('&nbsp;') == 0) {
 		func = func.replace('&nbsp;','');
 	}
 	func = func.split('\n');
 
 	var defaultTab = 0, contTabIni, linha;
-	for (var i = 1; i < func.length; i++) { 
+	for (var i = 1; i < func.length; i++) {
 		contTabIni = 0
 		linha = func[i].split('&nbsp;');
-		for (var j = 0; j < linha.length; j++) { 
+		for (var j = 0; j < linha.length; j++) {
 			if (linha[j] == '') contTabIni++;
 			else 				j = linha.length;
 		}
 		if (defaultTab == 0 || contTabIni < defaultTab) defaultTab = contTabIni;
 	}
-	for (var i = 1; i < func.length; i++) { 
+	for (var i = 1; i < func.length; i++) {
 		linha = func[i].split('&nbsp;');
 		linha.splice(0, defaultTab);
 		func[i] = linha.join('&nbsp;');
@@ -476,24 +475,24 @@ function ajusteTabFunc(func,tab=0,initTab=false) {
 	return func;
 }
 
-function t() { 
+function t() {
 	var num = (arguments[0] || 0);
 	var tab = '\n';
 	for (var i = 0; i < num; i++) tab += '\t'
 	return returnObjIdentado_Global ? tab : '';
 }
 
-function tirarAcentuacao(texto, isParam=false) { 
-	var chars = [ 
+function tirarAcentuacao(texto, isParam=false) {
+	var chars = [
 		'áàãäâÃÂÁÀÄéèëêÉÈËÊíìïîÍÌÏÎóòôõöÕÔÓÒÖúùüûÚÙÜÛýÿÝñÑçÇ°º¹²³ÅÂž¡ËØŽƒ‰ŠÐ×—ß÷',
 		'aaaaaAAAAAeeeeEEEEiiiiIIIIoooooOOOOOuuuuuuuuyyYnNcCoo123AAziEOZF%SDX-B/'
 	]
 	var char3 = '§´ª£¢¬¤¬©¨«°†¹®¶¢¼©€®’½µ¶¢™“¼„¢“¿±˜þ¾¯•‡„«';
 
-	for (var i = 0; i < chars[0].length; i++) 
+	for (var i = 0; i < chars[0].length; i++)
 		texto = texto.replace( new RegExp(chars[0][i], 'g'), chars[1][i] );
 
-	for (var i = 0; i < char3.length; i++) 
+	for (var i = 0; i < char3.length; i++)
 		texto = texto.replace( new RegExp(char3[i], 'g'), '' );
 
 	texto = texto.replace(/œ/g, "AE");
@@ -502,26 +501,26 @@ function tirarAcentuacao(texto, isParam=false) {
 	texto = texto.replace(/™/g, "TM");
 	texto = texto.replace(/…/g, "...");
 
-	if (isParam) { 
+	if (isParam) {
 		texto = texto.replace(/ /gi, '_');
 		texto = texto.replace(/[-.=()\[\]\\/*+,!@#$%¨&{}?`^:><ºª°§|¹²³£¢¬"']/g, '');
 	}
 	return texto;
 }
 
-function returnDescAccesskey(text, options) { 
+function returnDescAccesskey(text, options) {
 	/*
 		options: {
 			accesskey: ''			-- Tecla do atalho
 			numKeyVerifAlt: 0 		-- Numero de caracteres que vai verificar dentro do text default = text.length
 		}
 	*/
-	if ((options.accesskey || '') != '') { 
+	if ((options.accesskey || '') != '') {
 		if (!testP(options.numKeyVerifAlt)) options.numKeyVerifAlt = text.length;
 		var textT = text.toLowerCase();
 
-		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) { 
-			if (textT[i] == options.accesskey.toLowerCase()) { 
+		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) {
+			if (textT[i] == options.accesskey.toLowerCase()) {
 				text = ""
 					+ (i == 0 ? '' : text.substring(0, i))
 					+ "<spam style='text-decoration: underline;'>" + text[i] + "</spam>"
@@ -533,31 +532,31 @@ function returnDescAccesskey(text, options) {
 	return text;
 }
 
-// Teste parametro retorna se diferente de ( undefined | null | 0 | '' )
-function testP(param) { 
+// Teste parametro retorna se diferente de (undefined | null | 0 | '')
+function testP(param) {
 	return (param || '') != '';
 }
 
-function resolvConfig(options, tab=0, isRegister=false) { 
+function resolvConfig(options, tab=0, isRegister=false) {
 	var html = '', keys = Object.keys(options);
 
-	if (isRegister) { 
+	if (isRegister) {
 		$("body").append(resolvConfigModal(options));
 
 		var objRegisted = returnIdObj(options);
-		if (objRegisted.length) { 
+		if (objRegisted.length) {
 			desregistrarConfig(objRegisted[0][objRegisted[0].tipoCampo]);
 		}
 		objRefConfig_Global.push(options);
 	}
 
-	for (var i = 0; i < keys.length; i++) { 
-		try { 
+	for (var i = 0; i < keys.length; i++) {
+		try {
 			// html += document['resolv' + capitalize(keys[i])](options[keys[i]]);
 			html += !isNaN(keys[i]) 
 				? resolvConfig(options[keys[i]], tab) 
 				: resolvGlobalParam(options[keys[i]], tab, window['resolv' + capitalize(keys[i])](options[keys[i]], tab));
-		} catch(e) { 
+		} catch(e) {
 			console.error(e);
 			// console.error(
 			// 	'Falha ao tentar rodar função "resolv' + capitalize(keys[i]) + "(" + options[keys[i]] + "," + tab + ")'"
@@ -567,27 +566,27 @@ function resolvConfig(options, tab=0, isRegister=false) {
 	return html;
 }
 
-function resolvPath(id, obj=objRefConfig_Global) { 
+function resolvPath(id, obj=objRefConfig_Global) {
 	var path 	= [],
 		refId 	= returnRefId(),
 		key 	= Object.keys(obj),
 		idParam = key.filter(function(e) { return refId.indexOf(e) != -1; }),
 		pathTemp, x;
 
-	if (idParam.length > 0) { 
-		for (var i = 0; i < idParam.length; i++) { 
-			if (obj[idParam[i]] == id) { 
+	if (idParam.length > 0) {
+		for (var i = 0; i < idParam.length; i++) {
+			if (obj[idParam[i]] == id) {
 				path.push(idParam[0]);
 				return path;
 			}
 		}
 	}
 
-	for (var i = 0; i < key.length; i++) { 
+	for (var i = 0; i < key.length; i++) {
 		x = key[i];
-		if (typeof(obj[x]) == 'object') { 
+		if (typeof(obj[x]) == 'object') {
 			pathTemp = resolvPath(id, obj[x]);
-			if (pathTemp != false && pathTemp.length != 0) { 
+			if (pathTemp != false && pathTemp.length != 0) {
 				path.push(x + ( x == 'menu' ? '-' + (obj[x].descForm || 'error') : '') )
 				pathTemp.forEach(function(e) { path.push(e) });
 				return path;
@@ -597,18 +596,18 @@ function resolvPath(id, obj=objRefConfig_Global) {
 	return path;
 }
 
-function desregistrarConfig(id) { 
+function desregistrarConfig(id) {
 	var path = resolvPath(id);
 	if (path.length) { 
 		path.splice(path.length-1,1);
-		path.forEach(function(p,i) { 
+		path.forEach(function(p,i) {
 			if (p.indexOf('menu') == 0) path[i] = 'menu';
 		});
 		eval(`objRefConfig_Global["${path.join('"]["')}"] = undefined;`);
 	}
 }
 
-function resolvGlobalParam(options, tab, html) { 
+function resolvGlobalParam(options, tab, html) {
 	/*
 		options: {
 			classDiv: '' -- Colocar o parametro em volta de uma div e com a class especifica
@@ -616,7 +615,7 @@ function resolvGlobalParam(options, tab, html) {
 			isRow: (0|1) -- Colocar o parametro em volta de uma div com a class row
 		}
 	*/
-	var valid = [ 
+	var valid = [
 		{ param: 'idDiv' 	, attr: 'id' 		, },
 		{ param: 'classDiv' , attr: 'class' 	, },
 		{ param: 'styleDiv' , attr: 'style' 	, valid: 'resolvStyle' },
@@ -624,18 +623,18 @@ function resolvGlobalParam(options, tab, html) {
 	], param = '', result;
 	var random;
 
-	if (valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0) { 
+	if (valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0) {
 		valid.forEach(function(x) {
-			if ((options[x.param] || '') != '') { 
-				do { 
+			if ((options[x.param] || '') != '') {
+				do {
 					random = parseInt( Math.random() * 100000 );
 				} while (registerRandom_Global.indexOf(random) != -1);
 				registerRandom_Global.push(random);
 
-				if (typeof(options[x.param]) == 'function') { 
+				if (typeof(options[x.param]) == 'function') {
 					window['click'+random] = options[x.param];
 					param += ` ${x.attr}="click${random}();"`;
-				} else { 
+				} else {
 					var funcAux = x.attr == 'class' ? 'resolvClassDiv' : '';
 					result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
 					result = `${(x.valid || '')}(${ result })`;
@@ -649,7 +648,7 @@ function resolvGlobalParam(options, tab, html) {
 			+ 	tAjuste(html,1)
 			+ 	t(tab) 		+ 	"</div>"
 	}
-	if ((options.isRow || '') != '') { 
+	if ((options.isRow || '') != '') {
 		html = ""
 			+ 	t(tab) 		+ 	"<div class='row'>"
 			+ 	tAjuste(html,1)
@@ -658,33 +657,33 @@ function resolvGlobalParam(options, tab, html) {
 	return html;
 }
 
-function tAjuste(text,ajuste) { 
-	return t().indexOf('\n') < 0 ? text : text.split('\n').join( t(ajuste) );
+function tAjuste(text,ajuste) {
+	return t().indexOf('\n') < 0 ? text : text.split('\n').join(t(ajuste));
 }
 
-function resolvFindParam(obj, search) { 
+function resolvFindParam(obj, search) {
 	var keys = Object.keys(obj), isFind = false;
 	if (keys.indexOf(search) >= 0) return true;
 
-	for (var i = 0; i < keys.length; i++) { 
+	for (var i = 0; i < keys.length; i++) {
 		if (typeof(obj[keys[i]]) == 'object') isFind = resolvFindParam(obj[keys[i]], search);
 		if (isFind) i = keys.length;
 	}
 	return isFind;
 }
 
-function resolvParamAjax(options) { 
+function resolvParamAjax(options) {
 	var param = "";
-	if (Object.keys((options.param || ['']))[0] == '0') { 
-		for (var i = 0; i < (options.param || []).length; i++) { 
+	if (Object.keys((options.param || ['']))[0] == '0') {
+		for (var i = 0; i < (options.param || []).length; i++) {
 			var aspas = typeof options.param[i].val == 'string' ? '"' : '';
 			param += ''
 				+ (i == 0 ? '' : ',')
 				+ `'${options.param[i].key}':${aspas}${String(options.param[i].val)}${aspas}`;
 		}
 		param += ',';
-	} else { 
-		param = Object.keys(options.param).map(function(key) { 
+	} else {
+		param = Object.keys(options.param).map(function(key) {
 			var aspas = typeof options.param[key] == 'string' ? '"' : '';
 			return `'${key}':${aspas}${String(options.param[key])}${aspas}`;
 		}).join(',') + ',';
@@ -692,11 +691,11 @@ function resolvParamAjax(options) {
 	return param;
 }
 
-function number_format(num, numDec, decimal=',', milhar='.') { 
+function number_format(num, numDec, decimal=',', milhar='.') {
 	var limitDec = decimal.length, opcionalDesc = false, cont = 0;
 	if (num != 0 && ((num || '') == '' || isNaN(num))) 	return num;
 	try { num = parseFloat(num); } catch(erro){ 		return num; }
-	if (typeof numDec == 'string' && numDec[0] == '?') { 
+	if (typeof numDec == 'string' && numDec[0] == '?') {
 		opcionalDesc = true;
 		numDec = numDec.substring(1, numDec.length);
 	}
@@ -706,12 +705,12 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 	var negativo = num[0] == '-' ? (num = num.substring(1, num.length), true) : false;
 	decimal = ((formNum[1] || '') != '' ? decimal + String(formNum[1]) : '');
 	formNum = '';
-	for (var i = num.length-1; i >= 0; i--) { 
+	for (var i = num.length-1; i >= 0; i--) {
 		formNum = num[i] + formNum;
 		if ((cont++, cont) % 3 == 0 && i > 0) formNum = milhar + formNum;
 	}
-	if (opcionalDesc) { 
-		for (var i = decimal.length-1; i >= limitDec; i--) { 
+	if (opcionalDesc) {
+		for (var i = decimal.length-1; i >= limitDec; i--) {
 			if (decimal[i] != '0') { i = -1; continue; }
 			decimal = decimal.substring(0,i);
 		}
@@ -720,7 +719,7 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 	return (negativo ? '-' : '') + formNum + decimal;
 }
 
-function numberTextOrder(num, dec=0) { 
+function numberTextOrder(num, dec=0) {
 	if (num == '' || isNaN(num)) return '';
 	num = parseFloat(num).toFixed(dec);
 	num = num.split('.');
@@ -728,9 +727,9 @@ function numberTextOrder(num, dec=0) {
 	num = num.join('');
 	dec = dec.join('');
 
-	function action(num) { 
+	function action(num) {
 		var numForm = '', count = -1, aplha = 'abcdefghijklmnopqrstuvwxyz';
-		for (var i = num.length-1; i >= 0; i--) { 
+		for (var i = num.length-1; i >= 0; i--) {
 			count++;
 			numForm = aplha[aplha.length <= count ? aplha.length : count] + num[i] + numForm;
 		}
@@ -740,30 +739,30 @@ function numberTextOrder(num, dec=0) {
 }
 
 /* Envetos de teclado */
-$(document).ready(function() { 
+$(document).ready(function() {
 	if (navigator.appName != "Microsoft Internet Explorer")
 		document.captureEvents(Event.KEYDOWN);
 	document.body.onkeydown = NetscapeResolvKeyDown;
-	function NetscapeResolvKeyDown(key,e) { 
+	function NetscapeResolvKeyDown(key,e) {
 		ResolvKeyDown(key, key.which);
 	}
 	if (window.event) ResolvKeyDown(window.event, window.event.keyCode);
-	function ResolvKeyDown(e, whichkey) { 
+	function ResolvKeyDown(e, whichkey) {
 		var setComand = false;
 
-		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) { 
+		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) {
 			var itens = $(".codigoConsulta");
-			$.each(itens, function(i,x) { 
-				if ($(x).is(':focus')) { 
+			$.each(itens, function(i,x) {
+				if ($(x).is(':focus')) {
 					window['pesquisa' + $(x).data('ref')]();
 				}
 			})
 		}
 
 		var proximoIndice, setInput = false;
-		if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) { 
-			$.each(registerInputFocus, function(i,x) { 
-				if ($(x.el[0]).is(":focus") && !setInput) { 
+		if (whichkey == 13 && registerInputFocus.filter(function(e) { return $(e.el[0]).is(':focus') }).length == 1 ) {
+			$.each(registerInputFocus, function(i,x) {
+				if ($(x.el[0]).is(":focus") && !setInput) {
 					setInput = true;
 
 					x.el[0].blur();
@@ -772,29 +771,29 @@ $(document).ready(function() {
 					var teste = {};
 					teste[x.parent] = x.obj;
 					teste = serealizeForm(teste);
-					if (!teste.valid) { 
+					if (!teste.valid) {
 						setComand = true;
 						return false;
 					}
 
-					if ((x.obj.onEnter || '') == '') { 
+					if ((x.obj.onEnter || '') == '') {
 						proximoIndice = -1;
-						for (var j = (i+1); j < registerInputFocus.length; j++) { 
-							if (!$(registerInputFocus[j].el[0]).attr('disabled')) { 
+						for (var j = (i+1); j < registerInputFocus.length; j++) {
+							if (!$(registerInputFocus[j].el[0]).attr('disabled')) {
 								proximoIndice = j;
 								j = registerInputFocus.length;
 							}
 						}
 						registerInputFocus[proximoIndice].el[0].focus();
 						setComand = true;
-					} else { 
+					} else {
 						x.el[0].focus();
 					}
 				}
 			});
 		}
-		if (!setComand) { 
-			registerEventKeyboard.forEach(function(x) { 
+		if (!setComand) {
+			registerEventKeyboard.forEach(function(x) {
 				window[x](e,whichkey);
 			});
 		}

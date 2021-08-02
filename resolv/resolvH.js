@@ -5,10 +5,10 @@ function resolvH3(options){ return resolvH($.extend({}, options, { num: 3 }),(ar
 function resolvH4(options){ return resolvH($.extend({}, options, { num: 4 }),(arguments[1] || 0)); }
 function resolvH5(options){ return resolvH($.extend({}, options, { num: 5 }),(arguments[1] || 0)); }
 function resolvH6(options){ return resolvH($.extend({}, options, { num: 6 }),(arguments[1] || 0)); }
-function resolvH(options, tab=0) { 
+function resolvH(options, tab=0) {
 	/*
 		options: {
-			text: '' 		-- Descricao da Tag HN
+			text: '' 		-- Descrição da Tag HN
 			num: 1 			-- Num da tag (default = 1)
 			style: obj 		-- Objeto CSS
 		}

@@ -1,5 +1,5 @@
 
-function resolvStyle(obj) { 
+function resolvStyle(obj) {
 	if (typeof obj == 'string') return obj;
 
 	var keys = Object.keys(obj);

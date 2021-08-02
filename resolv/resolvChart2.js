@@ -1,23 +1,21 @@
 
 var registerChart_Global = [];
 
-// scriptChart.js
-
-function resolvChart2(data, options) { 
+function resolvChart2(data, options) {
 	/*
 		options: {
-			category: { 		-- Parametro que indica a categoria do grafico
-				text: ''		-- Texto do parametro
-				param: ''		-- Parametro do objeto data correspondente
+			category: { 		-- Parâmetro que indica a categoria do gráfico
+				text: ''		-- Texto do parâmetro
+				param: ''		-- Parâmetro do objeto data correspondente
 			}
-			value: { 			-- Parametro que indica o valor do grafico
-				text: ''		-- Texto do parametro
+			value: { 			-- Parâmetro que indica o valor do gráfico
+				text: ''		-- Texto do parâmetro
 			}
 			serie: {
-				param: ''		-- Parametro do objeto data correspondente
+				param: ''		-- Parâmetro do objeto data correspondente
 			}
-			descForm: '' 		-- Parametro de identificação
-			padination: num 	-- Trazer tantos valores pré definidos na tela
+			descForm: '' 		-- Parâmetro de identificação
+			pagination: num 	-- Trazer tantos valores pré definidos na tela
 		}
 	*/
 
@@ -25,14 +23,18 @@ function resolvChart2(data, options) {
 	// do {
 	// 	random = parseInt( Math.random() * 100000 );
 	// } while (registerChart_Global.indexOf(random) != -1);
+
+	if ((options.pagination || '') == '' && (options.padination || '') != '') {
+		options.pagination = options.padination;
+	}
+
 	if (registerChart_Global.indexOf(options.descForm) != -1) {
 		window["chart"+options.descForm].data = data;
 
-		if ((options.padination || '') != '' && !isNaN(options.padination)) {
+		if ((options.pagination || '') != '' && !isNaN(options.pagination)) {
 			window["categoryAxis"+options.descForm].start 	= 0;
-			window["categoryAxis"+options.descForm].end 	= data.length < options.padination ? 1 : options.padination / data.length;
+			window["categoryAxis"+options.descForm].end 	= data.length < options.pagination ? 1 : options.pagination / data.length;
 		}
-
 		return true;
 	}
 
@@ -57,7 +59,7 @@ function resolvChart2(data, options) {
 		+ 		"categoryAxis"+options.descForm+".renderer.minGridDistance 			= 20;"
 		// + 		"categoryAxis"+options.descForm+".renderer.inversed 				= true;"
 		+ 		"categoryAxis"+options.descForm+".start = 0;"
-		+ 		"setTimeout(function(){categoryAxis"+options.descForm+".end = " + (data.length < options.padination ? 1 : options.padination / data.length) + ";}, 100);"
+		+ 		"setTimeout(function(){categoryAxis"+options.descForm+".end = " + (data.length < options.pagination ? 1 : options.pagination / data.length) + ";}, 100);"
 
 
 		+ 		"valueAxis"+options.descForm+" 										= chart.xAxes.push(new am4charts.ValueAxis());"
@@ -81,8 +83,8 @@ function resolvChart2(data, options) {
 		// + 		"series"+options.descForm+".tooltip.pointerOrientation 				= "vertical";"
 
 
-		+ 		"chart"+options.descForm+".cursor 									= new am4charts.XYCursor();" // indica onde o curso está com cordenadas XY
-		// + 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrecenta legenda no grafico"
+		+ 		"chart"+options.descForm+".cursor 									= new am4charts.XYCursor();" // indica onde o curso está com coordenadas XY
+		// + 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrescenta legenda no gráfico"
 		+ 		"chart"+options.descForm+".scrollbarY 								= new am4core.Scrollbar();"
 		+ 		"var scrollbarX"+options.descForm+" 								= new am4core.Scrollbar();"
 		+ 		"chart.scrollbarX"+options.descForm+" 								= scrollbarX;"

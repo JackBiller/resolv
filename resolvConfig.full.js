@@ -1,6 +1,6 @@
 
 /*
-	Dependencias:
+	Dependências:
 		jQuery 
 		bootstrap 3 
 		moment
@@ -8,7 +8,7 @@
 		jquery.browser.detection
 		datatables
 
-		scriptCofing.js
+		scriptConfig.js
 		scriptQualidade.js
 		scriptGrade.js
 */
@@ -16,7 +16,7 @@
 /*
 	Tipos de Operação: 
 		- blur 		: Disparado quando der blur no campo
-		- check 	: Disparado quando for checar campo, nome padrão para quando não tem especificação do parametro
+		- check 	: Disparado quando for checar campo, nome padrão para quando não tem especificação do parâmetro
 		- valid 	: Disparado quando tiver validado o campo no serialize
 */
 
@@ -48,7 +48,7 @@ var registerEventAll 		= [];
 var returnObjIdentado_Global = true;
 var isMobile_Global = isMobile();
 
-var fa_icon_Global = [ 
+var fa_icon_Global = [
 	"address-book","address-book-o","address-card","address-card-o","adjust","american-sign-language-interpreting",
 	"anchor","archive","area-chart","arrows","arrows-h","arrows-v","asl-interpreting","assistive-listening-systems",
 	"asterisk","at","automobile","audio-description","balance-scale","ban","bank","bar-chart","bar-chart-o","barcode",
@@ -138,11 +138,11 @@ var fa_icon_Global = [
 	"play-circle-o","step-backward","step-forward","stop","stop-circle","stop-circle-o"
 ];
 
-function isMobile() { 
+function isMobile() {
 	var userAgent = String(navigator.userAgent).toUpperCase()
 	, 	plataformasMobile = ['ANDROID','IOS'];
 
-	for (var i = 0; i < plataformasMobile.length; i++) { 
+	for (var i = 0; i < plataformasMobile.length; i++) {
 		if (userAgent.indexOf(plataformasMobile[i]) != -1) return true;
 	}
 	return false;
@@ -155,11 +155,11 @@ function capitalize(s) {
 
 // funções de resolução
 
-function resolvHr(options) { 
-	return resolvBr( $.extend({}, options, { hr: true }) ,(arguments[1] || 0));
+function resolvHr(options) {
+	return resolvBr($.extend({}, options, { hr: true }) ,(arguments[1] || 0));
 }
 
-function resolvBr(options, tab=0) { 
+function resolvBr(options, tab=0) {
 	/*
 		options: {
 			num: 1 			-- Numero de br que vai montar
@@ -175,37 +175,38 @@ function resolvBr(options, tab=0) {
 
 	if (num < 0 || isNaN(num)) num = 1;
 
-	for (var i = 0; i < parseInt(num); i++) 
+	for (var i = 0; i < parseInt(num); i++) {
 		html += "<" + ((options.hr || false) ? 'h' : 'b') + "r " + style + ">";
+	}
 	return html;
 }
 
-function resolvButton(options, tab=0) { 
+function resolvButton(options, tab=0) {
 	/*
 		options: {
-			class: ''					-- Classe do botao
+			class: ''					-- Classe do botão
 			desc: ''					-- descrição do botão
-			id: ''						-- ID do botao
+			id: ''						-- ID do botão
 			name: '' 					-- Atributo Name do Button
 			disable: (0|1)				-- Desabilita o botão
-			icon: ''					-- icone
-			onclick: function(el){}		-- enveto de click
-			onchange: function(el){}	-- enveto de mudar
-			onfocus: function(el){}		-- enveto de focar
-			onblur: function(el){}		-- enveto de desfocar
+			icon: ''					-- ícone
+			onclick: function(el){}		-- evento de click
+			onchange: function(el){}	-- evento de mudar
+			onfocus: function(el){}		-- evento de focar
+			onblur: function(el){}		-- evento de desfocar
 			compensador: (0|1) 			-- Cria um compensador para alinha o botão
-			title: '' 					-- Texto que aparece quando passa o mouse emcima
+			title: '' 					-- Texto que aparece quando passa o mouse encima
 			style: objStyle 			-- Resolve o estilo do botão
 			accesskey: ''				-- tecla de atalho
-			data: { 					-- Parametro do objeto data
+			data: { 					-- Parâmetro do objeto data
 				key: value
 			}
 		}
 	*/
 
 	var random;
-	do { 
-		random = parseInt( Math.random() * 100000 );
+	do {
+		random = parseInt(Math.random() * 100000);
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
 
@@ -214,13 +215,13 @@ function resolvButton(options, tab=0) {
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
 
 	var classBtn = (options.class || '') == '' ? '' : options.class
-	, 	classBootstrap = [ 
+	, 	classBootstrap = [
 		'primary','success','danger','warning','info','default',	// v3
 		'secondary','light','dark','link', 							// v4
 		'outline-primary','outline-secondary','outline-info', 		// v4 outline
 		'outline-success','outline-danger','outline-warning',
 		'outline-light','outline-dark','outline-link',
-	].find(function(i) { 
+	].find(function(i) {
 		return (classBtn == i || classBtn.indexOf(i+' ') == 0);
 	}) || '';
 
@@ -256,20 +257,20 @@ function resolvButton(options, tab=0) {
 					+ 		((options.style 	|| '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
 					// + 		(accesskey 				   == '' ? '' : " accesskey='" + accesskey + "'")
 					+ 		((options.title 	|| '') == '' && accesskey == '' ? '' : ''
-								+ 	" title='" 
+								+ 	" title='"
 								+ 		(options.title || '') 
 								+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
 								+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
 								+ 	"'"
 							)
-					+ (Object.keys(options.data || {})).map(function(key) { 
+					+ (Object.keys(options.data || {})).map(function(key) {
 						return " data-" + key + "='" + String(options.data[key]) + "'"
 					}).join('')
 					// + 		((options.click || '') == '' ? '' : " onclick='" + options.class + "'")
 
 
-					// ** Enveto do botão ****************************** //
-					+	(function(opt){
+					// ** Evento do botão ****************************** //
+					+	(function(opt) {
 						var html = '';
 						for (var i = 0; i < opt.length; i++) {
 							html += ((options[opt[i]] || '') == '' ? '' : ' ' + opt[i] + '="' + opt[i] + random + '(this);"')
@@ -289,11 +290,11 @@ function resolvButton(options, tab=0) {
 					)
 		+t(tab)		+ 	"</button>"
 		+t(tab)		+ 	"<script>"
-					+	(function(opt) { 
+					+	(function(opt) {
 						var html = '';
-						for (var i = 0; i < opt.length; i++) { 
+						for (var i = 0; i < opt.length; i++) {
 							html += ((options[opt[i]] 	|| '') == '' ? '' : ''
-							+t(tab+1)	+ 	"function " + opt[i] + random + "(el) { "
+							+t(tab+1)	+ 	"function " + opt[i] + random + "(el) {"
 							+t(tab+2)	+ (
 											(typeof(options[opt[i]]) == 'string')
 											? options[opt[i]]
@@ -307,8 +308,8 @@ function resolvButton(options, tab=0) {
 						return html;
 					}(['onchange','onclick','onfocus','onblur']))
 					+ (accesskey == '' ? '' : ''
-						+t(tab+1)	+ 	`function btnClickAccesskey${random}(e) { `
-						+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) { `
+						+t(tab+1)	+ 	`function btnClickAccesskey${random}(e) {`
+						+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) {`
 						+t(tab+3)	+ 			`e.preventDefault();`
 						+t(tab+3)	+ 			`$("button[data-customerid='btn${random}']").click();`
 						+t(tab+2)	+ 		`}`
@@ -324,14 +325,14 @@ function resolvButton(options, tab=0) {
 function resolvCalendar(options) { 
 	/*
 		options: {
-			descForm: '' 						-- Paramentro de identificação
-			events: { 							-- Agendamento que vão ser mostrados no calendario
+			descForm: '' 						-- Parâmetro de identificação
+			events: { 							-- Agendamento que vão ser mostrados no calendário
 				title: '' 						-- Título do evento
 				start: '' 						-- Onde inicia o evento model: Y-MM-DD HH:mm:ss
-				end: '' 						-- Onde terimina o evento model: Y-MM-DD HH:mm:ss
+				end: '' 						-- Onde termina o evento model: Y-MM-DD HH:mm:ss
 				textColor: '' 					-- Cor do texto
 				color: '' 						-- Cor do agendamento
-				rendering: '' 					-- Modo de renderizar, usado no feriado para rederiza em 'background'
+				rendering: '' 					-- Modo de renderizar, usado no feriado para renderiza em 'background'
 			}
 			data: "today" 						-- Data padrão calendário ex: Y-MM-DD
 			view: "month" 						-- Type view (month,agendaWeek,agendaDay)
@@ -346,7 +347,7 @@ function resolvCalendar(options) {
 				date: '' 						-- Dia do feriado
 			}
 			minTime: [time,type] 				-- Minimo de tempo que cada agendamento deve ter, ex. type = 'minute'
-			click: function(event) { } 			-- Envento de click
+			click: function(event) { } 			-- Evento de click
 			editable: (0|1) 					-- Se vai poder editar os agendamento do calendário
 		}
 	*/
@@ -360,7 +361,7 @@ function resolvCalendar(options) {
 		});
 	}
 
-	var minTime = function(start, end) { return end }, envet, end;
+	var minTime = function(start, end) { return end }, event, end;
 	var time = (options.minTime || [])[0]
 	, 	type = (options.minTime || [])[1]
 
@@ -373,9 +374,9 @@ function resolvCalendar(options) {
 	}
 
 	for (var i = 0; i < events.length; i++) {
-		envet = events[i];
-		end = minTime(envet.start.replace('T',' '), envet.end.replace('T',' '), time, type);
-		envet.textColor = CheckLumaColor(envet.color) ? '#fff' : '#000';
+		event = events[i];
+		end = minTime(event.start.replace('T',' '), event.end.replace('T',' '), time, type);
+		event.textColor = CheckLumaColor(event.color) ? '#fff' : '#000';
 		events[i].end = end;
 	}
 
@@ -444,7 +445,7 @@ function resolvCalendar(options) {
 		+t(5)+ 							"+ mom.format('ddd') + '<br><h3 style=\"margin:0\">' + mom.format('D') + '</h3>'"
 		+t(5)+ 							"+ '</div>';"
 		+t(2)+ 			'},'
-		+t(2)+ 			"timeFormat: ' '," // 'H(:mm)',  // remover o horario que aparece na frente da drecicao do agendamento
+		+t(2)+ 			"timeFormat: ' '," // 'H(:mm)',  // remover o horário que aparece na frente da descrição do agendamento
 		+t(2)+ 			"events: " + JSON.stringify(events) + ","
 		+t(2)+ 			"eventResizeStart: function() { return false; },"
 		+t(2)+ 			"eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) { "
@@ -545,8 +546,8 @@ function CheckLumaColor(c) {
 		}
 	}
 
-	function colourName2Hex(colour) { 
-		return { 
+	function colourName2Hex(colour) {
+		return {
 			"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
 			"beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
 			"cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff",
@@ -574,8 +575,8 @@ function CheckLumaColor(c) {
 		}[colour.toLowerCase()] || false;
 	}
 
-	function hex(x) { 
-		var hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]; 
+	function hex(x) {
+		var hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
 		return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
 	}
 
@@ -596,7 +597,7 @@ function CheckLumaColor(c) {
 
 var registerChart_Global = [];
 
-var styleGenerico_Global = { 
+var styleGenerico_Global = {
 	alternarColor: '',
 	numberFormat: '#',
 	tamanhoFixo: true,
@@ -607,69 +608,69 @@ var styleGenerico_Global = {
 }
 
 
-function resolvChart(data, options) { 
+function resolvChart(data, options) {
 	/*
 		styleGenerico = {
-			alternarColor: (0|1) 					-- Colore o fundo do grafico cor sim e cor não
+			alternarColor: (0|1) 					-- Colore o fundo do gráfico cor sim e cor não
 			numberFormat: '#' 						-- Formatação do numero
 			tamanhoFixo: (0|1) 						-- Se vai ter ou não
 			legendaChart: (0|1) 					-- Se vai ter ou não
 			separadorDecimal: ',' 					-- Texto para separador decimal
 			separadorMilhar: '.' 					-- Texto para separador de milhar
-			linhaPontilhada: '5.5' 					-- Parametro de pontilhado da linha
+			linhaPontilhada: '5.5' 					-- Parâmetro de pontilhado da linha
 		}
 
 		options: {
-			category: { 							-- Parametro que indica a categoria do grafico
-				text: ''							-- Texto do parametro
-				param: ''							-- Parametro do objeto data correspondente
-				click: function(index){}			-- Click considerando a categoria inteira, passar como parametro o indice da categoria / dado
+			category: { 							-- Parâmetro que indica a categoria do gráfico
+				text: ''							-- Texto do parâmetro
+				param: ''							-- Parâmetro do objeto data correspondente
+				click: function(index){}			-- Click considerando a categoria inteira, passar como parâmetro o índice da categoria / dado
 				rotation: num/graus					-- Graus de rotação da descrição da categoria
-				textUpDown: (0|1) 					-- Descrição, no eixo da catergorias, colocando um para cima e outro para baixo
+				textUpDown: (0|1) 					-- Descrição, no eixo da categorias, colocando um para cima e outro para baixo
 			}
-			value: [] / { 							-- Parametro que indica o valor do grafico / Pode ser um objeto ou array de objetos
-				text: ''							-- Texto do parametro
-				min: num 							-- O valor minimo que começa o gráfico, geramente fica para a lib definir automatico
-				max: num 							-- O valor máximo que pode chegar o gráfico, geramente fica para a lib definir automatico
+			value: [] / { 							-- Parâmetro que indica o valor do gráfico / Pode ser um objeto ou array de objetos
+				text: ''							-- Texto do parâmetro
+				min: num 							-- O valor minimo que começa o gráfico, geralmente fica para a lib definir automático
+				max: num 							-- O valor máximo que pode chegar o gráfico, geralmente fica para a lib definir automático
 				opposite: (0|1) 					-- Se vai desenhar a escala do lado oposto, padrão false
 				syncWithAxis: index 				-- Se possui mais de uma escala e precisa sincronizar o valor com outra escala
-				... 								-- valor é o indice da outra escala
+				... 								-- valor é o índice da outra escala
 			}
 			serie: [] / { 							-- Pode ser apenas um objeto ou um array de objetos
-				type: (column|line)  				-- Tipo de serie se vai montar grafico de linha ou coluna, padrão é column
-				param: ''							-- Parametro do objeto data correspondente
+				type: (column|line)  				-- Tipo de serie se vai montar gráfico de linha ou coluna, padrão é column
+				param: ''							-- Parâmetro do objeto data correspondente
 				click: function(){} 				-- Quando clicar no gráfico
 				name: '' 							-- Nome do gráfico
-				color: 'lightblue' 					-- Cor que vai ter no grafico
-				onlyColumn: (0|1) 					-- Deixar uma coluna emcima da outra, padrão vardadeiro
+				color: 'lightblue' 					-- Cor que vai ter no gráfico
+				onlyColumn: (0|1) 					-- Deixar uma coluna encima da outra, padrão verdadeiro
 				label: (0|1) / { 					-- Caso for definido como false não irá mostrar no gráfico
-					color: 'black' 					-- Cor da font da label que é motrar o valor no grafico
-					align: (center|in|out)			-- Alinhamento da label se é centrelizado dentro ou fora o padrão é 'out'
+					color: 'black' 					-- Cor da font da label que é mostrar o valor no gráfico
+					align: (center|in|out)			-- Alinhamento da label se é centralizado dentro ou fora o padrão é 'out'
 					mask: '%0%' 					-- Mascara da label
 				}
 				ball: (0|1) / { 					-- Caso gráfico de linha sem click na serie irá desenhar somente as bolas em cada categoria
 					color: '' 						-- Preenchimento da cor da bolinha
 				}
-				pontilhado: (0|1) 					-- Caso gráfico de linha denhar a linha pontilhada ou reta
+				pontilhado: (0|1) 					-- Caso gráfico de linha, desenhar a linha pontilhada ou reta
 				tooltip: '' 						-- Texto em HTML
 				value: index 						-- Se possui mais de uma escala precisa informar qual escala é referente a essa serie
-				... 								-- valor é o indice da escala
+				... 								-- valor é o índice da escala
 				hide: (0|1) 						-- Indicar se vai ocultar no gráfico, padrão false, atualizado pre e pos-render
 			}
-			descForm: '' 							-- Parametro de identificação
-			padination: num 						-- Trazer tantos valores pré definidos na tela
-			orientation: 'horizontal' 				-- Orientação do grafico, (horizontal | vertical)
-			percentual: (0|1) 						-- Se o grafico vai mostrar valor percentual de 0 a 100
-			width: '100%' 							-- Largura do grafico
+			descForm: '' 							-- Parâmetro de identificação
+			pagination: num 						-- Trazer tantos valores pré definidos na tela
+			orientation: 'horizontal' 				-- Orientação do gráfico, (horizontal | vertical)
+			percentual: (0|1) 						-- Se o gráfico vai mostrar valor percentual de 0 a 100
+			width: '100%' 							-- Largura do gráfico
 			height: '400px' 						-- Altura do gráfico
-			styleGenerico: {} 						-- Configurações genericas para todos os grafico gerados apartir
-			setLegend: (0|1) 						-- Se vai mostrar legenda do grafico
+			styleGenerico: {} 						-- Configurações genéricas para todos os gráfico gerados a partir
+			setLegend: (0|1) 						-- Se vai mostrar legenda do gráfico
 			legend: { 								-- Configurações de legenda
 				position: 'bottom|top|right|left' 	-- Posição onde vai ficar a legenda (padrão bottom)
 				align: 'top|middle|bottom' 			-- Caso posição for right ou left pode escolher onde vai ficar  (padrão top)
 			}
 			title: '' 								-- Titulo do gráfico
-			colors: [] 								-- Array com as cores que o grafico vai seguir para ser montado
+			colors: [] 								-- Array com as cores que o gráfico vai seguir para ser montado
 			...										-- ex: ['blue','green','orange']
 			forceSet: (0|1) 						-- Forçar montar o gráfico
 		}
@@ -677,9 +678,11 @@ function resolvChart(data, options) {
 
 	var styleGenerico = $.extend({}, styleGenerico_Global, (options.styleGenerico || {}));
 
+	if ((options.pagination || '') == '' && (options.padination || '') != '') options.pagination = options.padination;
+
 	if (
 		(options.forceSet || '') != '' && registerChart_Global.indexOf(options.descForm) >= 0
-	) { 
+	) {
 		registerChart_Global.splice(registerChart_Global.indexOf(options.descForm),1);
 	}
 
@@ -688,12 +691,12 @@ function resolvChart(data, options) {
 	// 	random = parseInt( Math.random() * 100000 );
 	// } while (registerChart_Global.indexOf(random) != -1);
 
-	data.forEach(function(dt,i) { 
+	data.forEach(function(dt,i) {
 		data[i].lineDash = styleGenerico.linhaPontilhada;
 	});
 
-	// Verificar se o parametro é um objeto unitario e passar para array
-	['serie','value'].forEach(function(e) { 
+	// Verificar se o parâmetro é um objeto unitário e passar para array
+	['serie','value'].forEach(function(e) {
 		// options.serie, options.value
 		var keys = Object.keys((options[e] || {}));
 		if (keys.length > 0 && isNaN(keys[0])) 	options[e] = [options[e]];
@@ -702,31 +705,30 @@ function resolvChart(data, options) {
 
 	window['indexCursorChart' + options.descForm + '_Global'] = 0;
 
-	if (registerChart_Global.indexOf(options.descForm) != -1) { // grafico já exite
+	if (registerChart_Global.indexOf(options.descForm) != -1) { // gráfico já exite
 
 		$("#chartdiv"+options.descForm)
 			.css('height', ((options.height || '') != '' ? options.height : "400px"));
 
 		window["chart"+options.descForm].data = data;
 
-		if ((options.padination || '') != '' && !isNaN(options.padination)) { 
+		if ((options.pagination || '') != '' && !isNaN(options.pagination)) {
 			window["categoryAxis"+options.descForm].start 	= 0;
-			window["categoryAxis"+options.descForm].end 	= data.length < parseInt(options.padination) ? 1 : parseInt(options.padination) / data.length;
+			window["categoryAxis"+options.descForm].end 	= data.length < parseInt(options.pagination) ? 1 : parseInt(options.pagination) / data.length;
 		}
 
-		options.serie.forEach(function(s,i) { 
+		options.serie.forEach(function(s,i) {
 			window["series"+i+options.descForm][((s.hide || '') == '' ? 'show' : 'hide')]();
 		});
 
-		if ((options.title || '') != '') { 
+		if ((options.title || '') != '') {
 			window["titleChart"+options.descForm].text = options.title;
 		}
 
 		return true;
 	}
 
-
-	var setLegend = false; // variavel para mostrar legenda
+	var setLegend = false; // variável para mostrar legenda
 
 
 	if ((options.orientation || '') == '') options.orientation = 'horizontal';
@@ -769,7 +771,7 @@ function resolvChart(data, options) {
 			+t(2) 	+ 		`<input type="checkbox" checked`
 
 					+ ` onclick='`
-					+ 	options.serie.map(function(e,i) { 
+					+ 	options.serie.map(function(e,i) {
 							return `series${i+options.descForm}._tooltip.disabled = !series${i+options.descForm}._tooltip.disabled;`;
 						}).join('')
 					+ `'`
@@ -788,7 +790,7 @@ function resolvChart(data, options) {
 
 
 		// ***************************************************************************************************** //
-		// ** Variavel Chart * //
+		// ** Variável Chart * //
 		+t(0)	+ 	`<script>`
 		+t(1)	+ 		`var chart${options.descForm} = null;`
 		+t(1)	+ 		`chart${options.descForm} = am4core.create("chartdiv${options.descForm}", am4charts.XYChart);`
@@ -831,7 +833,7 @@ function resolvChart(data, options) {
 		// ***************************************************************************************************** //
 		// ** Categoria * //
 		+ t()
-		+ (options.orientation == 'horizontal' 
+		+ (options.orientation == 'horizontal'
 			? t(1) + 	`categoryAxis${options.descForm} = chart${options.descForm}.xAxes.push(new am4charts.CategoryAxis());`
 			: t(1) + 	`categoryAxis${options.descForm} = chart${options.descForm}.yAxes.push(new am4charts.CategoryAxis());`
 		)
@@ -839,25 +841,25 @@ function resolvChart(data, options) {
 		+t(1)	+ 		`categoryAxis${options.descForm}.title.text 								= "${(options.category.text || '')}";`
 		+t(1)	+ 		`categoryAxis${options.descForm}.renderer.grid.template.location 			= 0;`
 		+t(1)	+ 		`categoryAxis${options.descForm}.renderer.minGridDistance 					= 20;`
-		+ (((options.category || {}).rotation || '') == '' ? '' : ''	
+		+ (((options.category || {}).rotation || '') == '' ? '' : ''
 			+t(1) +		`categoryAxis${options.descForm}.renderer.labels.template.rotation = ${options.category.rotation};`
 			// +t(1) +		`categoryAxis${options.descForm}.renderer.labels.template.horizontalCenter = "left";`
 			// +t(1) +		`categoryAxis${options.descForm}.renderer.labels.template.location = 0.5;`
 		)
 
 		+ ((styleGenerico.alternarColor || '') == '' ? '' : ''
-			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.disabled 		= false;`	// Grafico de avaliações
-			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.fillOpacity 	= 0.05;`	// Grafico de avaliações
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.disabled 		= false;`	// Gráfico de avaliações
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.fillOpacity 	= 0.05;`	// Gráfico de avaliações
 		)
 
 		+ (options.orientation == 'horizontal'  ? '' : ''
 			+t(1) + 	`categoryAxis${options.descForm}.renderer.inversed 							= true;`
 		)
-		+ ((options.padination || '') == '' ? '' : ''
+		+ ((options.pagination || '') == '' ? '' : ''
 			+t(1) + 	`categoryAxis${options.descForm}.start = 0;`
 			+t(1) + 	`setTimeout(function(){`
 				  + 		`categoryAxis${options.descForm}.end = `
-				  + 			(data.length < parseInt(options.padination) ? 1 : parseInt(options.padination) / data.length) + `;`
+				  + 			(data.length < parseInt(options.pagination) ? 1 : parseInt(options.pagination) / data.length) + `;`
 				  + 	`},1000);`
 		)
 		+ (((options.category || {}).textUpDown || '') == '' ? '' : ''
@@ -877,32 +879,32 @@ function resolvChart(data, options) {
 		// ***************************************************************************************************** //
 		// ** Valor * //
 		+ t()
-		+ (options.value || []).map(function(value={}, indiceVlr) { return ''
+		+ (options.value || []).map(function(value={}, indexVlr) { return ''
 			+ t(1) + 'var '
-			+ (options.orientation == 'horizontal' 
-				? 			`valueAxis${options.descForm + String(indiceVlr)} = chart${options.descForm}.yAxes.push(new am4charts.ValueAxis());`
-				: 			`valueAxis${options.descForm + String(indiceVlr)} = chart${options.descForm}.xAxes.push(new am4charts.ValueAxis());`
+			+ (options.orientation == 'horizontal'
+				? 			`valueAxis${options.descForm + String(indexVlr)} = chart${options.descForm}.yAxes.push(new am4charts.ValueAxis());`
+				: 			`valueAxis${options.descForm + String(indexVlr)} = chart${options.descForm}.xAxes.push(new am4charts.ValueAxis());`
 			)
-			+t(1)	+ 		`valueAxis${options.descForm + String(indiceVlr)}.title.text = "${(value.text || '')}";`
+			+t(1)	+ 		`valueAxis${options.descForm + String(indexVlr)}.title.text = "${(value.text || '')}";`
 			+ (value.min == undefined ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.min = ${value.min};`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.min = ${value.min};`
 			)
 			+ (value.max == undefined ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.max = ${value.max};`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.max = ${value.max};`
 			)
 			+ ((value.opposite || '') == '' ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.opposite = true;`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.renderer.opposite = true;`
 			)
 			+ (value.syncWithAxis == undefined ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.syncWithAxis = valueAxis${options.descForm + String(value.syncWithAxis)};`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.syncWithAxis = valueAxis${options.descForm + String(value.syncWithAxis)};`
 			)
-			+ ((options.percentual || '') == '' ? '' : '' // Ex: grafico de avaliação RUIM / BOM / OTIMO (por item da avaliação)
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.min = 0;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.max = 100;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.minGridDistance = 50;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.length = 5;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.disabled = false;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.strokeOpacity = 0.4;`
+			+ ((options.percentual || '') == '' ? '' : '' // Ex: gráfico de avaliação RUIM / BOM / ÓTIMO (por item da avaliação)
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.min = 0;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.max = 100;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.minGridDistance = 50;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.ticks.template.length = 5;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.ticks.template.disabled = false;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.ticks.template.strokeOpacity = 0.4;`
 			)
 		}).join('')
 		// ***************************************************************************************************** //
@@ -918,21 +920,21 @@ function resolvChart(data, options) {
 	// ***************************************************************************************************** //
 	// ** Series * //
 	var maskLabel, color;
-	for (var i = 0; i < options.serie.length; i++) { 
+	for (var i = 0; i < options.serie.length; i++) {
 		if (((options.serie[i] || {}).name || '') != '') setLegend = true; // verifica se precisa de legenda
 
 		maskLabel = ((options.serie[i].label || {}).mask || '%0%').replace('%0%', (options.orientation == 'horizontal' ? '{valueY}' : '{valueX}'));
 
-		color = (options.serie[i].color || '') != '' 
+		color = (options.serie[i].color || '') != ''
 			? `am4core.color(\"${options.serie[i].color}\");`
 			: `chart${options.descForm}.colors.getIndex(${i});`;
 
 		html += ""+t()+t();
 
-		if ((options.serie[i].type || 'column') == 'column') { 
+		if ((options.serie[i].type || 'column') == 'column') {
 			html += ""
 			+t(1)	+ 		`series${i+options.descForm} = chart${options.descForm}.series.push(new am4charts.ColumnSeries());`
-			+ (options.orientation == 'horizontal' 
+			+ (options.orientation == 'horizontal'
 				? t(1) + 	`series${i+options.descForm}.dataFields.valueY 						= "${options.serie[i].param}";`
 				+ t(1) + 	`series${i+options.descForm}.dataFields.categoryX 					= "${options.category.param}";`
 				: t(1) + 	`series${i+options.descForm}.dataFields.valueX 						= "${options.serie[i].param}";`
@@ -941,7 +943,7 @@ function resolvChart(data, options) {
 			+t(1)	+ 		`series${i+options.descForm}.columns.template.fill 					= ${color};`
 			+t(1)	+ 		`series${i+options.descForm}.stroke 								= ${color};`
 			+t(1)	+ 		`series${i+options.descForm}.fill 									= ${color};`
-			+ (options.orientation == 'horizontal' 
+			+ (options.orientation == 'horizontal'
 				? t(1)	+ 		`series${i+options.descForm}.tooltip.dy 						= -8;`
 				: t(1)	+ 		`series${i+options.descForm}.tooltip.dx 						= -8;`
 			)
@@ -971,10 +973,10 @@ function resolvChart(data, options) {
 
 
 
-		if ((options.serie[i].type || 'column') == 'line') { 
+		if ((options.serie[i].type || 'column') == 'line') {
 			html += ""
 			+t(1)	+ 		`series${i+options.descForm} = chart${options.descForm}.series.push(new am4charts.LineSeries());`
-			+ (options.orientation == 'horizontal' 
+			+ (options.orientation == 'horizontal'
 				? t(1) + 	`series${i+options.descForm}.dataFields.valueY 				= "${options.serie[i].param}";`
 				+ t(1) + 	`series${i+options.descForm}.dataFields.categoryX 			= "${options.category.param}";`
 				: t(1) + 	`series${i+options.descForm}.dataFields.valueX 				= "${options.serie[i].param}";`
@@ -985,7 +987,7 @@ function resolvChart(data, options) {
 			+t(1)	+ 		`series${i+options.descForm}.stroke 						= ${color};` // set color line
 			+t(1)	+ 		`series${i+options.descForm}.fill 							= ${color};`
 			// +t(1)	+ 		"series"+i+options.descForm+".fillOpacity 					= 0.5;" // com fundo colorido ou não
-			+t(1)	+ 		`series${i+options.descForm}.strokeWidth 					= 3;` // espeçura da linha
+			+t(1)	+ 		`series${i+options.descForm}.strokeWidth 					= 3;` // espessura da linha
 			// chart.colors.getIndex(2);
 			+ ((options.serie[i].tooltip || '') == '' ? '' : ''
 				+t(1) + 	`series${i+options.descForm}.tooltipHTML 					= "${options.serie[i].tooltip}";`
@@ -1020,7 +1022,7 @@ function resolvChart(data, options) {
 			+t(1)	+ 		`series${i+options.descForm}.${((options.serie[i].hide || '') == '' ? 'show' : 'hide')}();`
 
 
-		if (options.serie[i].label != false) { 
+		if (options.serie[i].label != false) {
 			html += ''+t()
 			+t(1)	+ 		`var labelBullet${i+options.descForm} 					= new am4charts.LabelBullet();`
 			+t(1) 	+ 		`labelBullet${i+options.descForm}.label.text 			= "${maskLabel}";` // .value.formatNumber('#.')
@@ -1028,19 +1030,19 @@ function resolvChart(data, options) {
 			+t(1)	+ 		`labelBullet${i+options.descForm}.stroke 				= am4core.color("#dadada");`
 			+t(1)	+ 		`labelBullet${i+options.descForm}.label.strokeWidth 	= 0;`
 			+t(1)	+ 		`labelBullet${i+options.descForm}.label.fill 			= am4core.color("${((options.serie[i].label || {}).color || "black")}");`
-			+t(1)	+ 		`labelBullet${i+options.descForm}.label.hideOversized 	= true;` // não imprimi valor zerad
+			+t(1)	+ 		`labelBullet${i+options.descForm}.label.hideOversized 	= true;` // não imprimi valor zerado
 			+ ((options.serie[i].click || '') == '' ? '' : ''
 				+t(1) + 	`labelBullet${i+options.descForm}.events.on(\"hit\", function(ev) {`
 				+t(2) + 		`(${String(options.serie[i].click)}(ev));`
 				+t(1) + 	`});`
 			)
-			+ (((options.serie[i].label || {}).align || '').toLowerCase() == 'center' 
-				? (options.orientation == 'horizontal' 
+			+ (((options.serie[i].label || {}).align || '').toLowerCase() == 'center'
+				? (options.orientation == 'horizontal'
 					? t(1) + 	`labelBullet${i+options.descForm}.locationY 		= 0.5;`
 					: t(1) + 	`labelBullet${i+options.descForm}.locationX 		= 0.5;`
 				)
-				: (((options.serie[i].label || {}).align || '').toLowerCase() == 'in' 
-					? (options.orientation == 'horizontal' 
+				: (((options.serie[i].label || {}).align || '').toLowerCase() == 'in'
+					? (options.orientation == 'horizontal'
 						? t(1) + `labelBullet${i+options.descForm}.dy 				= 15;`
 						: t(1) + `labelBullet${i+options.descForm}.dx 				= -15;`
 					)
@@ -1067,15 +1069,15 @@ function resolvChart(data, options) {
 	html += ''+t()+t()
 		// ***************************************************************************************************** //
 		// ** Reta final * //
-		// +t(1)	+ 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrecenta legenda no grafico"
+		// +t(1)	+ 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrescenta legenda no gráfico"
 		+t(1)	+ 		`chart${options.descForm}.scrollbarY 								= new am4core.Scrollbar();`
 		+t(1)	+ 		`var scrollbarX${options.descForm} 									= new am4core.Scrollbar();`
 		+t(1)	+ 		`chart${options.descForm}.scrollbarX 								= scrollbarX${options.descForm};`
 		+t(1)	+ 		`chart${options.descForm}.scrollbarX.parent 						= chart${options.descForm}.bottomAxesContainer;` // setar scroll do eixo x embaixo
 		// +t(1)	+ 		`chart${options.descForm}.scrollbarX.thumb.minWidth 				= 100;` // Limita o zoom do gráfico (serve pra nada kkkkk)
 
-		+t(1)	+ 		`chart${options.descForm}.cursor 									= new am4charts.XYCursor();` // indica onde o curso está com cordenadas XY
-		+ (options.orientation == 'horizontal' 
+		+t(1)	+ 		`chart${options.descForm}.cursor 									= new am4charts.XYCursor();` // indica onde o curso está com coordenadas XY
+		+ (options.orientation == 'horizontal'
 			? t(1) + 	`chart${options.descForm}.cursor.behavior 							= "zoomX";`
 			: t(1) + 	`chart${options.descForm}.cursor.behavior 							= "zoomY";`
 		)
@@ -1093,13 +1095,11 @@ function resolvChart(data, options) {
 			+t(1) + 		`console.log(indexCursorChart${options.descForm}_Global);`
 			+t(1) + 		`var func = ${String(options.category.click)};`
 			+t(1) + 		`func(indexCursorChart${options.descForm}_Global);`
-			// +t(1) + 		`montarGraficoOS(indexCursorChartPrincipal_Global);`
-			// +t(1) + 		`montarGraficoAvalaiacao(indexCursorChartPrincipal_Global);`
 			+t(1) + 	`});`
 		)
 		+ (!setLegend && (options.legend || '') == '' ? '' : ''
 			+ t(1) + 	`chart${options.descForm}.legend 			= new am4charts.Legend();`
-			+ ((options.legend || '') == '' ? '' 
+			+ ((options.legend || '') == '' ? ''
 				: ''
 				+ t(1) + `chart${options.descForm}.legend.position 	= "${(options.legend.position 	|| 'bottom'	)}";`
 				+ t(1) + `chart${options.descForm}.legend.valign 	= "${(options.legend.align 		|| 'top'	)}";`
@@ -1111,12 +1111,12 @@ function resolvChart(data, options) {
 	return html;
 }
 
-function toFunction(func, replace) { 
+function toFunction(func, replace) {
 	var isString;
 	func = String(func);
 	for (var i = 0; i < replace.length; i++) {
 		isString = (replace[i][2] || 'literal') == 'literal' && typeof(replace[i][1]) == 'string';
-		while (func.indexOf(replace[i][0]) != -1) 
+		while (func.indexOf(replace[i][0]) != -1)
 			func = func.replace(replace[i][0] , isString ? "\"" + replace[i][1] + "\"" : replace[i][1]);
 	}
 	return eval(`(function(){ return ${func}})()`);
@@ -1124,23 +1124,21 @@ function toFunction(func, replace) {
 
 var registerChart_Global = [];
 
-// scriptChart.js
-
-function resolvChart2(data, options) { 
+function resolvChart2(data, options) {
 	/*
 		options: {
-			category: { 		-- Parametro que indica a categoria do grafico
-				text: ''		-- Texto do parametro
-				param: ''		-- Parametro do objeto data correspondente
+			category: { 		-- Parâmetro que indica a categoria do gráfico
+				text: ''		-- Texto do parâmetro
+				param: ''		-- Parâmetro do objeto data correspondente
 			}
-			value: { 			-- Parametro que indica o valor do grafico
-				text: ''		-- Texto do parametro
+			value: { 			-- Parâmetro que indica o valor do gráfico
+				text: ''		-- Texto do parâmetro
 			}
 			serie: {
-				param: ''		-- Parametro do objeto data correspondente
+				param: ''		-- Parâmetro do objeto data correspondente
 			}
-			descForm: '' 		-- Parametro de identificação
-			padination: num 	-- Trazer tantos valores pré definidos na tela
+			descForm: '' 		-- Parâmetro de identificação
+			pagination: num 	-- Trazer tantos valores pré definidos na tela
 		}
 	*/
 
@@ -1148,14 +1146,18 @@ function resolvChart2(data, options) {
 	// do {
 	// 	random = parseInt( Math.random() * 100000 );
 	// } while (registerChart_Global.indexOf(random) != -1);
+
+	if ((options.pagination || '') == '' && (options.padination || '') != '') {
+		options.pagination = options.padination;
+	}
+
 	if (registerChart_Global.indexOf(options.descForm) != -1) {
 		window["chart"+options.descForm].data = data;
 
-		if ((options.padination || '') != '' && !isNaN(options.padination)) {
+		if ((options.pagination || '') != '' && !isNaN(options.pagination)) {
 			window["categoryAxis"+options.descForm].start 	= 0;
-			window["categoryAxis"+options.descForm].end 	= data.length < options.padination ? 1 : options.padination / data.length;
+			window["categoryAxis"+options.descForm].end 	= data.length < options.pagination ? 1 : options.pagination / data.length;
 		}
-
 		return true;
 	}
 
@@ -1180,7 +1182,7 @@ function resolvChart2(data, options) {
 		+ 		"categoryAxis"+options.descForm+".renderer.minGridDistance 			= 20;"
 		// + 		"categoryAxis"+options.descForm+".renderer.inversed 				= true;"
 		+ 		"categoryAxis"+options.descForm+".start = 0;"
-		+ 		"setTimeout(function(){categoryAxis"+options.descForm+".end = " + (data.length < options.padination ? 1 : options.padination / data.length) + ";}, 100);"
+		+ 		"setTimeout(function(){categoryAxis"+options.descForm+".end = " + (data.length < options.pagination ? 1 : options.pagination / data.length) + ";}, 100);"
 
 
 		+ 		"valueAxis"+options.descForm+" 										= chart.xAxes.push(new am4charts.ValueAxis());"
@@ -1204,8 +1206,8 @@ function resolvChart2(data, options) {
 		// + 		"series"+options.descForm+".tooltip.pointerOrientation 				= "vertical";"
 
 
-		+ 		"chart"+options.descForm+".cursor 									= new am4charts.XYCursor();" // indica onde o curso está com cordenadas XY
-		// + 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrecenta legenda no grafico"
+		+ 		"chart"+options.descForm+".cursor 									= new am4charts.XYCursor();" // indica onde o curso está com coordenadas XY
+		// + 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrescenta legenda no gráfico"
 		+ 		"chart"+options.descForm+".scrollbarY 								= new am4core.Scrollbar();"
 		+ 		"var scrollbarX"+options.descForm+" 								= new am4core.Scrollbar();"
 		+ 		"chart.scrollbarX"+options.descForm+" 								= scrollbarX;"
@@ -1226,11 +1228,11 @@ function resolvChart2(data, options) {
 	return html;
 }
 
-function resolvCodigoConsulta(options, tab=0) { 
+function resolvCodigoConsulta(options, tab=0) {
 	/*
 	options: {
-		codigo: {					-- Campos de pesquisa por codigo
-			text: ''				-- texto que acompanha o cmapo do codigo
+		codigo: {					-- Campos de pesquisa por código
+			text: ''				-- texto que acompanha o campo do código
 			input: ''				-- valor de apresentação
 			mask: ''				-- defini marcara no campo
 			styleLabel: {} 			-- objeto css para personalizar label
@@ -1252,37 +1254,37 @@ function resolvCodigoConsulta(options, tab=0) {
 		descForm: 					-- identificador
 		id: '' 						-- campo de id para acessar externo, caso seja omitido será usado o this.codigo.input
 		ajax: 'ajax'				-- nome da função do ajax
-		param: [					-- parametro passado para consulta dos dados
+		param: [					-- parâmetro passado para consulta dos dados
 			{
-				key: ''				-- nome do parametro
-				val: (''|function)	-- valor ou função de callback para o parametro 
+				key: ''				-- nome do parâmetro
+				val: (''|function)	-- valor ou função de callback para o parâmetro
 			}
 		]
-		OR param: { key: value } 	-- key é o nome do parametro e value é a funcção de callback ou o parametro (''|function)
-		styleLabel: {} 				-- objeto css para personalizar label tanto do codigo quanto da descrição
+		OR param: { key: value } 	-- key é o nome do parâmetro e value é a função de callback ou o parâmetro (''|function)
+		styleLabel: {} 				-- objeto css para personalizar label tanto do código quanto da descrição
 		trigger: function			-- função disparada quando selecionar um registro
 		grade: objResolvGrade 		-- é a grade que vai ser montada no modal para selecionar por descrição,
-									-- já vem com valores predefidos tendo que informar somente o attr 'inputs'
-									-- porém é possivel definir os demais, logo eles serão acrecentados ou sobrepostos
-		onPesquisa: function 		-- função de validação de consulta, deve retornar um boleano
-		required: '' 				-- se o componete é obrigatório ou não
-		accesskey: '' 				-- tecla de atalho para focar no componete. Order de para foca ['campo codigo','botão']
+									-- já vem com valores pré-definidos tendo que informar somente o attr 'inputs'
+									-- porém é possível definir os demais, logo eles serão acrescentados ou sobrepostos
+		onPesquisa: function 		-- função de validação de consulta, deve retornar um booleano
+		required: '' 				-- se o componente é obrigatório ou não
+		accesskey: '' 				-- tecla de atalho para focar no componente. Order de para foca ['campo código','botão']
 		onFalseDebug: function(dt) 	-- Caso tenha que personalizar quando o retorno for vazio ou o debug for diferente de OK
 
-		dist: 'C-B-D' 				-- refericia para a desposição do componetes na tela 
+		dist: 'C-B-D' 				-- referencia para a disposição do componentes na tela
 		... 						-- 	Ref: (
-		... 						-- 		C = Codigo
+		... 						-- 		C = Código
 		... 						-- 		B = Botão de pesquisa
 		... 						-- 		D = Descrição
 		... 						-- 		X = Botão para limpar
 		... 						-- 		S = Select2 para montar combo
 		... 						-- 		R = Recarregar
 		... 						-- 	)
-		xs / sm / md / lg: '3-1-8' 	-- Class do bootstrap para referenciar a disposição dos componetes
+		xs / sm / md / lg: '3-1-8' 	-- Class do bootstrap para referenciar a disposição dos componentes
 	}
 	*/
 
-	options = $.extend({},{ 
+	options = $.extend({}, {
 		dist: 'C-B-D',
 		xs: '3-1-8',
 		// md: '4-1-7',
@@ -1290,7 +1292,7 @@ function resolvCodigoConsulta(options, tab=0) {
 	}, options);
 
 	var random;
-	do { 
+	do {
 		random = parseInt( Math.random() * 100000 );
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
@@ -1299,10 +1301,12 @@ function resolvCodigoConsulta(options, tab=0) {
 	var param = resolvParamAjax(options);
 	var descRef = '';
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	var classBtn = bootstrap == '4' ? 'light' : 'default';
 
 	var title = accesskey == '' ? '' : " title='Alt + " + accesskey + "'";
 
-	if (accesskey != '') { 
+	if (accesskey != '') {
 		descRef = (
 			options.dist.indexOf('C') >= 0 ? 'C' 
 			: (options.dist.indexOf('S') >= 0 ? 'S' 
@@ -1312,8 +1316,8 @@ function resolvCodigoConsulta(options, tab=0) {
 
 	var styleLabel = (options.styleLabel || '') == '' ? {} : options.styleLabel
 
-	var funcAxu = { 
-		resolvLabel: function(param) { 
+	var funcAxu = {
+		resolvLabel: function(param) {
 			if (((options[param] || {}).text || '') == '')
 				return ''
 					+ 	`<label>`
@@ -1322,12 +1326,12 @@ function resolvCodigoConsulta(options, tab=0) {
 
 			var style = ``;
 
-			if ((options[param].styleLabel || '') != '' || (options.styleLabel || '') != '') 
+			if ((options[param].styleLabel || '') != '' || (options.styleLabel || '') != '')
 				style = ` style="${resolvStyle( $.extend({}, styleLabel, (options[param].styleLabel || {})) )}"`;
 
 			return ''
 				+t(tab+2)	+ 	`<label${style}>`
-				+t(tab+3)	+ (descRef != param.substring(0,1).toUpperCase() 
+				+t(tab+3)	+ (descRef != param.substring(0,1).toUpperCase()
 								? (options[param].text || '')
 								: ''
 											+ 	`<spam ${title}>`
@@ -1339,7 +1343,7 @@ function resolvCodigoConsulta(options, tab=0) {
 	}
 
 
-	var elemtents = [
+	var elements = [
 		{ codigo: 'C',
 			class: 'codigo',
 			complemento: ` style="padding:0;padding-left:15px;"`,
@@ -1362,8 +1366,8 @@ function resolvCodigoConsulta(options, tab=0) {
 				// + 		` onblur="this.value = ${capitalize(options.descForm)}Selected_Global;"`
 				+t(tab+2)	+ 	`>`
 				+t(tab+2)	+ 	`<script>`
-				+t(tab+3)	+ 		`resolvEl('${options.descForm}','codigo').el[0].onclick = function(){`
-				// + 		`$('#${options.descForm}').find('.codigo').find('input')[0].onclick = function(){`
+				+t(tab+3)	+ 		`resolvEl('${options.descForm}','codigo').el[0].onclick = function() {`
+				// + 		`$('#${options.descForm}').find('.codigo').find('input')[0].onclick = function() {`
 				// + 			`$('#${options.descForm}').find('.codigo').find('input')[0].select();`
 				+t(tab+4)	+ 			`resolvEl('${options.descForm}','codigo').el[0].select();`
 				+t(tab+3)	+ 		`}`
@@ -1381,7 +1385,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ 		`<spam style="color:white">.</spam>`
 				+t(tab+2)	+ 	`</label>`
 				+t(tab+2)	+ 	`<br>`
-				+t(tab+2)	+ 	`<button class="btn btn-default btn-block"`
+				+t(tab+2)	+ 	`<button class="btn btn-${classBtn} btn-block"`
 				+t(tab+3)	+ 		` onclick=\"pesquisa${capitalize(options.descForm)}();"`
 				+t(tab+3)	+ 		` data-customerid='btn${random}'`
 							+ 		(descRef == 'D' ? title : '')
@@ -1410,7 +1414,7 @@ function resolvCodigoConsulta(options, tab=0) {
 				+t(tab+3)	+ 		`<spam style="color:white;">.</spam>`
 				+t(tab+2)	+ 	`</label>`
 				+t(tab+2)	+ 	`<br>`
-				+t(tab+2)	+ 	`<button class="btn btn-default btn-block"`
+				+t(tab+2)	+ 	`<button class="btn btn-${classBtn} btn-block"`
 				+t(tab+3)	+ 		` onclick="clear${capitalize(options.descForm)}(true);"`
 				+t(tab+2)	+ 	`>`
 				+t(tab+3)	+ 		`<i class="fa fa-times"></i>`
@@ -1454,23 +1458,26 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 			`<input type="hidden">`
 		+t(tab+2)	+		`</div>`
 		+ (function (el, dist) {
-			var html = '', riquered = false;
+			var html = '', required = false, classDiv;
 
-			for (var i = 0; i < dist.length; i++) { 
-				for (var j = 0; j < el.length; j++) { 
-					if (dist[i] == el[j].codigo) { 
+			for (var i = 0; i < dist.length; i++) {
+				for (var j = 0; j < el.length; j++) {
+					if (dist[i] == el[j].codigo) {
+						classDiv = `${(el[j].class || '')}`
+							+ 	((options.xs || '') == '' ? '' : ' col-xs-' + options.xs.split('-')[i] )
+							+ 	((options.sm || '') == '' ? '' : ' col-sm-' + options.sm.split('-')[i] )
+							+ 	((options.md || '') == '' ? '' : ' col-md-' + options.md.split('-')[i] )
+							+ 	((options.lg || '') == '' ? '' : ' col-lg-' + options.lg.split('-')[i] )
+							+ 	((options.xl || '') == '' ? '' : ' col-xl-' + options.xl.split('-')[i] )
+							+ 	((options.xxl|| '') == '' ? '' : ' col-xxl-'+ options.xxl.split('-')[i] );
+						classDiv =	resolvClassDiv(classDiv);
+
 						html += ``
-						+t(tab+1)	+ 	`<div`
-									+ 		` class="${(el[j].class || '')}`
-									+ 			((options.xs || '') == '' ? '' : ' col-xs-' + options.xs.split('-')[i] )
-									+ 			((options.sm || '') == '' ? '' : ' col-sm-' + options.sm.split('-')[i] )
-									+ 			((options.md || '') == '' ? '' : ' col-md-' + options.md.split('-')[i] )
-									+ 			((options.lg || '') == '' ? '' : ' col-lg-' + options.lg.split('-')[i] )
-									+ 		`"`
+						+t(tab+1)	+ 	`<div class="${classDiv}"`
 									+ 		` style='padding:0 !important;padding-right:${(i < dist.length-1 ? '5px' : '0')} !important;'`
 									+ 	`>`
 									+ 		(el[j].text || '')
-									+ 	(riquered || ['C','D','S'].indexOf(el[j].codigo) == -1 ? '' : (riquered = true, '')
+									+ 	(required || ['C','D','S'].indexOf(el[j].codigo) == -1 ? '' : (required = true, '')
 										// + 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<i style='color:red;' class='fa fa-asterisk'></i>`)
 										+ 	((options.required || '') == '' ? '' : t(tab+2) + `&nbsp;<span style="color:red;">*</span>`)
 									)
@@ -1480,33 +1487,33 @@ function resolvCodigoConsulta(options, tab=0) {
 				}
 			}
 			return html;
-		}(elemtents, options.dist.split('-')))
+		}(elements, options.dist.split('-')))
 		+t(tab)		+ 	`</div>`
 
 		+t(tab)		+ 	`<script>`
 		+t(tab)		+ 		`${capitalize(options.descForm)}Select_Global = [];`
-		+t(tab)		+ 		`function buscar${capitalize(options.descForm)}Select() { `
+		+t(tab)		+ 		`function buscar${capitalize(options.descForm)}Select() {`
 		+(!isOffline ? '' : ''
-			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) { `
+			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) {`
 			+t(tab+2)	+ 			`${capitalize(options.descForm)}Select_Global = JSON.parse(localStorage.getItem("offline${capitalize(options.descForm)}"));`
 			+t(tab+2)	+ 			`montar${capitalize(options.descForm)}Select();`
 			+t(tab+2)	+ 			`return;`
 			+t(tab+1)	+ 		`}`
 		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
-		+t(tab+1)	+ (typeof(options.ajax) == 'string' 
+		+t(tab+1)	+ (typeof(options.ajax) == 'string'
 						? options.ajax 
-						: `window[(function(){ var func = ${String(options.ajax)}; return func(); })()]`
+						: `window[(function() { var func = ${String(options.ajax)}; return func(); })()]`
 					) + `({`
-		+t(tab+2)	+ 				`param: { ` 
+		+t(tab+2)	+ 				`param: {`
 		+t(tab+3)	+ 					param
 		+t(tab+2)	+ 				`},`
-		+t(tab+2)	+ 				`done:function(data) { `
+		+t(tab+2)	+ 				`done:function(data) {`
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`data = JSON.parse(data);`
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`${capitalize(options.descForm)}Select_Global = [];`
-		+t(tab+3)	+ 					`if (data.length != 0 && data[0].debug == "OK") { `
+		+t(tab+3)	+ 					`if (data.length != 0 && data[0].debug == "OK") {`
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = data;`
 		+t(tab+4)	+ 						`var grade = ''`
 		+t(tab+5)	+ 							`+ 	\`<select class="form-control codigoConsulta"\``
@@ -1526,7 +1533,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+4)	+ 						`$("#loadSelect${capitalize(options.descForm)}").html(grade).find('select').select2();`
 		+t(tab+4)	+ 						`var func = ${String((options.select || {}).onload || function(){})};`
 		+t(tab+4)	+ 						`setTimeout(function() { func(); }, (data.length / 10));`
-		+t(tab+3)	+ 					`} else { `
+		+t(tab+3)	+ 					`} else {`
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`}`
 		+(!isOffline ? '' : ''
@@ -1539,9 +1546,9 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`}`
 		+t(tab+1)	+ 			`});`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function montar${capitalize(options.descForm)}Select() { `
+		+t(tab)		+ 		`function montar${capitalize(options.descForm)}Select() {`
 		+t(tab+1)	+ 			`var data = ${capitalize(options.descForm)}Select_Global;`
-		+t(tab+1)	+ 			`if (data.length != 0 && data[0].debug == "OK") { `
+		+t(tab+1)	+ 			`if (data.length != 0 && data[0].debug == "OK") {`
 		+t(tab+2)	+ 				`var grade = ''`
 		+t(tab+3)	+ 					`+ 	\`<select class="form-control codigoConsulta"\``
 		+t(tab+3)	+ 					`+ 		\` data-ref='${capitalize(options.descForm)}'\``
@@ -1550,7 +1557,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 					`+ 		\` style='width:100%'\``
 		+t(tab+3)	+ 					`+ 		\` onchange='onchange${capitalize(options.descForm)}Select(this);'\``
 		+t(tab+3)	+ 					`+ 	\`>\``
-		+t(tab+3)	+ 					`+ 		\`<option value=""></option>\`` 
+		+t(tab+3)	+ 					`+ 		\`<option value=""></option>\``
 		+t(tab+3)	+ 					`+ data.map(function(dt) { return \``
 					+ 						`<option value="\${dt.${(options.select || {}).value}}">`
 					+ 							`\${dt.${(options.select || {}).desc}}`
@@ -1560,41 +1567,41 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`$("#loadSelect${capitalize(options.descForm)}").html(grade).find('select').select2();`
 		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function onchange${capitalize(options.descForm)}Select(el) { `
+		+t(tab)		+ 		`function onchange${capitalize(options.descForm)}Select(el) {`
 		+t(tab+1)	+ 			`resolvVal("${options.descForm}","id",resolvVal("${options.descForm}","select"));`
 		+t(tab+1)	+ 			`var func = ${String((options.select || {}).onchange || function(){})};`
 		+t(tab+1)	+ 			`func(el);`
 		+t(tab+1)	+ 			`resolvEvento("trigger","${options.descForm}");`
 		+t(tab)		+ 		`}`
 		+t(tab)		+ 		`${capitalize(options.descForm)}Selected_Global = '';`
-		+t(tab)		+ 		`function buscar${capitalize(options.descForm)}Codigo() { `
-		+t(tab+1)	+ 			`if (resolvVal("${options.descForm}",'codigo') == '') { `
+		+t(tab)		+ 		`function buscar${capitalize(options.descForm)}Codigo() {`
+		+t(tab+1)	+ 			`if (resolvVal("${options.descForm}",'codigo') == '') {`
 		+t(tab+2)	+ 				`$("#${options.descForm}").find('input').val('');`
 		+t(tab+2)	+ 				`return false;`
 		+t(tab+1)	+ 			`}`
-		+t(tab+1)	+ 			`if(resolvVal("${options.descForm}",'codigo') == ${capitalize(options.descForm)}Selected_Global) { `
+		+t(tab+1)	+ 			`if(resolvVal("${options.descForm}",'codigo') == ${capitalize(options.descForm)}Selected_Global) {`
 		+t(tab+2)	+ 				`return false;`
 		+t(tab+1)	+ 			`}`
 		+ (!isOffline ? '' : ''
-			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) { `
+			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) {`
 			+t(tab+2)	+ 			`var data = JSON.parse(localStorage.getItem("offline${capitalize(options.descForm)}"));`
-			+t(tab+2)	+ 			`var indice = data.map(function(dt) { return dt["${((options.codigo || {}).input || '')}"]; })`
+			+t(tab+2)	+ 			`var index = data.map(function(dt) { return dt["${((options.codigo || {}).input || '')}"]; })`
 						+ 				`.indexOf(resolvVal('${options.descForm}','codigo'));`
-			+t(tab+2)	+ 			`resolvValCodigo${capitalize(options.descForm)}(indice >= 0 ? [data[indice]] : []);`
+			+t(tab+2)	+ 			`resolvValCodigo${capitalize(options.descForm)}(index >= 0 ? [data[index]] : []);`
 			+t(tab+2)	+ 			`return;`
 			+t(tab+1)	+ 		`}`
 		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
-		+t(tab+1)	+ (typeof(options.ajax) == 'string' 
-						? options.ajax 
-						: `window[(function(){ var func = ${String(options.ajax)}; return func(); })()]`
+		+t(tab+1)	+ (typeof(options.ajax) == 'string'
+						? options.ajax
+						: `window[(function() { var func = ${String(options.ajax)}; return func(); })()]`
 					) + `({`
-		+t(tab+2)	+ 				`param: { ` 
+		+t(tab+2)	+ 				`param: {`
 		+t(tab+3)	+ 					param
 		+t(tab+3)	+ 					`'${(options.codigo || {}).input}':resolvVal('${options.descForm}','codigo')`
 		// +t(tab+3)	+ 					` $("#${options.descForm}").find('.codigo').find('input').val()`
 		+t(tab+2)	+ 				`},`
-		+t(tab+2)	+ 				`done:function(data) { `
+		+t(tab+2)	+ 				`done:function(data) {`
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`data = JSON.parse(data);`
 		+t(tab+3)	+ 					`console.log(data);`
@@ -1602,11 +1609,11 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`}`
 		+t(tab+1)	+ 			`});`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function resolvValCodigo${capitalize(options.descForm)}(data) { ` // função usada para setar valores sem chamar trigger
-		+t(tab+1)	+ 			`if (data.length != 0 && data[0].debug == "OK") { `
+		+t(tab)		+ 		`function resolvValCodigo${capitalize(options.descForm)}(data) {` // função usada para setar valores sem chamar trigger
+		+t(tab+1)	+ 			`if (data.length != 0 && data[0].debug == "OK") {`
 		+t(tab+2)	+ 				`set${capitalize(options.descForm)}Val(data[0],'codigo');`
 		+t(tab+1)	+ 			`}`
-		+t(tab+1)	+ 			`else { `
+		+t(tab+1)	+ 			`else {`
 		+t(tab+2)	+ 				`clear${capitalize(options.descForm)}();`
 		// +t(tab+2)	+ 				`var teste = { codigoConsulta: resolvEl("${options.descForm}",'codigo').obj };`
 		// +t(tab+2)	+ 				`var teste.codigoConsulta = resolvEl("${options.descForm}",'codigo').obj;`
@@ -1619,14 +1626,14 @@ function resolvCodigoConsulta(options, tab=0) {
 		)
 		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function set${capitalize(options.descForm)}(data) { ` // função usada para setar valores sem chamar trigger
+		+t(tab)		+ 		`function set${capitalize(options.descForm)}(data) {` // função usada para setar valores sem chamar trigger
 		+t(tab+1)	+ 			`if (!resolvEl("${options.descForm}",'codigo').el.is(":focus"))`
 		+t(tab+2)	+ 				`resolvVal("${options.descForm}",'codigo',data.${(options.codigo || {}).input} || '');`
 		+t(tab+1)	+ 			`${capitalize(options.descForm)}Selected_Global = data.${(options.codigo || {}).input} || '';`
 		+t(tab+1)	+ 			`$("#${options.descForm}").find('.desc').find('input').val(data.${(options.desc || {}).input} || '');`
 		+t(tab+1)	+ 			`$("#${options.descForm}").find('.id').find('input').val(data.${(options.id || (options.codigo || {}).input)} || '');`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function set${capitalize(options.descForm)}Val(data) { `
+		+t(tab)		+ 		`function set${capitalize(options.descForm)}Val(data) {`
 		// +t(tab+1)	+ 			`if (!$("#${options.descForm}").find('.codigo').find('input').is(":focus"))`
 		// +t(tab+2)	+ 				`$("#${options.descForm}").find('.codigo').find('input').val(data.${(options.codigo || {}).input});`
 		+t(tab+1)	+ 			`if (!resolvEl("${options.descForm}",'codigo').el.is(":focus"))`
@@ -1643,46 +1650,46 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`(arguments[1] || '') != 'codigo' && `
 		+t(tab+2)	+ 				`resolvVal('${options.descForm}','id') != '' && `
 		+t(tab+2)	+ 				`$('#modalConsulta').is(':visible')`
-		+t(tab+1)	+ 			`){`
+		+t(tab+1)	+ 			`) {`
 		+t(tab+2)	+ 				`$("#modalConsulta").modal('hide');`
 		+t(tab+1)	+ 			`}`
 		+t(tab+1)	+ 			`resolvEvento("trigger","${options.descForm}");`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function onPesquisa${capitalize(options.descForm)}() { `
-		+t(tab+1)	+ ((options.onPesquisa || '') == '' 
+		+t(tab)		+ 		`function onPesquisa${capitalize(options.descForm)}() {`
+		+t(tab+1)	+ ((options.onPesquisa || '') == ''
 						? `return true;`
 						: `var func = ${String(options.onPesquisa)};`
 						+t(tab+1)+ `return func();`
 					)
 		+t(tab)		+ 		`}`
 		+t(tab)		+ 		`var ${capitalize(options.descForm)}List_Global = [];`
-		+t(tab)		+ 		`function pesquisa${capitalize(options.descForm)}() { `
-		+t(tab+1)	+ 			`if(!onPesquisa${capitalize(options.descForm)}()) return false;`
+		+t(tab)		+ 		`function pesquisa${capitalize(options.descForm)}() {`
+		+t(tab+1)	+ 			`if (!onPesquisa${capitalize(options.descForm)}()) return false;`
 		+t(tab+1)	+ 			`$("#modalConsulta").find('.conteudo').html('Carregando...');`
-		+t(tab+1)	+ 			`if(!$('#modalConsulta').is(':visible')) { `
-		+t(tab+2)	+ 				`abrirModalConsulta( { `
+		+t(tab+1)	+ 			`if (!$('#modalConsulta').is(':visible')) {`
+		+t(tab+2)	+ 				`abrirModalConsulta({`
 		+t(tab+3)	+ 					`search:'${((options.codigo || {}).text || '')}',`
 		+t(tab+3)	+ 					`click:function() { pesquisa${capitalize(options.descForm)}(); }`
 		+t(tab+2)	+ 				`});`
 		+t(tab+2)	+ 				`return false;`
 		+t(tab+1)	+ 			`}`
 		+(!isOffline ? '' : ''
-			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) { `
+			+t(tab+1)	+ 		`if (localStorage.offline${capitalize(options.descForm)}) {`
 			+t(tab+2)	+ 			`${capitalize(options.descForm)}List_Global = JSON.parse(localStorage.getItem("offline${capitalize(options.descForm)}"));`
 			+t(tab+2)	+ 			`montaGradePesquisa${capitalize(options.descForm)}();`
 			+t(tab+2)	+ 			`return;`
 			+t(tab+1)	+ 		`}`
 		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
-		+t(tab+1)	+ (typeof(options.ajax) == 'string' 
-						? options.ajax 
-						: `window[(function(){ var func = ${String(options.ajax)}; return func(); })()]`
+		+t(tab+1)	+ (typeof(options.ajax) == 'string'
+						? options.ajax
+						: `window[(function() { var func = ${String(options.ajax)}; return func(); })()]`
 					) + `({`
-		+t(tab+2)	+ 				`param:{` 
+		+t(tab+2)	+ 				`param: {`
 		+t(tab+3)	+ 					param
 		+t(tab+3)	+ 					`'busca':$("#modalConsulta").find('input').val().toUpperCase()`
 		+t(tab+2)	+ 				`},`
-		+t(tab+2)	+ 				`done:function(data) { `
+		+t(tab+2)	+ 				`done:function(data) {`
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`data = JSON.parse(data);`
 		+t(tab+3)	+ 					`console.log(data);`
@@ -1697,13 +1704,13 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+2)	+ 				`}`
 		+t(tab+1)	+ 			`});`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function montaGradePesquisa${capitalize(options.descForm)}() { `
+		+t(tab)		+ 		`function montaGradePesquisa${capitalize(options.descForm)}() {`
 		+t(tab+1)	+ 			`var data = ${capitalize(options.descForm)}List_Global;`
 		+t(tab+1)	+ 			`var grade = data[0].debug;`
-		+t(tab+1)	+ 			`if (grade == 'OK') { `
+		+t(tab+1)	+ 			`if (grade == 'OK') {`
 		+t(tab+2)	+ 				`${capitalize(options.descForm)}List_Global = data;`
-		+t(tab+2)	+ 				`grade = resolvGrade(data, `
-					+ jsonToString($.extend({},{ 
+		+t(tab+2)	+ 				`grade = resolvGrade(data,`
+					+ jsonToString($.extend({}, {
 						languageJson: '../qualidade/lb/DataTables-1.10.18/Portuguese.json'
 						, class: { tbody: { td: 'celB' } }
 						, defaultAlignHead: 'center'
@@ -1722,18 +1729,18 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+1)	+ 			`$("#modalConsulta").find('.conteudo').html(grade);`
 		// +t(tab+1)	+ 			`setTimeout( function() { $("#modalConsulta").find('input')[1].focus(); }, 500);`
 		+t(tab)		+ 		`}`
-		+t(tab)		+ 		`function clear${capitalize(options.descForm)}(setTrigger=false) { `
-		+t(tab+1)	+ 			`if (setTrigger) { `
+		+t(tab)		+ 		`function clear${capitalize(options.descForm)}(setTrigger=false) {`
+		+t(tab+1)	+ 			`if (setTrigger) {`
 		+t(tab+2)	+ 				`set${capitalize(options.descForm)}Val({});`
-		+t(tab+1)	+ 			`} else { `
+		+t(tab+1)	+ 			`} else {`
 		+t(tab+2)	+ 				`$("#${options.descForm}").find('input').val('');`
 		+t(tab+1)	+ 			`}`
 		+t(tab)		+ 		`}`
 		+ (accesskey == '' ? '' : ''
-			+t(tab)		+ 	`function condigoConsultaClickAccesskey${random}(e) { `
-			+t(tab+1)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) { `
+			+t(tab)		+ 	`function condigoConsultaClickAccesskey${random}(e) {`
+			+t(tab+1)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) {`
 			+t(tab+2)	+ 			`e.preventDefault();`
-			+t(tab+2)	+ 			`try { `
+			+t(tab+2)	+ 			`try {`
 						+ 				(descRef != 'D' ? '' : `$("button[data-customerid='btn${random}']").click();`)
 						+ 				(descRef != 'S' ? '' : `$("select[data-customerid='select${random}']")[0].focus();`)
 						+ 				(descRef != 'C' ? '' : `$("input[data-customerid='codigo${random}']")[0].select();`)
@@ -1743,7 +1750,7 @@ function resolvCodigoConsulta(options, tab=0) {
 			+t(tab)		+ 	`registerEventKeyboard.push("condigoConsultaClickAccesskey${random}");`
 		)
 		+ (!isOffline ? '' : ''
-			+t(tab)		+ 	`function recarregar${capitalize(options.descForm)}() { `
+			+t(tab)		+ 	`function recarregar${capitalize(options.descForm)}() {`
 			+t(tab+1)	+ 		`localStorage.removeItem("offline${capitalize(options.descForm)}");`
 			+t(tab+1)	+ 		``
 			+t(tab)		+ 	`}`
@@ -1761,14 +1768,14 @@ function resolvCodigoConsulta(options, tab=0) {
 	return html;
 }
 
-function resolvDiv(options, tab=0) { 
+function resolvDiv(options, tab=0) {
 	/*
 		options: {
 			class: '' 		-- Class da div
 			id: '' 			-- Id da div
-			ctx: '' 		-- Conteudo div
+			ctx: '' 		-- Conteúdo div
 			style: obj 		-- Objeto CSS
-			text: '' 		-- Texto de conteudo dentro da div
+			text: '' 		-- Texto de conteúdo dentro da div
 		}
 	*/
 	var classDiv = resolvClassDiv(options.class || '');
@@ -1788,7 +1795,7 @@ function resolvDiv(options, tab=0) {
 
 function resolvClassDiv(classDiv) {
 	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
-	var orderClass = ['xs','sm','md','lg','xl'];
+	var orderClass = ['xs','sm','md','lg','xl','xxl'];
 
 	if (bootstrap == '4') {
 		// Valida o col-xs
@@ -1796,8 +1803,19 @@ function resolvClassDiv(classDiv) {
 			classDiv = classDiv.replace(/col-xs-/gi, 'col-');
 		}
 		// Valida o offset
-		if (classDiv.indexOf('col-offset') > -1) {
-			classDiv = classDiv.replace(/col-offset-/gi, 'offset-');
+		while (classDiv.search(/(col-offset|col-(xs|sm|md|lg)-offset)/) > -1) {
+			var indexOrderClass = -1;
+			orderClass.forEach(function(order, i) {
+				if (classDiv.indexOf('col-' + order + '-offset') >= 0
+					&& indexOrderClass == -1
+				) {
+					indexOrderClass = i;
+				}
+			});
+			classDiv = classDiv.replace(
+				(indexOrderClass == -1 ? /col-offset/ : /col-(xs|sm|md|lg)-offset/)
+				, 'offset-' + (orderClass[indexOrderClass] || '').replace('xs','')
+			);
 		}
 		// Valida o hidden para d- (display)
 		if (classDiv.search(/hidden-(xs|sm|md|lg)/) > -1) {
@@ -1884,17 +1902,17 @@ function resolvClassDiv(classDiv) {
 	return classDiv;
 }
 
-function resolvFotos(options, tab=0) { 
+function resolvFotos(options, tab=0) {
 	/*
-		options: { 
-			descForm: ''					-- Parametro de identificação
+		options: {
+			descForm: ''					-- Parâmetro de identificação
 			desc: ''						-- Descrição padrão da DIV
 			ajax: '' / function(){ }		-- Nome da função ajax
 			but_delete: (0|1)				-- Se contém ou não botão para apagar imagem
 			but_download: (0|1)				-- Se contém ou não botão para baixar imagem
-			param: {}						-- Parametro da função ajax
-			ck_upload: {					-- Informa se o componete vai fazer ou não upload de fotos
-				param: {}					-- Parametros do ajax de upload
+			param: {}						-- Parâmetro da função ajax
+			ck_upload: {					-- Informa se o componente vai fazer ou não upload de fotos
+				param: {}					-- Parâmetros do ajax de upload
 				input: {					-- Personalização do input type file
 					type: 'file'
 				}
@@ -1912,7 +1930,7 @@ function resolvFotos(options, tab=0) {
 		- Opção para tirar fotos da webcam
 		- Opção para desenhar imagem
 		- Opção de recortar imagem
-		- Opção de girar iamgem
+		- Opção de girar imagem
 		- Opção de aplicar filtros
 		- Opção para apagar imagem
 	*/
@@ -1920,12 +1938,12 @@ function resolvFotos(options, tab=0) {
 	var param = resolvParamAjax(options);
 
 	var input = {};
-	if ((options.ck_upload || '') != '') { 
-		input = { input: { 
-			type: 'file', 
-			id: 'inputFotos' + options.descForm, 
+	if ((options.ck_upload || '') != '') {
+		input = { input: {
+			type: 'file',
+			id: 'inputFotos' + options.descForm,
 			fileType: 'img',
-			upload: { 
+			upload: {
 				ajax: (options.ajax || 'ajax'),
 				param: (options.ck_upload.param || {})
 			}
@@ -1940,40 +1958,40 @@ function resolvFotos(options, tab=0) {
 		+t(tab+0) + `<div id="divFotos${options.descForm}">${options.desc || ''}</div>`
 		+t(tab+0) + `<script>`
 		+t(tab+0) + 	`var imagensObject${options.descForm} = [];`
-		+t(tab+0) + 	`function buscarFotos${options.descForm}(id) { `
+		+t(tab+0) + 	`function buscarFotos${options.descForm}(id) {`
 		+t(tab+1) + 		`$("#divFotos${options.descForm}").html("Carregando...");`
-		+t(tab+1) + (typeof(options.ajax) == 'string' 
-						? options.ajax 
-						: `window[(function(){ var func = ${String(options.ajax)}; return func(); })()]`
+		+t(tab+1) + (typeof(options.ajax) == 'string'
+						? options.ajax
+						: `window[(function() { var func = ${String(options.ajax)}; return func(); })()]`
 					) + `({`
-		+t(tab+2) + 			`param: { `
+		+t(tab+2) + 			`param: {`
 		+t(tab+3) + 				param + `id`
 		+t(tab+2) + 			`},`
-		+t(tab+2) + 			`done: function(data) { `
+		+t(tab+2) + 			`done: function(data) {`
 		+t(tab+3) + 				`console.log(data);`
 		+t(tab+3) + 				`data = JSON.parse(data);`
 		+t(tab+3) + 				`console.log(data);`
-		+t(tab+3) + 				`if (data.branchs.length != 0 && data.debug == "OK") { `
+		+t(tab+3) + 				`if (data.branchs.length != 0 && data.debug == "OK") {`
 		+t(tab+4) + 					`imagensObject${options.descForm} = data.branchs;`
-		+t(tab+3) + 				`} else { `
+		+t(tab+3) + 				`} else {`
 		+t(tab+4) + 					`imagensObject${options.descForm} = [];`
 		+t(tab+3) + 				`}`
 		+t(tab+3) + 				`listarFotos${options.descForm}();`
 		+t(tab+2) + 			`}`
 		+t(tab+1) + 		`})`
 		+t(tab+0) + 	`}`
-		+t(tab+0) + 	`function listarFotos${options.descForm}() { `
+		+t(tab+0) + 	`function listarFotos${options.descForm}() {`
 		+t(tab+1) + 		`var src, exts = 'PNG,JPG,TIFF,JPEG,BMP,PSD,EXIF,RAW,PDF,WEBP,GIF,EPS,SVG'.split(',');`
 		+t(tab+1) + 		`var html = ""`
-		+t(tab+2) + 			`+ "<div class=\\"col-xs-12\\" id=\\"jornal\\"><!--  style=\\"margin: 0; padding: 0;width: 922px;height: 545px;\\" -->"`
+		+t(tab+2) + 			`+ "<div class=\\"col-xs-12\\" id=\\"jornal\\"><!-- style=\\"margin: 0; padding: 0;width: 922px;height: 545px;\\" -->"`
 		+t(tab+2) + 			`+ 		"<div class=\\"flipbook-viewport\\" id=\\"viewport\\">"`
-		+t(tab+2) + 			`+ 			"<div id=\\"container\\">"` //  class=\\"container\\"
+		+t(tab+2) + 			`+ 			"<div id=\\"container\\">"` // class=\\"container\\"
 		+t(tab+2) + 			`+ 				"<div class=\\"flipbook\\" id='flipbookDiv' style=\\"/*width: 922px;height: 545px;*/\\"></div>";`
 		+t(tab+1) + 		`for (var i = 0; i < imagensObject${options.descForm}.length; i++) { `
 		+t(tab+2) + 			`if (`
 					+			 	`(imagensObject${options.descForm}[i].isFile || '') != '' && `
 					+ 				`exts.indexOf(imagensObject${options.descForm}[i].ext.toUpperCase()) >= 0`
-					+ 			`) { `
+					+ 			`) {`
 		+t(tab+3) + 				`src = imagensObject${options.descForm}[i].path;`
 		+t(tab+3) + 				`imagensObject${options.descForm}[i].src = src;`
 		+t(tab+3) + 				`imagensObject${options.descForm}[i].w = imagensObject${options.descForm}[i].width;`
@@ -2013,21 +2031,21 @@ function resolvFotos(options, tab=0) {
 		+t(tab+2) + 			`+	"</div>"`
 		+t(tab+1) + 		`$("#divFotos${options.descForm}").html(html);`
 		+t(tab+0) + 	`}`
-		+t(tab+0) + 	`function openPhotoSwipe${options.descForm}(indice=0) { `
+		+t(tab+0) + 	`function openPhotoSwipe${options.descForm}(index=0) {`
 		+t(tab+1) + 		`var pswpElement = document.querySelectorAll('.pswp')[0], items = [];`
-		+t(tab+1) + 		`for (var i = indice; i < imagensObject${options.descForm}.length; i++) { `
+		+t(tab+1) + 		`for (var i = index; i < imagensObject${options.descForm}.length; i++) {`
 		+t(tab+2) + 			`if (imagensObject${options.descForm}[i].w == 0) imagensObject${options.descForm}[i].w = tamanahoImagemReal;`
 		+t(tab+2) + 			`if (imagensObject${options.descForm}[i].h == 0) imagensObject${options.descForm}[i].h = alturaImagemReal;`
 		+t(tab+2) + 			`items.push(imagensObject${options.descForm}[i]);`
 		+t(tab+1) + 		`}`
-		+t(tab+1) + 		`if (indice != 0) { `
-		+t(tab+2) + 			`for (var i = 0; i < indice; i++) { `
+		+t(tab+1) + 		`if (index != 0) {`
+		+t(tab+2) + 			`for (var i = 0; i < index; i++) {`
 		+t(tab+3) + 				`if (imagensObject${options.descForm}[i].w == 0) imagensObject${options.descForm}[i].w = tamanahoImagemReal;`
 		+t(tab+3) + 				`if (imagensObject${options.descForm}[i].h == 0) imagensObject${options.descForm}[i].h = alturaImagemReal;`
 		+t(tab+3) + 				`items.push(imagensObject${options.descForm}[i]);`
 		+t(tab+2) + 			`}`
 		+t(tab+1) + 		`}`
-		+t(tab+1) + 		`var options = { `
+		+t(tab+1) + 		`var options = {`
 		+t(tab+2) + 			`history: false,`
 		+t(tab+2) + 			`focus: false,`
 		+t(tab+2) + 			`showAnimationDuration: 0,`
@@ -2042,9 +2060,9 @@ function resolvFotos(options, tab=0) {
 }
 
 function buscarFotos(descForm, id, error=0) { listarFotos(descForm, id, error); }
-function listarFotos(descForm, id, error=0) { 
+function listarFotos(descForm, id, error=0) {
 	try { window[`buscarFotos${descForm}(${id});`]; }
-	catch(e) { 
+	catch(e) {
 		if (typeof(error) == 'function') error(e);
 		else alert(error || 'Ocorreu um erro para listar as fotos!');
 		console.error(e);
@@ -2052,7 +2070,7 @@ function listarFotos(descForm, id, error=0) {
 }
 
 /*
-	Dependencias 
+	Dependências 
 	
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="print">
@@ -2066,7 +2084,7 @@ function listarFotos(descForm, id, error=0) {
 */
 
 /* GER */
-function resolvGrade(data, option) { 
+function resolvGrade(data, option) {
 	/*
 		objParamGrade: {
 			tamanhoFont: 		11
@@ -2083,7 +2101,7 @@ function resolvGrade(data, option) {
 			footTableWeight: 	"bold"
 			stripTableColors: 	[{bgcolor: "white"}]
 			hoverTrTableColor: 	"lightblue"
-			padination: 		[15,25]
+			pagination: 		[15,25]
 			isMobile_Global: 	false
 			no_scrollX: 		true
 			languageJson: 		''
@@ -2098,87 +2116,87 @@ function resolvGrade(data, option) {
 				{
 					head: ''																// Descrição no titulo da tabela
 
-					param: '' 																// Parametro a ser mostrado na celula OR
-					param: function(data, option, indice) 									// Parametro a ser mostrado por function usará como callback, 
-					... 																	// 		o option é referente as opções do input e o indice é dos dados OR
-					param: { 																// Parametro mais personalizado para mostrar valores
+					param: '' 																// Parâmetro a ser mostrado na célula OR
+					param: function(data, option, index) 									// Parâmetro a ser mostrado por function usará como callback,
+					... 																	// 		o option é referente as opções do input e o índice é dos dados OR
+					param: { 																// Parâmetro mais personalizado para mostrar valores
 						op: (CONCAT|SUM), 													// operação a ser realizada pelos valores
 						val: [ { attr,literal } ] 											// valores a serem trabalhos para mostrar
 					}
 
-					align: 'left' 															// Alinhamento da celula (left | right), default: 'center'
-					alignHead: '' 															// Alinhamento do cabeçario (left | right), 
-					... 																	// OBS: herarquia de configuração:  this > defaultAlignHead > align > 'center'
+					align: 'left' 															// Alinhamento da célula (left | right), default: 'center'
+					alignHead: '' 															// Alinhamento do cabeçario (left | right),
+					... 																	// OBS: hierarquia de configuração:  this > defaultAlignHead > align > 'center'
 					dateFormat: { 															// Indica que o campo é data
 						format: 'DD/MM/Y' 													// Define com vai ser impresso o formato da data
-						format: function(data, option, indice) 								// Pode usar como callback, similar ao atributo param
+						format: function(data, option, index) 								// Pode usar como callback, similar ao atributo param
 						useDataTable: 														// (0|1) default: 1
 					}
 					format: { 																// Indica que o campo é um número
 						casas: 	  0 														// numero de casas decimais
-						dec: 	',' 														// separedor decimal
-						mili: 	'.' 														// separedor de milhar
+						dec: 	',' 														// separador decimal
+						mili: 	'.' 														// separador de milhar
 					}
-					OR format: 'c0|d,|m.' 													// Pode usar format como codigo separando por "|"
+					OR format: 'c0|d,|m.' 													// Pode usar format como código separando por "|"
 					default: '' 															// substitui o undefined
-					setDefaultValZero: (0|1) 												// quando for campo numerico (format) e o valor for zero
-					... 																	// , vai imprimir o valor padrão 
+					setDefaultValZero: (0|1) 												// quando for campo numérico (format) e o valor for zero
+					... 																	// , vai imprimir o valor padrão
 					foot: { 																// se este for enviado como objeto vazio '{}', será usado o valor de param
 						op: 'SUM,MEDIA|expression|personalizado|literal' 					// padrão SUM
 						val: { 																// caso omitido será usado o param do próprio input
-						... 																// , pode ser enviado um array tambem
+						... 																// , pode ser enviado um array também
 							attr: '' 														// nome do atributo a ser usado
-							op: 'SUM,MEDIA|expression' 										// operação valor 
+							op: 'SUM,MEDIA|expression' 										// operação valor
 						}
-						OR val: '' 															// String no caso de ser literal vai replicar o valor extamente que está escrito
-						... 																// Caso seja expressão e attr val for omitido, 
+						OR val: '' 															// String no caso de ser literal vai replicar o valor exatamente que está escrito
+						... 																// Caso seja expressão e attr val for omitido,
 						... 																// usa o seguinte padrão [{attr: option.param}]
 						algin: '' 															// caso omitido será usado o align do próprio input
 						format: { 															// caso omitido será usado o format do próprio input
 							casas: 	  0 													// numero de casas decimais
-							dec: 	',' 													// separedor decimal
-							mili: 	'.' 													// separedor de milhar
+							dec: 	',' 													// separador decimal
+							mili: 	'.' 													// separador de milhar
 						}
-						OR format: 'c0|d,|m.' 												// Pode usar format como codigo separando por "|"
+						OR format: 'c0|d,|m.' 												// Pode usar format como código separando por "|"
 						mask: '%0%' 														// mascara do campo
-						ignoreNull: (0|1) 													// para media vai ignorar os valores undfined na hora de divir, default: false
+						ignoreNull: (0|1) 													// para media vai ignorar os valores undefined na hora de dividir, default: false
 					}
 					style: {} 																// props de css podendo passar int, string e funcs de callback
 					...																		// OBS: os nomes dos attrs deve ser iguais ao do css
-					... 																	// Quando callback chama-se func(dt,el=inputs[i],indice)
-					... { thead: { td: { style } } }										// É possivel confecionar o estilo do head
+					... 																	// Quando callback chama-se func(dt,el=inputs[i],índice)
+					... { thead: { td: { style } } }										// É possível confecionar o estilo do head
 
-					mask: '%0%' 															// substiui o %0% pelo valor correspondentes e coloca o restante do texto
+					mask: '%0%' 															// substitui o %0% pelo valor correspondentes e coloca o restante do texto
 					... 																	// , ex: (R$ %0% || %0% %)
 
 					tooltip: function(data,element){} 										// mandar callback direto com padrão de posição como bottom OR
-					tooltip: { 																// parametro para colocar balão demostrativo quando passar o mouse emcima
+					tooltip: { 																// parâmetro para colocar balão demostrativo quando passar o mouse encima
 						pos: 'bottom'														// posição que vai aparecer (top | right | bottom | left)
-						html: function(data,element){} 										// callback para resowlver o conteudo do balão
+						html: function(data,element){} 										// callback para resolver o conteúdo do balão
 					}
-					tdClick: { 																// Click na celula
+					tdClick: { 																// Click na célula
 						desc: 'func(%0%)' 													// nome da função a ser executada
 						val: [ { (attr | index | obj) } ] 									// valores de referencia, default: [{obj:true}]
-						... 																// caso for obj ira retorna um parametro unico com todos os dados
+						... 																// caso for obj ira retorna um parâmetro único com todos os dados
 					}
 					OR tdClick: 'funcName' 													// quando string value default: [{desc: 'funcName', val: [{obj:true}]}]
 					... 																	// funcName recebe '(%0%)' dinamicamente caso não tenha
-					tdHeadClick: { 
+					tdHeadClick: {
 						desc: 'func()' 														// Função quando clica no cabecario da grade
 					}
 					no_render: (0|1) 														// Para indicar se tem que renderizar a coluna ou não
 				}
 			],
 			defaultAlignHead: 'center' 														// align default of header
-			ck_edit: (0|1) 																	// Button com função editar + descForm e passando indice no paramtro
-			ck_delete: (0|1) 																// Button com função apagar + descForm e passando indice no paramtro
+			ck_edit: (0|1) 																	// Button com função editar + descForm e passando índice no parâmetro
+			ck_delete: (0|1) 																// Button com função apagar + descForm e passando índice no parâmetro
 			div: '#id' 																		// Nome do elemento que vai ser para renderizar a grade
 			... 																			// Caso não informado considera returnHTML como sendo verdadeiro
-			descForm: '' 																	// referica para a função de editar e apagar registros
-			languageJson: Inutilizado 														// caminho do objeto JSON para traduzir a grade para PoRtugues ou outro idioma
+			descForm: '' 																	// referencia para a função de editar e apagar registros
+			languageJson: Inutilizado 														// caminho do objeto JSON para traduzir a grade para Português ou outro idioma
 			objParamGrade: '' 																// objeto de estilização do qualidade
-			returnHTML: (0|1) 																// se vai retornar ou não um HTML, 
-			... 																			// em caso verdadeiro não precisa definir o parametro div
+			returnHTML: (0|1) 																// se vai retornar ou não um HTML,
+			... 																			// em caso verdadeiro não precisa definir o parâmetro div
 			order: [[0,"asc"]] 																// opção de inicialização de ordenação
 			class: { 																		// Setar classes no geral
 				thead: { tr | td }
@@ -2187,32 +2205,32 @@ function resolvGrade(data, option) {
 			}
 			style: { 																		// Setar style no geral
 				thead: { tr | td }
-				tbody: { tr | td } 															// no td aceita callback passando por parametro dt e el = (inputs[i])
+				tbody: { tr | td } 															// no td aceita callback passando por parâmetro dt e el = (inputs[i])
 				tfoot: { tr | td }
 			}
 			trClick: { 																		// onclick na tag tr da grade
 				desc: 'func(%0%)' 															// nome da função a ser executada
 				val: [ { (attr | index | obj) } ] 											// valores de referencia, default: [{obj:true}]
-				... 																		// caso for obj ira retorna um parametro unico com todos os dados
+				... 																		// caso for obj ira retorna um parâmetro único com todos os dados
 			}
 			OR trClick: 'funcName' 															// quando string value default: [{desc: 'funcName', val: [{obj:true}]}]
 			... 																			// funcName recebe '(%0%)' dinamicamente caso não tenha
-			trClickFoot: { 																	// onclick na tag tr do rodape
-				desc: 'funct()' 															// nome da função a ser executada
+			trClickFoot: { 																	// onclick na tag tr do rodapé
+				desc: 'function()' 															// nome da função a ser executada
 			}
 			search: '' 																		// Campo de busca inicializado com valor
 			onOrder: function(e, settings, data){  } 										// Evento disparado quando ordenar
 			onSearch: function(e, settings, data){  } 										// Evento disparado quando procura
-			onPage: function(e, settings, data){  } 										// Envento disparado quando mudar paginação
-			no_scrollX: (0|1) 																// Remover parametro da grade scrollX (bug do cabaçalho desalhiado)
-			invertPadination: (0|1) 														// Inverter Paginação da Grade
+			onPage: function(e, settings, data){  } 										// Evento disparado quando mudar paginação
+			no_scrollX: (0|1) 																// Remover parâmetro da grade scrollX (bug do cabeçario desalinhado)
+			invertPagination: (0|1) 														// Inverter Paginação da Grade
 
 			no_tableSetWidth: (0|1) 														// Não seta width da tabela com 100%
 			no_dataTable: (0|1) 															// Não usa lib dataTable
-			initComplete: function(){} 														// Função diparada quando termina de carregar a grade
+			initComplete: function(){} 														// Função disparada quando termina de carregar a grade
 			initCompleteSearch: (0|1) 														// Caso true e initComplete undefined, inicia grade focando na pesquisa
-			setDefaultValZero: (0|1) 														// quando for campo numerico (format) e o valor for zero
-			... 																			// , vai imprimir o valor padrão 
+			setDefaultValZero: (0|1) 														// quando for campo numérico (format) e o valor for zero
+			... 																			// , vai imprimir o valor padrão
 			title: ''																		// titulo para exportação de dados
 			dom: ''																			// definição de layout da table
 				+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
@@ -2221,7 +2239,7 @@ function resolvGrade(data, option) {
 		}
 	*/
 
-	var objParamGrade = $.extend({}, 
+	var objParamGrade = $.extend({},
 		{
 			  tamanhoFont: 			11
 			, fontFamily: 			"NomeDaFont"
@@ -2237,7 +2255,7 @@ function resolvGrade(data, option) {
 			, footTableWeight: 		"bold"
 			, stripTableColors: 	[{bgcolor: "white"}]
 			, hoverTrTableColor: 	"lightblue"
-			, padination: 			[15,25]
+			, pagination: 			[15,25]
 			, isMobile_Global: 		window['isMobile_Global'] || false
 			, no_scrollX: 			true
 			// , languageJson: 		''
@@ -2246,13 +2264,13 @@ function resolvGrade(data, option) {
 									+ "<'row'<'col-sm-12'tr>>"
 									+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
 		},
-		(window['objParamGrade_Global'] || {}), 
+		(window['objParamGrade_Global'] || {}),
 		(option.objParamGrade || {})
 	)
 	, 	title = option.title || 'Exportar Grade'
 	, 	ck_tFoot = false
 	, 	ck_tooltip = false
-	, 	language = { 
+	, 	language = {
 		"sProcessing":   "A processar...",
 		"sLengthMenu":   "Mostrar _MENU_ registros",
 		"sZeroRecords":  "Não foram encontrados resultados",
@@ -2270,21 +2288,21 @@ function resolvGrade(data, option) {
 		}
 	};
 
-	if ((option.initComplete || '') == '' && (option.initCompleteSearch || false)) { 
-		eval(`option.initComplete = function() { 
+	if ((option.initComplete || '') == '' && (option.initCompleteSearch || false)) {
+		eval(`option.initComplete = function() {
 			$("#divTable${option.descForm}").find('input')[0].focus();
 		}`);
 	}
 
-	if (typeof(data) == 'string') { 
-		try { 
+	if (typeof(data) == 'string') {
+		try {
 			data = JSON.parse(data);
-		} catch(e) { 
+		} catch(e) {
 			return false;
 		}
 	}
 	var grade = '<br>' + ((data[0] || {}).debug || 'Nenhum resultado encontrado!');
-	if ( (data.length > 0 && (data[0].debug || '') == '') || data[0].debug == "OK" ) { 
+	if ((data.length > 0 && (data[0].debug || '') == '') || data[0].debug == "OK") {
 		grade = ``
 			// + 	`<br>`
 			// + 	`<table class='table' id='tabela${option.descForm || ''}' border='1'>`
@@ -2307,7 +2325,7 @@ function resolvGrade(data, option) {
 			+ 		`'`
 			+ 	`>`
 
-			+ option.inputs.map(function(input) { 
+			+ option.inputs.map(function(input) {
 				return (input.no_render || '') != '' ? '' : ``
 					+ 	`<td`
 					+ 		` align='${input.alignHead || option.defaultAlignHead || input.align || 'center'}'`
@@ -2332,7 +2350,7 @@ function resolvGrade(data, option) {
 			+ 		`</thead>`
 			+ 		`<tbody>`
 
-		for (var i = 0; i < data.length; i++) { 
+		for (var i = 0; i < data.length; i++) {
 			grade += ``
 				+ 		`<tr`
 				+ ((option.trClick || '') == '' ? '' : ''
@@ -2349,13 +2367,13 @@ function resolvGrade(data, option) {
 				+ 			`'`
 				+ 		`>`
 
-				+ option.inputs.map(function(input) { 
+				+ option.inputs.map(function(input) {
 					input  = $.extend({}, { setDefaultValZero: (option.setDefaultValZero || false) }, input);
 
-					if (typeof(input.format) == 'string') 
+					if (typeof(input.format) == 'string')
 						input.format = resolvCodigoFormatGrade(input.format);
 
-					var style 			= $.extend( {}, (((option.style || {}).tbody || {}).td || {}), ((input.style || {}).td || {}) )
+					var style 			= $.extend({}, (((option.style || {}).tbody || {}).td || {}), ((input.style || {}).td || {}))
 					, 	valPrint 		= resolveValPrint(input, data[i], i)
 					, 	defaultAling 	= 	(input.format 		|| '') != '' ? 'right'
 										: 	(input.dateFormat 	|| '') != '' ? 'center'
@@ -2382,7 +2400,7 @@ function resolvGrade(data, option) {
 							? valPrint  					// não é tooltip
 							: (ck_tooltip = true, '') 		// caso for tooltip
 							+ 	`<div data-toggle='tooltip' data-html='true'`
-							+ (typeof(input.tooltip) == 'function' 
+							+ (typeof(input.tooltip) == 'function'
 								? ''
 								+ 	` data-placement='bottom'`
 								// + 	` title='${(input.tooltip(data[i], input) || '').replace(/\"/g, '\\\"')}'`
@@ -2428,12 +2446,12 @@ function resolvGrade(data, option) {
 			+ 		`</tbody>`
 
 
-		if (ck_tFoot) { 
+		if (ck_tFoot) {
 
 			grade += ``
 				+ 	`<tfoot>`
-				// + 		`<tr bgcolor='${objParamGrade.footTableBgColor}' `
-				// + 			`style='font-weight:${objParamGrade.footTableWeight};color:${objParamGrade.footTableColor}'>`
+				// + 		`<tr bgcolor='${objParamGrade.footTableBgColor}'`
+				// + 			` style='font-weight:${objParamGrade.footTableWeight};color:${objParamGrade.footTableColor}'>`
 				+ 	`<tr`
 				+ 		` class='${(((option.class || {}).tfoot || {}).tr || '') + (((option.trClickFoot || {}).desc || '') == '' ? '' : ' cursorClick')}'`
 				+ 		` style='`
@@ -2444,19 +2462,19 @@ function resolvGrade(data, option) {
 				+ 		`'`
 				+ 		(((option.trClickFoot || {}).desc || '') == '' ? '' : ` onclick="${option.trClickFoot.desc}"`)
 				+ 	`>`
-				+ option.inputs.map(function(input) { 
-					const align = ((input.foot || {}).align || input.align || 
+				+ option.inputs.map(function(input) {
+					const align = ((input.foot || {}).align || input.align ||
 						((input.format || '') != '' ? 'right' : ((input.dateFormat || '') != '' ? 'center' : 'left')))
 
-					if (typeof(input.format) == 'string') 
+					if (typeof(input.format) == 'string')
 						input.format = resolvCodigoFormatGrade(input.format);
 
 					var valPrint = '';
-					if ((input.foot || '') != '') { 
-						if (typeof(input.foot.format) == 'string') 
+					if ((input.foot || '') != '') {
+						if (typeof(input.foot.format) == 'string')
 							input.foot.format = resolvCodigoFormatGrade(input.foot.format);
 
-						if ((input.foot.val || '') == '') { 
+						if ((input.foot.val || '') == '') {
 							input.foot.val = {};
 							input.foot.val.attr = input.param;
 						}
@@ -2480,30 +2498,32 @@ function resolvGrade(data, option) {
 
 		// grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
 		grade = '<div style="overflow-x: scroll;" id="divTable' + option.descForm + '">' + grade + '</div>'
-	} else { 
+	} else {
 		grade = `<b>Debug != OK</b>`;
 	}
 
-	if ((option.no_dataTable || '') != '') { 
-		if ((option.div || '') != '') { 
+	if ((option.no_dataTable || '') != '') {
+		if ((option.div || '') != '') {
 			$((option.div || '')).html(grade);
 			return true;
-		} else if ([false,0].indexOf(option.returnHTML) < 0) { 
+		} else if ([false,0].indexOf(option.returnHTML) < 0) {
 			return grade;
 		}
 	};
 
 	var cont = 0;
-	option.inputs.forEach(function(input, i) { 
+	option.inputs.forEach(function(input, i) {
 		option.inputs[i].indice = cont;
 		if ((input.no_render || '') == '') cont++;
 	});
 
-	var padination = (objParamGrade.padination || [])
+	var pagination = (objParamGrade.pagination || objParamGrade.padination || [])
 		.filter(function(v) { return v <= data.length; })
 		.filter(function(v,i,a) { return a.indexOf(v) === i; });
-	if ((option.invertPadination || '') != '') padination = invertPadination((objParamGrade.padination || []), data.length);
-	if (padination.indexOf(data.length) < 0) padination.push(data.length);
+	if ((option.invertPadination || '') != '' || (option.invertPagination || '') != '') {
+		pagination = invertPagination((objParamGrade.pagination || []), data.length);
+	}
+	if (pagination.indexOf(data.length) < 0) pagination.push(data.length);
 
 	var stripeClasses = (objParamGrade.stripTableColors || []).map(function(dt,i) { return 'stripe'+i; });
 
@@ -2516,25 +2536,25 @@ function resolvGrade(data, option) {
 		.map(function(el) { return el.indice; });
 
 	// Setinhas da grade
-	if ((option.trClick || '') != '') { 
-		window['tableEventKeyboard' + option.descForm] = function(e, whichkey) { 
+	if ((option.trClick || '') != '') {
+		window['tableEventKeyboard' + option.descForm] = function(e, whichkey) {
 			if ($("#divTable" + option.descForm).find('input').is(":focus") 
 				|| $("#divTable" + option.descForm).find('.pagination').find('a').is(':focus')
 			) { 
-				if (whichkey == 38 || whichkey == 40 || whichkey == 13) { 
+				if (whichkey == 38 || whichkey == 40 || whichkey == 13) {
 					e.preventDefault();
 					var elTable = $("#divTable" + option.descForm);
 					var pagination = $(elTable).find('.pagination')[0];
 					var indice = -1
 					var trs = $(elTable).find('tr.cursorClick');
-					for (var i = 0; i < trs.length; i++) { 
+					for (var i = 0; i < trs.length; i++) {
 						if ($(trs[i]).find('td').attr('class').indexOf('active') >= 0) indice = i;
 					}
 
 					if (whichkey == 38) { // UP
 						indice = indice-1;
-						if (indice < 0) { 
-							if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) { 
+						if (indice < 0) {
+							if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) {
 								$(pagination).find(".previous").click();
 								indice = $(elTable).find('tr.cursorClick').length-1;
 							} else { 
@@ -2544,23 +2564,23 @@ function resolvGrade(data, option) {
 					}
 					else if (whichkey == 40) { // DOWN
 						indice = indice+1;
-						if (indice >= $(elTable).find('tr.cursorClick').length) { 
-							if ($(pagination).find('.next').attr('class').indexOf('disabled') < 0) { 
+						if (indice >= $(elTable).find('tr.cursorClick').length) {
+							if ($(pagination).find('.next').attr('class').indexOf('disabled') < 0) {
 								$(pagination).find(".next").click();
 								indice = 0;
-							} else { 
+							} else {
 								indice = $(elTable).find('tr.cursorClick').length-1;
 							}
 						}
 					}
 
 					trs = $(elTable).find('tr.cursorClick');
-					for (var i = 0; i < trs.length; i++) { 
+					for (var i = 0; i < trs.length; i++) {
 						$(trs[i]).find('td').attr('class', $(trs[i]).find('td').attr('class').replace('active',''));
 					}
 
 					var tds = $($(elTable).find('tr.cursorClick')[indice]).find('td');
-					for (var i = 0; i < tds.length; i++) { 
+					for (var i = 0; i < tds.length; i++) {
 						$(tds[i]).attr('class', $(tds[i]).attr('class') + ' active');
 					}
 
@@ -2575,14 +2595,14 @@ function resolvGrade(data, option) {
 	}
 	// End: Setinhas da grade
 
-	if ((option.returnHTML || false) || (option.div || '') == '') { 
+	if ((option.returnHTML || false) || (option.div || '') == '') {
 		return grade
 			+ 	`<script>`
 			+ 		(ck_tooltip ? `$('[data-toggle="tooltip"]').tooltip();` : '')
 			+ 		`$("#tabela${(option.descForm || '')}").DataTable({`
 			// + 			`  'language' 		: {'url': '${(option.languageJson || objParamGrade.languageJson || '../lb/DataTables-1.10.18/Portuguese.json')}'}`
 			+ 			`  'language' 		: ${JSON.stringify(language)}`
-			+ 			`, 'lengthMenu' 	: ${JSON.stringify(padination)}`
+			+ 			`, 'lengthMenu' 	: ${JSON.stringify(pagination)}`
 			+ 			`, 'autoWidth' 		: false`
 			+ 			`, 'order' 			: ${JSON.stringify(option.order || [[0,"asc"]])}`
 			+ 			`, 'stripeClasses' 	: ${JSON.stringify(stripeClasses)}`
@@ -2629,15 +2649,15 @@ function resolvGrade(data, option) {
 			//   "language": 		{ "url": (option.languageJson || objParamGrade.languageJson || "../lb/DataTables-1.10.18/Portuguese.json") }
 			//   "language": 		{ "url": "../lb/DataTables-1.10.18/Portuguese.json" }
 			language
-			, "lengthMenu": 	padination
+			, "lengthMenu": 	pagination
 			, "order":			(option.order || [[0,"asc"]]) // order = VLR_DEVOLUCAO_MES : desc
 			, 'autoWidth': 		false
 			, 'stripeClasses':  stripeClasses
-			, 'columnDefs': [ 
+			, 'columnDefs': [
 				{ "sType":"mynumeric","aTargets":mynumeric }
 				, { "sType":"mynumericTooltip","aTargets":mynumericTooltip }
 			]
-			, 'scrollX': (ck_tooltip  || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
+			, 'scrollX': (ck_tooltip || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
 				+ "'" + (option.scrollX || objParamGrade.isMobile_Global ? "100%" : false) + "'"
 			)
 			, 'search': { 
@@ -2656,9 +2676,9 @@ function resolvGrade(data, option) {
 			// , "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>>"
 			// , "dom": '<Blf<t>ip>'
 			// , "dom": 'Blfrtip'
-			, "dom": (option.dom || objParamGrade.dom || '' 
-					+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>" 
-					+ "<'row'<'col-sm-12'tr>>" 
+			, "dom": (option.dom || objParamGrade.dom || ''
+					+ "<'row'<'col-sm-12 col-md-8 text-left'l><'col-sm-12 col-md-4'f>>"
+					+ "<'row'<'col-sm-12'tr>>"
 					+ "<'row'<'col-sm-12 col-md-5 text-left'i><'col-sm-12 col-md-7'p>>"
 			)
 			, 'buttons': [
@@ -2673,13 +2693,13 @@ function resolvGrade(data, option) {
 	}
 }
 
-function resolvCodigoFormatGrade(format) { 
+function resolvCodigoFormatGrade(format) {
 	var formatTemp = format.split('|'), keys, vlr;
 	format = {};
 
-	formatTemp = formatTemp.map(function(cod) { 
+	formatTemp = formatTemp.map(function(cod) {
 		vlr = cod.substring(1, cod.length);
-		switch(cod.substring(0,1)) { 
+		switch(cod.substring(0,1)) {
 			case 'c': return { casas: 	parseInt(vlr) };
 			case 'd': return { dec: 	vlr };
 			case 'm': return { mili: 	vlr };
@@ -2687,19 +2707,20 @@ function resolvCodigoFormatGrade(format) {
 		}
 	});
 
-	formatTemp.forEach(function(param) { 
+	formatTemp.forEach(function(param) {
 		keys = Object.keys(param);
-		if (keys.length) 
+		if (keys.length) {
 			keys.forEach(function(key) { format[key] = param[key]; });
+		}
 	});
 	return format;
 }
 
-function resolvStyleGrade(obj,dt={},el={},indice=-1) { 
+function resolvStyleGrade(obj,dt={},el={},indice=-1) {
 	var html = '', keys = Object.keys(obj), func, htmlTemp;
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (typeof(obj[keys[i]]) == 'function') { 
+	for (var i = 0; i < keys.length; i++) {
+		if (typeof(obj[keys[i]]) == 'function') {
 			func = obj[keys[i]];
 			htmlTemp = func(dt,el,indice);
 		}
@@ -2708,48 +2729,47 @@ function resolvStyleGrade(obj,dt={},el={},indice=-1) {
 	return html;
 }
 
-function resolveValPrint(option, data, indice) { 
+function resolveValPrint(option, data, indice) {
 	var mask = (data[option.param] == undefined) ? '%0%' : (option.mask || '%0%');
 
 	var valData = '';
-	if (typeof(option.param) == 'function') { 
+	if (typeof(option.param) == 'function') {
 		valData = option.param(data, option, indice)
 	}
-	else if (typeof(option.param) == 'object') { 
+	else if (typeof(option.param) == 'object') {
 		if (['sum'].indexOf(option.param.op) < 0) valData = 0;
 
-		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') { 
+		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') {
 			valData = option.param.val.map(function(val) { return val.literal || data[val.attr]; }).join('');
 		}
-		if (option.param.op.toUpperCase() == 'SUM') { 
+		if (option.param.op.toUpperCase() == 'SUM') {
 			valData = option.param.val
 				.map(function(val) { return parseFloat(val.literal || data[val.attr] || 0) })
 				.reduce(function(t,v) { return t + v; }, 0);
 		}
 	}
-	else { 
+	else {
 		valData = (data[option.param] || '');
 	}
 
 	var val = '';
-	if ((option.format || '') != '') { 
+	if ((option.format || '') != '') {
 		var { casas, dec, mili } = option.format;
 
-		if (
-			(typeof(option.param) == 'function' && valData == '') || 
+		if ((typeof(option.param) == 'function' && valData == '') ||
 			(typeof(option.param) != 'function' && data[option.param] == undefined)
-		) { 
+		) {
 			valData = option.default || '';
-		} else { 
+		} else {
 			valData = (valData || 0);
-			if (valData == 0 && (option.setDefaultValZero || false)) { 
+			if (valData == 0 && (option.setDefaultValZero || false)) {
 				val = option.default || '';
-			} else { 
+			} else {
 				val = number_format(valData, (casas || 0), (dec || ','), (mili || '.'));
 			}
 		}
 	}
-	else if ((option.dateFormat || '') != '') { 
+	else if ((option.dateFormat || '') != '') {
 		option.dateFormat.format = ((option.dateFormat || {}).format || 'DD/MM/Y')
 		var valHide = "<spam style='display:none;'>%0%</spam>";
 		try { valHide = valHide.replace('%0%', moment(valData).format('Y-MM-DD')); } catch(e) { }
@@ -2763,14 +2783,14 @@ function resolveValPrint(option, data, indice) {
 		}
 		val = valHide + valData;
 	}
-	else { 
+	else {
 		val = valData || option.default || '';
 	}
 
 	return mask.replace(/%0%/g, val);
 }
 
-function resolveClick(data, objClick, indice) { 
+function resolveClick(data, objClick, indice) {
 	if (typeof objClick == 'string') {
 		if (objClick.indexOf('%0%') < 0) objClick += '(%0%)';
 		objClick = { desc: objClick, val: [{ obj: true }] };
@@ -2780,7 +2800,7 @@ function resolveClick(data, objClick, indice) {
 	if ((objClick.val || '') == '') objClick.val = [{ obj: true }];
 	if (Object.keys(objClick.val)[0] != '0') objClick.val = [objClick.val];
 
-	(objClick.val || []).forEach(function(val, i) { 
+	(objClick.val || []).forEach(function(val, i) {
 			 if ((val.obj 	|| '') != '') 	value = JSON.stringify(data).replace(/\'/g,"");
 		else if ((val.index || '') != '') 	value = indice;
 		else 								value = data[val.attr];
@@ -2790,47 +2810,47 @@ function resolveClick(data, objClick, indice) {
 	return html;
 }
 
-function resolveParam(data, format, options) { 
-	var param = '', val = '', valIf = '', cont = 0, 
+function resolveParam(data, format, options) {
+	var param = '', val = '', valIf = '', cont = 0,
 		setIf, setIfFunc, isTrueValid, isTrue, exclamacao, notSet;
 
-	for (var i = 0; i < data.length; i++) { 
+	for (var i = 0; i < data.length; i++) {
 		val = format;
 		setIf = true;
 		setIfFunc = true;
 
-		for (var j = 0; j < (options.if || []).length; j++) { 
+		for (var j = 0; j < (options.if || []).length; j++) {
 			// [ notSet ]
-			if ((options.if[j].notSet || '') != '') { 
+			if ((options.if[j].notSet || '') != '') {
 				notSet = options.if[j].notSet;
 				exclamacao = notSet[0] == '!' ? (notSet = notSet.substring(1,notSet.length), true) : false;
 				setIf = (data[i][notSet] || false) ? exclamacao : (exclamacao ? false : setIf);
 			}
 
 			// [ first ]
-			if ((options.if[j].first || '') != '') { 
+			if ((options.if[j].first || '') != '') {
 				valIf = options.if[j].first.split('?');
 				valIf = cont == 0 ? valIf[0] : valIf[1];
 			}
 
 			// [ isTrue ]
-			if ((options.if[j].isTrue || '') != '') { 
+			if ((options.if[j].isTrue || '') != '') {
 
 				isTrueValid = options.if[j].isTrue[0] == '!';
 				if (isTrueValid) options.if[j].isTrue = options.if[j].isTrue.substring(1,options.if[j].isTrue.length);
 				isTrue = (data[i][options.if[j].isTrue] || false);
 				if (isTrueValid) isTrue = !isTrue;
 
-				if ((options.if[j].setFunc || '') != '') { 
+				if ((options.if[j].setFunc || '') != '') {
 					setIfFunc = false;
-					if (isTrue) { 
+					if (isTrue) {
 						val = resolveParamSetFunc(val, options.if[j], j);
 						// val.replace(new RegExp('#'+j+'#', 'gi'), valIf);
-					} else { 
+					} else {
 						val = val.replace(new RegExp('#'+j, 'gi'), '');
 						val = val.replace(new RegExp(j+'#', 'gi'), '');
 					}
-				} else { 
+				} else {
 					valIf = options.if[j].set.split('?');
 					valIf =  isTrue ? valIf[0] : valIf[1];
 				}
@@ -2842,11 +2862,11 @@ function resolveParam(data, format, options) {
 			valIf = '';
 		}
 
-		for (var j = 0; j < (options.val || []).length; j++) { 
-			if ((options.val[j].default || '') != '') { 
-				val = val.replace(new RegExp('%'+j+'%', 'gi'), resolveParamDefault(data[i], options.val[j]) );
-			} else { 
-				val = val.replace(new RegExp('%'+j+'%', 'gi'), data[i][options.val[j].attr] );
+		for (var j = 0; j < (options.val || []).length; j++) {
+			if ((options.val[j].default || '') != '') {
+				val = val.replace(new RegExp('%'+j+'%', 'gi'), resolveParamDefault(data[i], options.val[j]));
+			} else {
+				val = val.replace(new RegExp('%'+j+'%', 'gi'), data[i][options.val[j].attr]);
 			}
 		}
 		val = setIf ? (cont++, val) : '';
@@ -2859,14 +2879,14 @@ function resolveParam(data, format, options) {
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123)'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste);'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123...456) ? "continua" : "ou não";'}, 0)
-function resolveParamSetFunc(val, options, indice) { 
+function resolveParamSetFunc(val, options, indice) {
 	// setFunc =  "func'('pre_param'...'pos_param')'pos_func"
 
-	var pre_param = '', pos_param = '', 
-		setFunc = options.setFunc, 
+	var pre_param = '', pos_param = '',
+		setFunc = options.setFunc,
 		isParamPre = false, isEtc = false, isParamPos = false;
 
-	if (setFunc.indexOf('...') != -1) { 
+	if (setFunc.indexOf('...') != -1) {
 		pre_param = setFunc.split('...')[0];
 		setFunc = setFunc.split('...');
 		setFunc.splice(0,1);
@@ -2874,7 +2894,7 @@ function resolveParamSetFunc(val, options, indice) {
 		setFunc = '';
 		isEtc = true;
 	}
-	else if (setFunc.indexOf('(') != -1) { 
+	else if (setFunc.indexOf('(') != -1) {
 		pre_param = setFunc.split('(')[0];
 		setFunc = setFunc.split('(');
 		setFunc.splice(0,1);
@@ -2882,7 +2902,7 @@ function resolveParamSetFunc(val, options, indice) {
 		isParamPre = true;
 	}
 	
-	if (!isEtc && setFunc.indexOf(')') != -1) { 
+	if (!isEtc && setFunc.indexOf(')') != -1) {
 		if (isParamPre) pre_param += "(" + setFunc.split(')')[0];
 		else 			pre_param += setFunc.split(')')[0] + "(";
 		pos_param = setFunc.split(')')[1];
@@ -2891,7 +2911,7 @@ function resolveParamSetFunc(val, options, indice) {
 		// setFunc.splice(0,1);
 	}
 
-	if (!isEtc && !isParamPre && !isParamPos) { 
+	if (!isEtc && !isParamPre && !isParamPos) {
 		pre_param = setFunc + "(";
 		pos_param = ")";
 	}
@@ -2908,27 +2928,27 @@ function resolveParamSetFunc(val, options, indice) {
 	return val;
 }
 
-function resolveParamDefault(data, options) { 
+function resolveParamDefault(data, options) {
 	var val = '';
 
-	if ((options.default || '') != '') { 
-		switch (typeof(options.default)) { 
-			case 'string': 
+	if ((options.default || '') != '') {
+		switch (typeof(options.default)) {
+			case 'string':
 				val = (data[options.attr] || options.default);
 				break;
-			case 'object': 
+			case 'object':
 				val = (data[options.attr] || resolveParamDefault(data, options.default));
 				break;
 		}
-	} else { 
+	} else {
 		val = data[options.attr]
 	}
 	return val;
 }
 
-function invertPadination(defaultPag, length) { 
+function invertPagination(defaultPag, length) {
 	var pag = [length];
-	for (var i = defaultPag.length-1; i >= 0; i--) { 
+	for (var i = defaultPag.length-1; i >= 0; i--) {
 		if (length <= defaultPag[i]) return (pag.push(length), pag);
 		else pag.push(defaultPag[i]);
 	}
@@ -2938,31 +2958,31 @@ function invertPadination(defaultPag, length) {
 /**************************************************************************************************************
  * Function Op
  * ************************************************************************************************************/
-var tofloat = function(n) { 
+var tofloat = function(n) {
 	n = n.replace(/\./g, '').split(',');
 	return parseFloat(n[0].replace(/\D/g, '') + '.' + (n[1] || '0').replace(/\D/g, ''));
 };
 
-function removeHtml(a) { 
+function removeHtml(a) {
 	a = a.split('">');
 	a = a[a.length-1];
 	a = a.split('</')[0];
 	return a;
 }
 
-$(document).ready(function() { 
-	try { 
-		$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) { 
+$(document).ready(function() {
+	try {
+		$.fn.dataTableExt.oSort['mynumeric-asc']  = function(a, b) {
 			a = tofloat(((a || '') == '' ? String(0) : a));
 			b = tofloat(((b || '') == '' ? String(0) : b));
 			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
 		};
-		$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) { 
+		$.fn.dataTableExt.oSort['mynumeric-desc'] = function(a, b) {
 			a = tofloat(((a || '') == '' ? String(0) : a));
 			b = tofloat(((b || '') == '' ? String(0) : b));
 			return ((a < b) ? 1 : ((a > b) ?  -1 : 0));
 		};
-		$.fn.dataTableExt.oSort['mynumericTooltip-asc']  = function(a, b) { 
+		$.fn.dataTableExt.oSort['mynumericTooltip-asc'] = function(a, b) {
 			a = (a == '' ? String(0) : removeHtml(a));
 			b = (b == '' ? String(0) : removeHtml(b));
 
@@ -2971,7 +2991,7 @@ $(document).ready(function() {
 
 			return ((a < b) ? -1 : ((a > b) ?  1 : 0));
 		};
-		$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) { 
+		$.fn.dataTableExt.oSort['mynumericTooltip-desc'] = function(a, b) {
 			a = (a == '' ? String(0) : removeHtml(a));
 			b = (b == '' ? String(0) : removeHtml(b));
 
@@ -2989,9 +3009,9 @@ $(document).ready(function() {
 /**************************************************************************************************************
  * Resolve Foot
  * ************************************************************************************************************/
-function resolveFoot(data,option,defaultOption={}) { 
+function resolveFoot(data,option,defaultOption={}) {
 	/*
-		option: 
+		option:
 		{
 			op: 'SUM|MEDIA|expression|personalizado|literal' 	// expression = (ex: "%0% + n") | default: SUM
 
@@ -3009,22 +3029,22 @@ function resolveFoot(data,option,defaultOption={}) {
 	*/
 	var valPrint = '';
 
-	if (['pesonalizado','personalizado'].indexOf(option.op || '') >= 0) 
+	if (['pesonalizado','personalizado'].indexOf(option.op || '') >= 0)
 		valPrint = resolveFootPersonalizado(data, option, defaultOption);
-	else if ((option.op || '') == 'literal') 
+	else if ((option.op || '') == 'literal')
 		valPrint = (typeof(option.val) == 'string' ? option.val : '');
-	else 
+	else
 		valPrint = resolveFormatVal( resolveFootAction(data, option), option, defaultOption );
 
 	return valPrint;
 }
 
-function resolveFormatVal(val, option, defaultOption={}) { 
+function resolveFormatVal(val, option, defaultOption={}) {
 	// var 	mask = (option.mask || (defaultOption.mask || '%0%'))
 	var 	mask = (option.mask || '%0%')
 
-	return formatMask( 
-		number_format( val
+	return formatMask(
+		number_format(val
 			, ((option.format || {}).casas 	|| (defaultOption.format || {}).casas 	||  0 )
 			, ((option.format || {}).dec 	|| (defaultOption.format || {}).dec 	|| ',')
 			, ((option.format || {}).mili 	|| (defaultOption.format || {}).mili 	|| '.')
@@ -3032,7 +3052,7 @@ function resolveFormatVal(val, option, defaultOption={}) {
 	)
 }
 
-function resolveFootAction(data, option, defaultOption={}) { 
+function resolveFootAction(data, option, defaultOption={}) {
 	var val = [], newOption;
 
 	if (['SUM',''].indexOf((option.op || '').toUpperCase()) != -1) 	return resolveSumNull(data, option);
@@ -3041,14 +3061,14 @@ function resolveFootAction(data, option, defaultOption={}) {
 	if ((option.val || '') == '') option.val = [{ attr: defaultOption.param }];
 	if ((option.val.attr || '') != '') option.val = [option.val];
 
-	for (var i = 0; i < option.val.length; i++) { 
+	for (var i = 0; i < option.val.length; i++) {
 		newOption = $.extend({}, option, { val: { attr: option.val[i].attr }, op: (option.val[i].op || '') })
-		val.push( resolveFootAction(data, newOption, defaultOption) );
+		val.push(resolveFootAction(data, newOption, defaultOption));
 	}
 	return resolveExpression(val, option.op);
 }
 
-function resolveFootPersonalizado(data, option, defaultOption={}) { 
+function resolveFootPersonalizado(data, option, defaultOption={}) {
 	/*
 		Quando a op do obj foot for igual a personalizado
 		option: {
@@ -3060,30 +3080,30 @@ function resolveFootPersonalizado(data, option, defaultOption={}) {
 	*/
 	var val = (option.mask || '%0%');
 
-	for (var i = 0; i < option.val.length; i++) 
+	for (var i = 0; i < option.val.length; i++)
 		val = val.replace(
 			new RegExp('%'+i+'%', 'gi'),
-			resolveFoot( data, option.val[i], defaultOption )
+			resolveFoot(data, option.val[i], defaultOption)
 		);
 
 	return val;
 }
 
-function formatMask(val, mask) { 
+function formatMask(val, mask) {
 	return mask.replace(/%0%/g, val);
 }
 
-function resolveExpression(vals, ex) { 
-	vals.forEach(function(val, i) { 
-		ex = ex.replace( new RegExp('%'+String(i)+'%', 'gi'), String(val) );
+function resolveExpression(vals, ex) {
+	vals.forEach(function(val, i) {
+		ex = ex.replace(new RegExp('%'+String(i)+'%', 'gi'), String(val));
 	});
 	return eval(ex);
 }
 
-function resolveSumNull(data, option, type='val') { 
+function resolveSumNull(data, option, type='val') {
 	var val = 0, nulls = 0, attrs = resolvAttrArray(option);
-	data.forEach(function(dt) { 
-		attrs.forEach(function(attr) { 
+	data.forEach(function(dt) {
+		attrs.forEach(function(attr) {
 			val += parseFloat((dt[attr] || 0));
 			if (dt[attr] != 0 && (dt[attr] || '') == '') nulls++;
 		});
@@ -3091,7 +3111,7 @@ function resolveSumNull(data, option, type='val') {
 	return type == 'val' ? val : { val, nulls };
 }
 
-function resolveFootMedia(data, option) { 
+function resolveFootMedia(data, option) {
 	var objSum = resolveSumNull(data, option, 'obj')
 	, 	numRows = data.length
 	, 	val = objSum.val
@@ -3101,7 +3121,7 @@ function resolveFootMedia(data, option) {
 	return numRows == 0 ? 0 : val / numRows;
 }
 
-function resolvAttrArray(option) { 
+function resolvAttrArray(option) {
 	var attr = [];
 	if ((option.val.attr || '') != '') 				attr.push(option.val.attr);
 	else {
@@ -3109,8 +3129,8 @@ function resolvAttrArray(option) {
 	}
 	return attr;
 }
-/* 
-Testes: 
+/*
+Testes:
 
 // output: 17.5 § 2.875
 resolveFoot([{v1:1,v2:6},{v1:2,v2:7},{v1:3,v2:8},{v1:4,v2:9},{v1:5,v2:10}],
@@ -3144,10 +3164,10 @@ function resolvH3(options){ return resolvH($.extend({}, options, { num: 3 }),(ar
 function resolvH4(options){ return resolvH($.extend({}, options, { num: 4 }),(arguments[1] || 0)); }
 function resolvH5(options){ return resolvH($.extend({}, options, { num: 5 }),(arguments[1] || 0)); }
 function resolvH6(options){ return resolvH($.extend({}, options, { num: 6 }),(arguments[1] || 0)); }
-function resolvH(options, tab=0) { 
+function resolvH(options, tab=0) {
 	/*
 		options: {
-			text: '' 		-- Descricao da Tag HN
+			text: '' 		-- Descrição da Tag HN
 			num: 1 			-- Num da tag (default = 1)
 			style: obj 		-- Objeto CSS
 		}
@@ -3162,14 +3182,14 @@ function resolvH(options, tab=0) {
 	return html;
 }
 
-function resolvTextarea(options,tab=0) { 
+function resolvTextarea(options,tab=0) {
 	options.isTextarea = true;
 	options.no_tab = true;
-	options.style = $.extend({}, { 'resize':'vertical' },  options.style);
+	options.style = $.extend({}, { 'resize':'vertical' }, options.style);
 	return resolvInput(options,tab);
 }
 
-function resolvInput(options,tab=0) { 
+function resolvInput(options,tab=0) {
 	/*
 		options: {
 			text: '' 							-- Texto de acompanhamento
@@ -3186,7 +3206,7 @@ function resolvInput(options,tab=0) {
 			autocomplete: '' 					-- Autocomplete do campo
 			autofocus: (0|1) 					-- Autofocus do campo
 			accesskey: '' 						-- Accesskey do campo, atalho para focar no campo ou clicar no botão
-			data: { 							-- Acresenta o atributos data no campo (data-key='value')
+			data: { 							-- Acrescenta o atributos data no campo (data-key='value')
 				key: value
 			}
 
@@ -3199,22 +3219,22 @@ function resolvInput(options,tab=0) {
 			style: {} 							-- Objeto com atributos cujo os nomes são os atributos do CSS
 			styleLabel: {} 						-- Objeto com atributos cujo os nomes são os atributos do CSS para Label
 			required: '' 						-- Se o campo é obrigatório
-			maxlength: '' 						-- Limite maximo de caracteres
+			maxlength: '' 						-- Limite máximo de caracteres
 
-			onchange: function 					-- Metodo chamado ao mudar valor
+			onchange: function 					-- Método chamado ao mudar valor
 
 			numKeyVerifAlt: text.length 		-- Verificar até tantos caracteres percorrer para achar um math com accesskey
 			classDiv: '' 						-- Deixa o input por volta de um div
 			onEnter: function(e,whichkey) 		-- Função disparada quando o campo está focado e aperta o ENTER
-			... 								-- e = evento do click | whichkey = codigo da tecla
-			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descricao na frente
-			radio: [ {} ] 						-- Array de objetos input, com caracteristicas herdadas do obj pai
+			... 								-- e = evento do click | whichkey = código da tecla
+			no_changeLayout: (0|1) 				-- Se vai mudar o layout para tabela contendo o campo e a descrição na frente
+			radio: [ {} ] 						-- Array de objetos input, com características herdadas do obj pai
 			inline: (0|1) / num 				-- Para radio, campos alinhados lado a lado, se false fica embaixo do outro
 			... 								-- Quando > 1 significa o numero de campos que vai mostrar por linhas
 			no_desc: (0|1) 						-- Sem Label
 			datalist: { 						-- Colocar um autocomplete no campo
 				ajax: '' 						-- Se a listar vai vir dinamicamente do servidor
-				param: { key: value } 			-- Parametros da requisição
+				param: { key: value } 			-- Parâmetros da requisição
 				input: '' 						-- Campo usado para identificar value dos options
 			}
 			fileType: ('img') 					-- Caso o input for do tipo file, pode delimitar o tipo de arquivo
@@ -3223,27 +3243,27 @@ function resolvInput(options,tab=0) {
 			upload: { 							-- Caso tipo campo seja file, são as configurações de upload
 				ajax: '' 						-- Função ajax que vai enviar o arquivo
 				path: (function|'') 			-- Caminho para salvar o arquivo
-				... 		 					-- Função caso precisa pegar algum valor dinamico
-				aws: { 							-- Parametro de referencia caso use arquivos salvas na AWS
+				... 		 					-- Função caso precisa pegar algum valor dinâmico
+				aws: { 							-- Parâmetros de referencia caso use arquivos salvas na AWS
 					bucket: '' 					-- Nome do bucket S3 que está os arquivo
 					region: '' 					-- Região onde está os arquivos
 				}
-				fileName: '' 					-- Nome do arquivo a ser salvo (padrao é vir o nome original)
-				param: { } 						-- Parametros adicionais para enviar no ajax 
+				fileName: '' 					-- Nome do arquivo a ser salvo (padrão é vir o nome original)
+				param: { } 						-- Parâmetros adicionais para enviar no ajax 
 				no_alert: (0|1) 				-- Não mostra um alerta quando termina de enviar o arquivo
 				onsend: function() 				-- Validar se pode ou não enviar aquivo
-				ondone: function(options, data) -- Dipara quando termina de enviar o arquivo
+				ondone: function(options, data) -- Dispara quando termina de enviar o arquivo
 				... 							-- 	Var data é o retorno do ajax
 				... 							-- 	Obj options
 				... 							-- 		"id":"id"
 				... 							-- 		"div":"#div_id"
 				... 							-- 		"fileName":"name"
 				... 							-- 		"path":"./path/"
-				... 							-- 		"onstart":function(data='') { 
-				... 							-- 			(o data do parametro é esse mesmo objeto data)
+				... 							-- 		"onstart":function(data='') {
+				... 							-- 			(o data do parâmetro é esse mesmo objeto data)
 				... 							-- 		}
-				... 							-- 		"ondone":function(data) { 
-				... 							-- 			(o data do parametro é esse mesmo objeto data)
+				... 							-- 		"ondone":function(data) {
+				... 							-- 			(o data do parâmetro é esse mesmo objeto data)
 				... 							-- 		}
 				... 							-- 		"totalChart":num
 				... 							-- 		"limitChar":7000000 (default)
@@ -3260,9 +3280,10 @@ function resolvInput(options,tab=0) {
 				value: desc 					-- Ex: <option value="value">desc</option>
 			}
 			mask: '' 							-- Usar Mascara no campo
+			no_mask_money: (0/1) 				-- Desabilitar o prefixo do campo money
 			maskOption: {} 						-- Opções para usar com a mescara
-			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrao, coloca valor correspodente
-			... 								-- Padrao true quando for textarea
+			no_tab: (0|1) 						-- Quando digitar TAB, anula evento padrão, coloca valor correspondente
+			... 								-- Padrão true quando for textarea
 			toggle: (0|1) / { 					-- Define que vai usar a biblioteca toggle do bootstrap
 				on:"Ativo" 						-- Texto que vai aparecer quando estiver ativo
 				off:"Inativo" 					-- Texto que vai aparecer quando estiver inativo
@@ -3282,13 +3303,13 @@ function resolvInput(options,tab=0) {
 
 	var html = '';
 
-	if ((options.type || 'radio') == 'radio' && (options.radio || '') != '') { 
+	if ((options.type || 'radio') == 'radio' && (options.radio || '') != '') {
 		options.type = 'radio';
 		var isCheck = options.radio.map(function(e) { return e.checked; }).indexOf(true);
 		if (isCheck < 0) isCheck = 0;
 
-		for (var i = 0; i < options.radio.length; i++) { 
-			if (options.radio[i].checked) { 
+		for (var i = 0; i < options.radio.length; i++) {
+			if (options.radio[i].checked) {
 				options.value = options.radio[i].value || '';
 			}
 		}
@@ -3297,8 +3318,8 @@ function resolvInput(options,tab=0) {
 
 		if (cols) html += t(tab) + '<table>';
 
-		for (var i = 0; i < options.radio.length; i++) { 
-			if (cols) { 
+		for (var i = 0; i < options.radio.length; i++) {
+			if (cols) {
 				if (i == 0 || (i != 0 && i % cols == 0)) html += t(tab+1) + '<tr>';
 				html += t(tab+2) + '<td>';
 			}
@@ -3308,21 +3329,21 @@ function resolvInput(options,tab=0) {
 				, tab + (cols ? 3 : 0)
 			);
 
-			if (cols) { 
-				html += t(tab+2) + '</td>'; 
-				if (i == options.radio.length-1 || ((i+1) % cols == 0)) html += t(tab+1) + '</tr>'; 
+			if (cols) {
+				html += t(tab+2) + '</td>';
+				if (i == options.radio.length-1 || ((i+1) % cols == 0)) html += t(tab+1) + '</tr>';
 			}
 		}
 
 		if (cols) html += t(tab) + '</table>';
-	} else { 
+	} else {
 		html = resolvInputIn(options, tab);
 	}
 
 	return html
 }
 
-function resolvInputIn(options,tab=0) { 
+function resolvInputIn(options,tab=0) {
 	var defaultImg = (options.defaultImg || '');
 	if (defaultImg != '' && typeof defaultImg == 'string') defaultImg = { path: defaultImg };
 
@@ -3343,7 +3364,7 @@ function resolvInputIn(options,tab=0) {
 	if (options.isTextarea || false) options.value = (options.value || '').replace(/\r/g,'').replace(/\n/g, '<br>');
 
 	var random;
-	do { 
+	do {
 		random = parseInt( Math.random() * 100000 );
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
@@ -3361,7 +3382,7 @@ function resolvInputIn(options,tab=0) {
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
 
 	var isMoney = false;
-	if (options.type == 'money') { 
+	if (options.type == 'money') {
 		isMoney = true;
 		options.type = 'tel';
 	}
@@ -3369,14 +3390,14 @@ function resolvInputIn(options,tab=0) {
 	var title = ''
 		+ ((options.title || '') == '' && accesskey == '' ? '' : ''
 			+ 	" title='" 
-			+ 		(options.title || '') 
-			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
+			+ 		(options.title || '')
+			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n')
 			+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
 			+ 	"'"
 		);
 
 	var label = ''
-		// **** configurar elemtno label que complementa o campo de entrada ****
+		// **** configurar tag label que complementa o campo de entrada ****
 		+ ((options.text || ``) == `` ? `` : ``
 			+t(tab)		+ 	`<label`
 						+ 		title
@@ -3395,16 +3416,16 @@ function resolvInputIn(options,tab=0) {
 		// **** verifica se é mês ****
 		+ (options.type != 'month' ? '' : (options.isMonth = true, options.type = 'hidden', '')
 			+t(tab+0)	+ 	`<input id="${(options.id || '')}Datepicker" name="dataPiker" autocomplete="off" class='Default form-control' type="text"`
-						// + 		` onchange="console.log(this.value);" `
+						// + 		` onchange="console.log(this.value);"`
 						+ 	`/>`
 			+t(tab+0)	+ 	`<script>`
-			+t(tab+1)	+ 		`$('#${(options.id || '')}Datepicker').datepicker({ `
+			+t(tab+1)	+ 		`$('#${(options.id || '')}Datepicker').datepicker({`
 			+t(tab+2)	+ 			`format: "MM de yyyy"`
 			+t(tab+2)	+ 			`, formatData: "yyyy-mm"`
 			+t(tab+2)	+ 			`, viewMode: "months"`
 			+t(tab+2)	+ 			`, minViewMode: "months"`
-			+t(tab+2)	+ 			`, onchange: function(data) { `
-			+t(tab+3)	+ 				`if ($("#${(options.id || '')}").val() != data) { `
+			+t(tab+2)	+ 			`, onchange: function(data) {`
+			+t(tab+3)	+ 				`if ($("#${(options.id || '')}").val() != data) {`
 			+t(tab+4)	+ 					`$("#${(options.id || '')}").val(data);`
 			+t(tab+4)	+ 					`try { $("#${(options.id || '')}")[0].onchange(this); } catch(e){}` // chama a função de change
 			+t(tab+4)	+ 					`try { $("#${(options.id || '')}")[0].onblur(this); } catch(e){}` 	// chama a função de blur
@@ -3412,7 +3433,7 @@ function resolvInputIn(options,tab=0) {
 			+t(tab+3)	+ 				`}`
 			+t(tab+2)	+ 			`},`
 			+t(tab+1)	+ 		`});`
-			+t(tab+1)	+ 		`setTimeout(function(){ resolvVal('${(options.id || '')}','${(options.value || '')}'); }, 500);`
+			+t(tab+1)	+ 		`setTimeout(function() { resolvVal('${(options.id || '')}','${(options.value || '')}'); }, 500);`
 			+t(tab+0)	+ 	`</script>`
 		)
 
@@ -3435,18 +3456,18 @@ function resolvInputIn(options,tab=0) {
 		+ 	` data-customerid="input${random}"`
 		+ 	` class="`
 		+ 		`form-control`
-		+ 		(options.class 	|| ``)
+		+ 		(options.class || ``)
 		+ 	`"`
 		+ ((options.style || ``) == `` && ['number','tel'].indexOf(options.type) < 0
-			? `` 
+			? ``
 			: ` style="${
-					resolvStyle($.extend({}, 
+					resolvStyle($.extend({},
 						(['number','tel'].indexOf(options.type) < 0 ? {} : { 'text-align': 'right' } ),
 						(options.style || {})
 					))
 				}"`
 		)
-		+ ((options.datalist || '') == '' 
+		+ ((options.datalist || '') == ''
 			? ((options.list || '') == '' ? '' : ' list="' + options.list + '"')
 			: ' list="' + (options.id || '') + 'datalist"'
 		)
@@ -3455,7 +3476,7 @@ function resolvInputIn(options,tab=0) {
 		)
 
 
-		// **** configurar as chamadas dos metodos ****
+		// **** configurar as chamadas dos métodos ****
 		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) {
@@ -3515,10 +3536,9 @@ function resolvInputIn(options,tab=0) {
 
 	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
 
-	/* <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> */
 	if ((options.group || '') != '') {
 		var indexOpGroup = -1;
-		options.group.forEach(function(op,index) {
+		options.group.forEach(function(op, index) {
 			if (op == 'i') { indexOpGroup = index }
 		});
 
@@ -3558,6 +3578,7 @@ function resolvInputIn(options,tab=0) {
 						)
 						+ 		` class="input-group-` + (bootstrap == '4' ? 'text' : 'addon')
 						+ 			((op.class || '') == '' ? '' : ` ${op.class}`)
+						+ 			((op.click || '') == '' ? '' : ' btn btn-' + (bootstrap == '4' ? 'light' : 'default'))
 						+		`"`
 						+	`>`
 						+		`${op.text}`
@@ -3567,7 +3588,6 @@ function resolvInputIn(options,tab=0) {
 						)
 				}
 				return text;
-				// + '<input type="text" class="form-control" aria-describedby="basic-addon' + random + '">'
 			}).join('')
 			+ '</div>'
 	}
@@ -3582,23 +3602,24 @@ function resolvInputIn(options,tab=0) {
 	var html = ''
 		+ ((options.firstImg || '') == '' ? '' : fileType)
 
-		+ ((options.no_desc || '') != '' 
+		+ ((options.no_desc || '') != ''
 			? input
 			: ''
 			+ ( ['radio','checkbox'].indexOf(options.type) >= 0 && (options.no_changeLayout || '') == ''
 				? ''
 					+ (!isToggle ? '' : t(tab) + label)
-					+ t(tab)	+ ((options.inline || '' ) == '' 
+					+ t(tab)	+ ((options.inline || '' ) == ''
 						? `<table width="100%">`
-						: `<table style="display:inline-block;padding-right: 20px;">`
+						// : `<table style="display:inline-block;padding-right: 20px;">`
+						: `<table style="display:inline-block;padding-right: 20px;border: 1px solid #A7B0B6;border-radius:5px;padding-left:5px;">`
 					)
 					+ t(tab+1)	+ 		`<tr>`
-					+ t(tab+2)	+ 			`<td width='55px'>`
+					+ t(tab+2)	+ 			`<td width='20px'>`
 					+ t(tab*0)	+ 				tAjuste(input,3)
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+2)	+ 			`<td align="left" style="vertical-align:bottom;padding-left:5px;">`
 					+ (isToggle ? '' : ''
-						+ t(tab*0) + 				tAjuste(label,3)
+						+ t(tab*0) + 			tAjuste(label,3)
 					)
 					+ t(tab+2)	+ 			`</td>`
 					+ t(tab+1)	+ 		`</tr>`
@@ -3654,14 +3675,14 @@ function resolvInputIn(options,tab=0) {
 		+ t(tab)	+ 	`<script>`
 
 		+ (!options.requiredFull ? `` : ``
-			+ t(tab+1) 	+ 	`function check${random}() { `
+			+ t(tab+1) 	+ 	`function check${random}() {`
 			+ t(tab+2) 	+ 		`var op = arguments.length > 0 ? arguments[0] : 'check';`
 			// + (typeof(options.required) == 'function' 
 			// 	? t(tab+2) + "return (" + String(options.required) + "());"
 			// 	: t(tab+2) + "return (resolvVal(\"" + options.id + "\") == '' ? 'Informe " + options.text + "' : true);"
 			// )
 			+ t(tab+2) 	+ 		`return (`
-			+ t(tab+3) 	+ 			`resolvVal("${options.id}") == '' `
+			+ t(tab+3) 	+ 			`resolvVal("${options.id}") == ''`
 			+ t(tab+4) 	+ 				`? "Informe ${options.text}"`
 			+ t(tab+4) 	+ 				`: ${typeof(options.required) == `function` ? `${String(options.required)}(op)` : `true`}`
 			+ t(tab+2) 	+ 		`);`
@@ -3671,11 +3692,11 @@ function resolvInputIn(options,tab=0) {
 
 
 
-		// ****  configurar as funções chamada pelos metodos ****
+		// ****  configurar as funções chamada pelos métodos ****
 		+ [`onchange`,`onclick`,`onfocus`,`onblur`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) != ``; })
 			.map(function(opt) { return ''
-				+ t(tab+1)	+ 	`function ${opt + random}(el) { `
+				+ t(tab+1)	+ 	`function ${opt + random}(el) {`
 				+ t(tab+2)	+ (
 								(typeof(options[opt]) == `string`)
 								? options[opt]
@@ -3689,9 +3710,9 @@ function resolvInputIn(options,tab=0) {
 
 
 		// ****  correção do bug de quebra de linha como valor padrão no textarea ****
-		+ ((options.isTextarea || false) 
+		+ ((options.isTextarea || false)
 			? ''
-			+ t(tab+1)	+ 	`setTimeout(function() { `
+			+ t(tab+1)	+ 	`setTimeout(function() {`
 			+ t(tab+2)	+ 		`$("#${options.id}").val($("#${options.id}").val().replace(/<br>/gi, "\\n"));`
 			+ t(tab+1)	+ 	`},1000);`
 			: ''
@@ -3703,8 +3724,8 @@ function resolvInputIn(options,tab=0) {
 		// ****  registrar eventos do teclado ****
 		// + ( [`month`,`date`].indexOf(options.type) != -1 && (options.id || ``) != `` ? `` : `` )
 		+ ( [`month`,`date`].indexOf(options.type) == -1 || (options.id || ``) == `` ? `` : ``
-			+ t(tab+1)	+ 	`function momentMonth${capitalize(options.id)}(e,whichkey) { `
-			+ t(tab+2)	+ 		`if (whichkey == 114 && $("#${options.id}").is(":focus")) { `
+			+ t(tab+1)	+ 	`function momentMonth${capitalize(options.id)}(e,whichkey) {`
+			+ t(tab+2)	+ 		`if (whichkey == 114 && $("#${options.id}").is(":focus")) {`
 			+ t(tab+3)	+ 			`e.preventDefault();`
 			+ t(tab+3)	+ 			`$("#${options.id}").val(moment().format("${(options.type == `month` ? `Y-MM` : `Y-MM-DD`)}"));`
 			+ t(tab+2)	+ 		`}`
@@ -3721,8 +3742,8 @@ function resolvInputIn(options,tab=0) {
 			(options.id || ``) == `` || options.type == `hidden`
 			? ``
 			: ((options.onEnter || '') == '' ? '' : ''
-				+ t(tab+1)	+ 	`function onEnter${capitalize(options.id)}(e,whichkey) { `
-				+ t(tab+2)	+ 		`if (whichkey == 13 && $("#${options.id}").is(":focus")) { `
+				+ t(tab+1)	+ 	`function onEnter${capitalize(options.id)}(e,whichkey) {`
+				+ t(tab+2)	+ 		`if (whichkey == 13 && $("#${options.id}").is(":focus")) {`
 				// + t(tab+3)	+ 			`e.preventDefault();`
 				+ t(tab+3)	+ 			`var func = ${String(options.onEnter)}; func(e,whichkey);`
 				+ t(tab+2)	+ 		`}`
@@ -3740,18 +3761,18 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se tem que construir um datalist ****
 		+ ((options.datalist || '') == '' ? '' : ''
-			+ t(tab+1)	+ 	`function onDataList${capitalize(options.id)}() { `
+			+ t(tab+1)	+ 	`function onDataList${capitalize(options.id)}() {`
 			// + t(tab+2)	+ 		`${(options.datalist.ajax || 'ajax')}(`
-			+ t(tab+2)	+ (typeof(options.datalist.ajax || 'ajax') == 'string' 
-							? (options.datalist.ajax || 'ajax') 
-							: `window[(function(){ var func = ${String(options.datalist.ajax)}; return func(); })()]`
+			+ t(tab+2)	+ (typeof(options.datalist.ajax || 'ajax') == 'string'
+							? (options.datalist.ajax || 'ajax')
+							: `window[(function() { var func = ${String(options.datalist.ajax)}; return func(); })()]`
 						) + `({`
 			+ t(tab+3)	+ 			`param: ` + jsonToStringParam(options.datalist.param || {}) + `,`
-			+ t(tab+3)	+ 			`done: function(data) { `
+			+ t(tab+3)	+ 			`done: function(data) {`
 			+ t(tab+4)	+ 				`data = JSON.parse(data);`
 			+ t(tab+4)	+ 				`var grade = "<datalist id=\\"${(options.id || '')}datalist\\">";`
-			+ t(tab+4)	+ 				`if (data[0].debug == "OK") { `
-			+ t(tab+5)	+ 					`grade += data.map(function(dt) { `
+			+ t(tab+4)	+ 				`if (data[0].debug == "OK") {`
+			+ t(tab+5)	+ 					`grade += data.map(function(dt) {`
 			+ t(tab+6)	+ 						`return "<option value=\\"" + dt.${(options.datalist.input || 'id')} + "\\">"`
 			+ t(tab+5)	+ 					`}).join("");`
 			+ t(tab+4)	+ 				`}`
@@ -3767,41 +3788,41 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se tem que fazer upload de aquivo ****
 		+ ((options.type || 'text') != 'file' || (options.upload || '') == '' ? '' : ''
-			+ t(tab+1)	+ 	`function enviarArquivo${options.id}() { `
-			+ t(tab+2)	+ 		`if (getBase64("${options.id}") == false) { `
+			+ t(tab+1)	+ 	`function enviarArquivo${options.id}() {`
+			+ t(tab+2)	+ 		`if (getBase64("${options.id}") == false) {`
 			+ t(tab+3)	+ 			`return alert("Informe o arquivo!");`
 			+ t(tab+2)	+ 		`} `
 			+ t(tab+2)	+ 		`var validOnSend = ` + String(options.upload.onsend || function() { return true; }) + `;`
 			+ t(tab+2)	+ 		`validOnSend = validOnSend();`
-			+ t(tab+2)	+ 		`if (validOnSend != true) { `
+			+ t(tab+2)	+ 		`if (validOnSend != true) {`
 			+ t(tab+3)	+ 			`if (typeof(validOnSend) == "string") alert(validOnSend);`
 			+ t(tab+3)	+ 			`return;`
 			+ t(tab+2)	+ 		`} `
-			+ (typeof options.upload.path == 'string' 
+			+ (typeof options.upload.path == 'string'
 				? ''
 				+ t(tab+2)	+ 	`var path = '${options.upload.path}';`
 				: ''
 				+ t(tab+2)	+ 	`var path = ${String(options.upload.path)};`
 				+ t(tab+2)	+ 	`path = path();`
 			)
-			+ t(tab+2)	+ 		`sendBase64({ `
+			+ t(tab+2)	+ 		`sendBase64({`
 			+ t(tab+3)	+ 			`id: '${options.id}',`
 			+ t(tab+3)	+ 			`div: '#${options.id}_progressFile',`
 			+ ((options.upload.fileName || '') == '' ? '' : ''
 				+ t(tab+3)	+ 		`fileName: '${options.upload.fileName}',`
 			)
 			+ ((options.upload.param || '') == '' ? '' : ''
-				+ t(tab+3)	+ 		`param: ${jsonToStringParam(options.upload.param, tab+3, returnObjIdentado_Global)},`
+				+ t(tab+3)	+ 		`param: ${jsonToStringParam(options.upload.param, tab+3, returnObjIndentado_Global)},`
 			)
 			+ ((options.upload.aws || '') == '' ? '' : ''
-				+ t(tab+3)	+ 		`aws: ${jsonToStringParam(options.upload.aws, tab+3, returnObjIdentado_Global)},`
+				+ t(tab+3)	+ 		`aws: ${jsonToStringParam(options.upload.aws, tab+3, returnObjIndentado_Global)},`
 			)
 			+ t(tab+3)	+ 			`path,`
-			+ t(tab+3)	+ 			`onstart: function(data='') { `
+			+ t(tab+3)	+ 			`onstart: function(data='') {`
 			+ t(tab+4)	+ 				`$("#${options.id}_btnUpload").attr('disabled', true);`
 			+ t(tab+4)	+ 				`$("#${options.id}").attr('disabled', true);`
 			+ t(tab+3)	+ 			`},`
-			+ t(tab+3)	+ 			`ondone: function(opt, data) { `
+			+ t(tab+3)	+ 			`ondone: function(opt, data) {`
 			+ t(tab+4)	+ 				`$("#${options.id}_btnUpload").attr('disabled', false);`
 			// + ((options.fileType || '') != 'img' ? '' : ''
 			// 	// + t(tab+4)	+ 			`$("#${options.id}preview").attr('src', opt.path+'/'+opt.fileName+'.'+opt.ext);`
@@ -3815,8 +3836,8 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+3)	+ 			`},`
 			+ t(tab+2)	+ 		`});`
 			+ t(tab+1)	+ 	`}`
-			+ t(tab+1)	+ 	`setTimeout(function() { `
-			+ t(tab+2)	+ 		`$("#${options.id}").change(function() { `
+			+ t(tab+1)	+ 	`setTimeout(function() {`
+			+ t(tab+2)	+ 		`$("#${options.id}").change(function() {`
 			+ t(tab+3)	+ 			`setBase64(this, '${options.id}'`
 						+ 				`${(options.fileType || '') == 'img' ? `, '${options.id}preview'` : ''}`
 						+ 			`);`
@@ -3829,8 +3850,8 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se o campo tem accesskey ****
 		+ (accesskey == '' ? '' : ''
-			+t(tab+1)	+ 	`function inputClickAccesskey${random}(e) { `
-			+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}") { `
+			+t(tab+1)	+ 	`function inputClickAccesskey${random}(e) {`
+			+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}") {`
 			+t(tab+3)	+ 			`e.preventDefault();`
 			+t(tab+3)	+ 			`try { $("*[data-customerid='input${random}']")[0].focus(); } catch(e) { }`
 			+t(tab+2)	+ 		`}`
@@ -3843,21 +3864,21 @@ function resolvInputIn(options,tab=0) {
 
 		// ****  verificar se o campo tem accesskey ****
 		+ ((options.no_tab || '') == '' ? '' : ''
-			+t(tab+1)	+ 	`function inputNoTab${random}(e) { `
-			+t(tab+2)	+ 		`try { `
+			+t(tab+1)	+ 	`function inputNoTab${random}(e) {`
+			+t(tab+2)	+ 		`try {`
 			+t(tab+3)	+ 			`var input = $("*[data-customerid='input${random}']")[0];`
 			+t(tab+2)	+ 		`} catch(e) { return; }`
-			+t(tab+2)	+ 		`if ($(input).is(':focus') && e.keyCode === 9) { `
+			+t(tab+2)	+ 		`if ($(input).is(':focus') && e.keyCode === 9) {`
 			+t(tab+3)	+ 			`e.preventDefault();`
-			+t(tab+3)	+ 			`var inicioDaSelecao = input.selectionStart,`
-			+t(tab+4)	+ 				`fimDaSelecao = input.selectionEnd,`
+			+t(tab+3)	+ 			`var inicioDaSelection = input.selectionStart,`
+			+t(tab+4)	+ 				`fimDaSelection = input.selectionEnd,`
 			+t(tab+4)	+ 				`recuo = '\\t'; // Experimente também com '    '`
-			+t(tab+3)	+ 			`input.value = [ `
-			+t(tab+4)	+ 				`input.value.substring(0, inicioDaSelecao),`
+			+t(tab+3)	+ 			`input.value = [`
+			+t(tab+4)	+ 				`input.value.substring(0, inicioDaSelection),`
 			+t(tab+4)	+ 				`recuo,`
-			+t(tab+4)	+ 				`input.value.substring(fimDaSelecao)`
+			+t(tab+4)	+ 				`input.value.substring(fimDaSelection)`
 			+t(tab+3)	+ 			`].join('');`
-			+t(tab+3)	+ 			`input.selectionEnd = inicioDaSelecao + recuo.length; `
+			+t(tab+3)	+ 			`input.selectionEnd = inicioDaSelection + recuo.length; `
 			+t(tab+2)	+ 		`}`
 			+t(tab+1)	+ 	`}`
 			+t(tab+1)	+ 	`registerEventKeyboard.push("inputNoTab${random}");`
@@ -3869,7 +3890,10 @@ function resolvInputIn(options,tab=0) {
 		// ****  verificar se o campo tem mascara ****
 		+ (!isMoney || (options.mask || '') != '' ? '' : ''
 			+ t(tab+1)	+ 	`$("*[data-customerid='input${random}']")`
-						+ 		`.maskMoney({ prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false });`
+						+ 		`.maskMoney({`
+						+ 			` prefix:'${(options.no_mask_money || '') == '' ? 'R$ ' : ''}',`
+						+ 			` allowNegative: true, thousands:'.', decimal:',', affixesStay: false`
+						+ 		`});`
 		)
 		// ***************************************************************************
 
@@ -3888,14 +3912,14 @@ function resolvInputIn(options,tab=0) {
 		+ ((options.id || '') == '' || defaultImg == '' || (options.upload || '') == '' ? '' : ''
 			+ t(tab+1)	+ 	`var target${options.id} = $("#${options.id}preview").parent()[0];`
 			+ t(tab+1)	+ 	`var fileInput${options.id} = $("*[data-customerid='input${random}']")[0];`
-			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragover', function(e) { `
+			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragover', function(e) {`
 			+ t(tab+2)	+ 		`e.preventDefault();`
 			+ t(tab+2)	+ 		`target${options.id}.classList.add('dragging_resolvInput');`
 			+ t(tab+1)	+ 	`});`
-			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragleave', function() { `
+			+ t(tab+1)	+ 	`target${options.id}.addEventListener('dragleave', function() {`
 			+ t(tab+2)	+ 		`target${options.id}.classList.remove('dragging_resolvInput');`
 			+ t(tab+1)	+ 	`});`
-			+ t(tab+1)	+ 	`target${options.id}.addEventListener('drop', function(e) { `
+			+ t(tab+1)	+ 	`target${options.id}.addEventListener('drop', function(e) {`
 			+ t(tab+2)	+ 		`e.preventDefault();`
 			+ t(tab+2)	+ 		`target${options.id}.classList.remove('dragging_resolvInput');`
 			+ t(tab+2)	+ 		`if (e.dataTransfer.files.length > 1) return alert('Selecione apenas um arquivo!');`
@@ -3913,8 +3937,8 @@ function resolvInputIn(options,tab=0) {
 
 
 var base64Foto_Global = [];
-function setBase64(input, id, idPreview='') {  readURL(input, id, idPreview); }
-function readURL(input, id, idPreview='') { 
+function setBase64(input, id, idPreview='') { readURL(input, id, idPreview); }
+function readURL(input, id, idPreview='') {
 	/* if (idCategoria_Global == -1) {
 		alert('Selecione o Registro!');
 		$("#" + id).val('');
@@ -3924,44 +3948,44 @@ function readURL(input, id, idPreview='') {
 	if (input.files && input.files[0]) {
 		var reader = new FileReader();
 		reader.onload = function(e) {
-			var indice = base64Foto_Global.map(function(e) { return e.id; }).indexOf(id);
+			var index = base64Foto_Global.map(function(e) { return e.id; }).indexOf(id);
 			var nome = $("#" + id).val().split('.');
 			var ext = (nome.splice(nome.length-1,1)).join('');
 			nome = nome.join('.').replace(/\\/g, "/");
 			nome = nome.substring(nome.lastIndexOf('/')+1, nome.length);
 
-			if (indice < 0) {
-				indice = base64Foto_Global.length;
+			if (index < 0) {
+				index = base64Foto_Global.length;
 				base64Foto_Global.push({ id, base64: e.target.result, ext, nome: nome });
 			} else {
-				base64Foto_Global[indice].base64 = e.target.result;
-				base64Foto_Global[indice].ext = ext;
+				base64Foto_Global[index].base64 = e.target.result;
+				base64Foto_Global[index].ext = ext;
 			}
 			if (idPreview != '') {
-				$("#" + idPreview).attr('src',base64Foto_Global[indice].base64);
+				$("#" + idPreview).attr('src',base64Foto_Global[index].base64);
 			}
 		}
 		reader.readAsDataURL(input.files[0]);
 	}
 }
 
-function getBase64(id, param='base64') { 
-	var indice = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
-	if (indice < 0) return false;
+function getBase64(id, param='base64') {
+	var index = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
+	if (index < 0) return false;
 	if (param.toLowerCase() == 'obj')
-		return base64Foto_Global[indice];
+		return base64Foto_Global[index];
 	if (param.toLowerCase() == 'base64')
-		return base64Foto_Global[indice].base64.split(';base64,')[1];
+		return base64Foto_Global[index].base64.split(';base64,')[1];
 
-	return base64Foto_Global[indice][param];
+	return base64Foto_Global[index][param];
 }
 
-function clearBase64(id) { 
-	var indice = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
-	base64Foto_Global.splice(indice,1);
+function clearBase64(id) {
+	var index = base64Foto_Global.map(function(d) { return d.id; }).indexOf(id);
+	base64Foto_Global.splice(index,1);
 }
 
-function sendBase64(options) { 
+function sendBase64(options) {
 	/*
 		options: {
 			id: '' 					// achar o base64
@@ -3972,8 +3996,8 @@ function sendBase64(options) {
 			path: '' 				// caminho para salvar o arquivo
 			limitChar: 7000000 		// quantos caracteres vai ser enviado por vez
 			url: '' 				// para onde vai o arquivo
-			no_base64: (0|1) 		// se o conteudo do arquivo não for base64
-			param: { } 				// parametros adicionais para enviar por ajax
+			no_base64: (0|1) 		// se o conteúdo do arquivo não for base64
+			param: { } 				// parâmetros adicionais para enviar por ajax
 		}
 
 		base64Foto_Global: {
@@ -3983,25 +4007,25 @@ function sendBase64(options) {
 			nome: ''
 		}
 	*/
-	var indice = base64Foto_Global.map(function(i) { return i.id; }).indexOf(options.id);
-	if (indice < 0) return false;
+	var index = base64Foto_Global.map(function(i) { return i.id; }).indexOf(options.id);
+	if (index < 0) return false;
 
-	if (base64Foto_Global[indice].base64.length == 0) { 
-		options.fileName = (options.fileName || base64Foto_Global[indice].nome.replace(/ /g, '_'));
-		options.ext = base64Foto_Global[indice].ext;
-		base64Foto_Global.splice(indice, 1);
+	if (base64Foto_Global[index].base64.length == 0) {
+		options.fileName = (options.fileName || base64Foto_Global[index].nome.replace(/ /g, '_'));
+		options.ext = base64Foto_Global[index].ext;
+		base64Foto_Global.splice(index, 1);
 		doneSendBase64(options);
 		return true;
 	}
 
-	if ((options.tempName || '') == '') { 
+	if ((options.tempName || '') == '') {
 		if (typeof(options.onstart) == 'function') options.onstart(options);
 		if ((options.no_base64 || '') == '')
-			base64Foto_Global[indice].base64 = base64Foto_Global[indice].base64.split(';base64,')[1];
-		options.totalChart = base64Foto_Global[indice].base64.length;
+			base64Foto_Global[index].base64 = base64Foto_Global[index].base64.split(';base64,')[1];
+		options.totalChart = base64Foto_Global[index].base64.length;
 	}
 
-	var progress = (base64Foto_Global[indice].base64.length*100) / options.totalChart;
+	var progress = (base64Foto_Global[index].base64.length*100) / options.totalChart;
 	progress = 100 - progress;
 	$(options.div).html(''
 		+ 	`<div class="progress">`
@@ -4015,18 +4039,18 @@ function sendBase64(options) {
 
 	if ((options.limitChar || '') == '') options.limitChar = 7000000;
 
-	ajax({ 
+	ajax({
 		// url: (options.url || '../controller/controller.php'),
-		param: { 
+		param: {
 			'sendBase64': true,
 			'tempName': (options.tempName || ''),
-			'base64': base64Foto_Global[indice].base64.substring(0, options.limitChar),
+			'base64': base64Foto_Global[index].base64.substring(0, options.limitChar),
 		},
 		error: function() { alert('Falha ao enviar arquivo!'); },
-		done: function(data) { 
+		done: function(data) {
 			console.log(data);
-			base64Foto_Global[indice].base64 = base64Foto_Global[indice].base64
-				.substring(options.limitChar, base64Foto_Global[indice].base64.length);
+			base64Foto_Global[index].base64 = base64Foto_Global[index].base64
+				.substring(options.limitChar, base64Foto_Global[index].base64.length);
 
 			options.tempName = data;
 			sendBase64(options);
@@ -4034,11 +4058,11 @@ function sendBase64(options) {
 	});
 }
 
-function doneSendBase64(options) { 
+function doneSendBase64(options) {
 	$(options.div).html('Salvando Arquivo...');
-	ajax({ 
+	ajax({
 		// url: (options.url || '../controller/controller.php'),
-		param: $.extend({ 
+		param: $.extend({
 			'doneSendBase64': true,
 			'tempName': options.tempName,
 			'fileName': options.fileName,
@@ -4047,7 +4071,7 @@ function doneSendBase64(options) {
 			'no_base64': (options.no_base64 || ''),
 		}, (options.param || {}) ),
 		error: function() { alert('Falha ao enviar arquivo!'); },
-		done: function(data) { 
+		done: function(data) {
 			console.log(data);
 			$(options.div).html('');
 			if (typeof options.ondone == 'function') options.ondone(options, data);
@@ -4055,10 +4079,10 @@ function doneSendBase64(options) {
 	});
 }
 
-function resolvLabel(options, tab=0) { 
+function resolvLabel(options, tab=0) {
 	/*
 		options: {
-			text: '' 		-- Conteudo da label
+			text: '' 		-- Conteúdo da label
 		}
 	*/
 	var html = ''
@@ -4068,11 +4092,11 @@ function resolvLabel(options, tab=0) {
 	return html;
 }
 
-function resolvLegenda(options, tab=0) { 
+function resolvLegenda(options, tab=0) {
 	/*
 		height: '20px' 				-- Altura do bloco da legenda
 		width: 	'40px' 				-- Largura do bloco da legenda
-		inline: (0|1) 				-- Caso verdadieiro os dados ficam numa unica linha
+		inline: (0|1) 				-- Caso verdadeiro os dados ficam numa única linha
 		OR num > 2 					-- Caso seja um número e for maior que 1, vai de acordo com o numero por linhas
 		info: [ 					-- Informações contidas na legenda
 			{
@@ -4082,28 +4106,28 @@ function resolvLegenda(options, tab=0) {
 		]
 		classDiv: '' 				-- Div de referencia
 		click: function( obj ){} 	-- Evento de click, tem como callback envia o objeto que clicou
-		descForm: '' 				-- Parametro informativo
+		descForm: '' 				-- Parâmetro informativo
 	*/
 	var tr = t(tab+1) + "<tr>";
 	var trF = t(tab+1) + "</tr>";
 
 	var random;
-	do { 
-		random = parseInt( Math.random() * 100000 );
+	do {
+		random = parseInt(Math.random() * 100000);
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
 
 	var click = options.click || '';
-	var onClick = click == '' ? '' : " class='cursorClick' onclick='legedaClick" + random + "(%0%);'";
+	var onClick = click == '' ? '' : " class='cursorClick' onclick='legendaClick" + random + "(%0%);'";
 
 	var inline = (options.inline || '') != '' && (isNaN(options.inline) || options.inline < 2);
 	var cols = (options.inline || '') != '' && !isNaN(options.inline) && options.inline > 1 ? options.inline : false;
 
 	var html = ''
-		+ (function(info) { 
+		+ (function(info) {
 			var cels = ''
 				+t(tab)		+ 	`<table width=''>`
-			for (var i = 0; i < info.length; i++) { 
+			for (var i = 0; i < info.length; i++) {
 				info[i].status = (info[i].status || 'show');
 
 				cels += 	''
@@ -4134,7 +4158,7 @@ function resolvLegenda(options, tab=0) {
 				+t(tab)		+ 	`</table>`
 				+ (click == '' ? '' : ''
 					+t(tab)		+ 	`<script>`
-					+t(tab+1) 	+ 		`function legedaClick${random}(i){`
+					+t(tab+1) 	+ 		`function legendaClick${random}(i) {`
 					+t(tab+2) 	+ 			`var status = ((resolvEl('${options.descForm}').obj.info[i].status || 'show') == 'show' ? 'hide' : 'show');`
 					+t(tab+2) 	+ 			`resolvEl('${options.descForm}').obj.info[i].status = status;`
 					+t(tab+2) 	+ 			`$('#legenda${random}' + i)`
@@ -4151,34 +4175,34 @@ function resolvLegenda(options, tab=0) {
 	return html;
 }
 
-function resolvMenu(options={}, tab=0) { 
+function resolvMenu(options={}, tab=0) {
 	/*
 		options: {
 			descForm: '' 					-- Identificador
-			no_link: (0|1) 					-- Não linqua no menu para redirecionar o conteudo
+			no_link: (0|1) 					-- Não linca no menu para redirecionar o conteúdo
 			isLateral: (0|1) 				-- Caso quera resolver um menu lateral
-			selected: indice 				-- Escolher qual aba vai começar ativa, padrão 0
+			selected: index 				-- Escolher qual aba vai começar ativa, padrão 0
 			abas: [
 				{
-					text: '' 				-- Descricao Menu
-					icon: '' 				-- icone para acompanha a descricao
+					text: '' 				-- Descrição Menu
+					icon: '' 				-- ícone para acompanha a descrição
 					click: '' / function 	-- Função para chamar quando clicar na aba do menu
-					ctx: {} 				-- Conteudo Referente
+					ctx: {} 				-- Conteúdo Referente
 				}
 			]
-			xs / sm / md / lg: '3-9' 		-- Class bootstrap, referencia disposição dos componetes (isLateral == true)
+			xs / sm / md / lg: '3-9' 		-- Class bootstrap, referencia disposição dos componentes (isLateral == true)
 		}
 	*/
 
 	if ((options.descForm || '') == '') return '';
 
 	var random;
-	do { 
-		random = parseInt( Math.random() * 100000 );
+	do {
+		random = parseInt(Math.random() * 100000);
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
 
-	options = $.extend({}, { 
+	options = $.extend({}, {
 		xs: '3-9',
 	}, options);
 
@@ -4186,9 +4210,10 @@ function resolvMenu(options={}, tab=0) {
 	var TA = isLateral ? 1 : 0;
 
 	var selected = options.selected || 0;
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
 
 	var html = ''
-		+ (!isLateral ? '' : ''
+		+ (!isLateral || (options.abas || []).length < 2 ? '' : ''
 			+t(tab)	+ 	'<div'
 					+ 		` class="`
 					+ 			((options.xs || '') == '' ? '' : ' col-xs-' + options.xs.split('-')[0] )
@@ -4198,10 +4223,12 @@ function resolvMenu(options={}, tab=0) {
 					+ 		`"`
 					+	'>'
 		)
-		+t(tab+TA)	+ 	'<ul class="nav nav-tabs" id="' + options.descForm + '"'
-					+ 		' style="display:' + ((options.abas || []).length < 2 ? 'none' : 'block' ) + '"'
+		+t(tab+TA)	+ 	'<ul class="nav nav-tabs"' // body-tabs-animated body-tabs body-tabs-layout tabs-animated
+					+ 		' id="' + options.descForm + '"'
+					+ 		((options.abas || []).length < 2 ? 'style="display:none"' : '' )
 					+ 	'>'
-	for (var i = 0; i < (options.abas || []).length; i++) { 
+
+	for (var i = 0; i < (options.abas || []).length; i++) {
 		html += ''
 		+ (!isLateral || i == 0 ? '' : ''
 			+t(tab+TA+1) + '<br>'
@@ -4220,37 +4247,39 @@ function resolvMenu(options={}, tab=0) {
 					+ 			"clickMenu" + random + i + '(this);'
 					+ 			(typeof(options.abas[i].click) == 'string' ? options.abas[i].click : '')
 					+ 		"'"
-					+ 		" class='" + (i == selected ? 'active' : '') + "'"
+					+ 		" class='nav-item" + (i == selected && bootstrap != '4' ? ' active' : '') + "'"
 					+ 	">"
-		+t(tab+TA+2)	
-		+ ((options.no_link || '') == '' 
+		+t(tab+TA+2)
+		+ ((options.no_link || '') == ''
 			? 				"<a href=\"#" + options.descForm + "Ctx" + i + "\""
 			: 				"<a href=\"javascript:void(0)\""
 		)
 		// +t(tab+2)	+ 		"<a href=\"javascript:void(0)\""
+		+ 						" class='nav-link" + (i == selected && bootstrap == '4' ? ' active' : '') + "'"
 					+ ((options.abas[i].accesskey || '') == ''  ? '' : ''
 						+ 		" accesskey='" + options.abas[i].accesskey + "'"
 						+ 		" title='Alt + " + options.abas[i].accesskey + "'"
 					)
-					+ 		">"
-		+t(tab+TA+3)	+ 			((options.abas[i].icon || '') == '' ? '' : ''
-									+ "<i class=\"" + resolvIcon(options.abas[i].icon) + "\"></i> "
+						+ 		">"
+		+t(tab+TA+3)	+ 		((options.abas[i].icon || '') == '' ? '' : ''
+									+ "<i class=\"" + resolvIcon(options.abas[i].icon) + "\"></i>"
 								)
-					+ 			(options.abas[i].text || '')
+						+ 			((options.abas[i].icon || '') == '' || (options.abas[i].text || '') == '' ? '' : '&nbsp;')
+						+ 			(options.abas[i].text || '')
 		+t(tab+TA+2)	+ 		"</a>"
 		+t(tab+TA+1)	+ 	"</li>"
 	}
 	html += ''
 		+t(tab+TA)		+ '</ul>'
-		+ (!isLateral ? '' : ''
+		+ (!isLateral || (options.abas || []).length < 2 ? '' : ''
 			+t(tab+0) 	+ 	'</div>'
 			+t(tab+0) 	+ 	'<style>'
-			+t(tab+1) 	+ 		'#' + options.descForm + ' .active a { '
+			+t(tab+1) 	+ 		'#' + options.descForm + ' .active a {'
 			+t(tab+2) 	+ 			'border-bottom: 1px solid #ddd !important;'
 			+t(tab+2) 	+ 			'border-bottom-left-radius: 5px;'
 			+t(tab+2) 	+ 			'border-bottom-right-radius: 5px;'
 			+t(tab+1) 	+ 		'}'
-			+t(tab+1) 	+ 		'#' + options.descForm + ' { '
+			+t(tab+1) 	+ 		'#' + options.descForm + ' {'
 			+t(tab+2) 	+ 			'border-bottom: none;'
 			+t(tab+2) 	+ 			'border-right: 1px solid #ddd;'
 			+t(tab+1) 	+ 		'}'
@@ -4266,7 +4295,7 @@ function resolvMenu(options={}, tab=0) {
 		)
 		+t(tab+TA)		+ '<script>'
 		+ (options.abas || []).map(function(aba, i) { return ''
-			+t(tab+TA+1)	+ 	`function clickMenu${random}${i}(el) { `
+			+t(tab+TA+1)	+ 	`function clickMenu${random}${i}(el) {`
 			+t(tab+TA+2)	+ 		`resolvEvento('click','${options.descForm}');`
 			+t(tab+TA+2)	+ (typeof(aba.click) != 'function' ? '' : ''
 							+ `var func = ${String(aba.click)};`
@@ -4290,7 +4319,7 @@ function resolvMenu(options={}, tab=0) {
 		+t(tab+TA)	+ 	"</div>"
 	}
 	html += ''
-		+ (!isLateral ? '' : ''
+		+ (!isLateral || (options.abas || []).length < 2 ? '' : ''
 			+t(tab) 	+ 	'</div>'
 		)
 
@@ -4298,26 +4327,26 @@ function resolvMenu(options={}, tab=0) {
 }
 
 
-function resolvPreview(options={}, tab=0) { 
+function resolvPreview(options={}, tab=0) {
 	/*
 		options: { 
-			descForm: '' 					-- Parametro Identificador
-			ctx: '' 						-- Conteudo do Preview
+			descForm: '' 					-- Parâmetro Identificador
+			ctx: '' 						-- Conteúdo do Preview
 			pathAce: './lib/ace' 			-- Caminho para lib do editor ace
-			onBuild: function() { } 		-- Função disparada toda vez que recontroi o obj do preview
+			onBuild: function() { } 		-- Função disparada toda vez que reconstrói o obj do preview
 		}
 	*/
 
 	// var random;
-	// do { 
-	// 	random = parseInt( Math.random() * 100000 );
+	// do {
+	// 	random = parseInt(Math.random() * 100000);
 	// } while (registerRandom_Global.indexOf(random) != -1);
 	// registerRandom_Global.push(random);
 
 	if ((options.descForm || '') == '') return '';
 
 	var objOriginal = {};
-	Object.keys((options.ctx || {})).forEach(function(key) { 
+	Object.keys((options.ctx || {})).forEach(function(key) {
 		objOriginal[key] = options.ctx[key];
 	});
 
@@ -4363,13 +4392,13 @@ function resolvPreview(options={}, tab=0) {
 					+		'`);'
 
 		/** Editor ACE */
-		+t(tab+1) 	+		`function inject${options.descForm}(options, callback) { `
-		+t(tab+2) 	+			`var load = function(path, callback) { `
+		+t(tab+1) 	+		`function inject${options.descForm}(options, callback) {`
+		+t(tab+2) 	+			`var load = function(path, callback) {`
 		+t(tab+3) 	+				`var head = document.getElementsByTagName('head')[0];`
 		+t(tab+3) 	+				`var s = document.createElement('script');`
 		+t(tab+3) 	+				`s.src = options.baseUrl + "/" + path;`
 		+t(tab+3) 	+				`head.appendChild(s);`
-		+t(tab+3) 	+				`s.onload = s.onreadystatechange = function(_, isAbort) { `
+		+t(tab+3) 	+				`s.onload = s.onreadystatechange = function(_, isAbort) {`
 		+t(tab+4) 	+					`if (isAbort || !s.readyState || s.readyState == "loaded" || s.readyState == "complete") {`
 		+t(tab+5) 	+						`s = s.onload = s.onreadystatechange = null;`
 		+t(tab+5) 	+						`if (!isAbort) callback();`
@@ -4397,7 +4426,7 @@ function resolvPreview(options={}, tab=0) {
 		+t(tab+1) 	+		`inject${options.descForm}({`
 		+t(tab+2) 	+			`baseUrl: "./lib/ace",`
 		+t(tab+2) 	+			`target: $("#textareaJson${options.descForm}")[0]`
-		+t(tab+1) 	+		`}, function () { `
+		+t(tab+1) 	+		`}, function () {`
 		+t(tab+2) 	+			`textAce${options.descForm} = $("#textareaJson${options.descForm}")[0].ace;`
 		+t(tab+2) 	+			`textAce${options.descForm}.setOption('theme',"monokai");`
 		+t(tab+2) 	+			`textAce${options.descForm}.setOption('mode',"json");`
@@ -4406,14 +4435,14 @@ function resolvPreview(options={}, tab=0) {
 		+t(tab+2) 	+			`textAce${options.descForm}.setOption('showGutter',true);`
 		+t(tab+1) 	+		`});`
 
-		+t(tab+1) 	+ 		`function previewKeyDown${options.descForm}(e, whichkey) { `
+		+t(tab+1) 	+ 		`function previewKeyDown${options.descForm}(e, whichkey) {`
 		+t(tab+2) 	+ 			`var curso = $("#preview${options.descForm}").find('.ace_editor')[0];`
-		+t(tab+2) 	+ 			`if (e.ctrlKey && whichkey == 13 && curso.className.indexOf('ace_focus') >= 0) { `
+		+t(tab+2) 	+ 			`if (e.ctrlKey && whichkey == 13 && curso.className.indexOf('ace_focus') >= 0) {`
 		+t(tab+3) 	+ 				`var statusGutter = textAce${options.descForm}.getOption('showGutter');`
 		+t(tab+3) 	+ 				`var statusInvisible = textAce${options.descForm}.getOption('showInvisibles');`
 		+t(tab+3) 	+ 				`textAce${options.descForm}.setOption('showGutter',false);`
 		+t(tab+3) 	+ 				`textAce${options.descForm}.setOption('showInvisibles',false);`
-		+t(tab+3) 	+ 				`setTimeout(function() { `
+		+t(tab+3) 	+ 				`setTimeout(function() {`
 		+t(tab+4) 	+ 					`buildPreview(`
 					+ 						`textAce${options.descForm}.container.innerText`
 					+ 						`, ${jsonToString(options)});`
@@ -4425,13 +4454,13 @@ function resolvPreview(options={}, tab=0) {
 		+t(tab+1) 	+ 		`registerEventKeyboard.push("previewKeyDown${options.descForm}");`
 
 
-		+t(tab+1) 	+		`function injectHtml${options.descForm}(options, callback) { `
-		+t(tab+2) 	+			`var load = function(path, callback) { `
+		+t(tab+1) 	+		`function injectHtml${options.descForm}(options, callback) {`
+		+t(tab+2) 	+			`var load = function(path, callback) {`
 		+t(tab+3) 	+				`var head = document.getElementsByTagName('head')[0];`
 		+t(tab+3) 	+				`var s = document.createElement('script');`
 		+t(tab+3) 	+				`s.src = options.baseUrl + "/" + path;`
 		+t(tab+3) 	+				`head.appendChild(s);`
-		+t(tab+3) 	+				`s.onload = s.onreadystatechange = function(_, isAbort) { `
+		+t(tab+3) 	+				`s.onload = s.onreadystatechange = function(_, isAbort) {`
 		+t(tab+4) 	+					`if (isAbort || !s.readyState || s.readyState == "loaded" || s.readyState == "complete") {`
 		+t(tab+5) 	+						`s = s.onload = s.onreadystatechange = null;`
 		+t(tab+5) 	+						`if (!isAbort) callback();`
@@ -4443,7 +4472,7 @@ function resolvPreview(options={}, tab=0) {
 		+t(tab+2) 	+			`load("ace.js", function() {`
 		+t(tab+3) 	+				`ace.config.loadModule("ace/ext/textarea", function(m) {`
 		// +t(tab+3) 	+				`ace.config.loadModule("ace/ext/static_highlight", function(m) {`
-		+t(tab+4) 	+					`transform = function(el) { `
+		+t(tab+4) 	+					`transform = function(el) {`
 		+t(tab+5) 	+						`if (!el.ace) el.ace = m.transformTextarea(el, options.ace);`
 		+t(tab+4) 	+					`};`
 		+t(tab+4) 	+					`pending = pending.forEach(transform);`
@@ -4460,7 +4489,7 @@ function resolvPreview(options={}, tab=0) {
 		+t(tab+1) 	+		`injectHtml${options.descForm}({`
 		+t(tab+2) 	+			`baseUrl: "${options.pathAce || './lib/ace'}",`
 		+t(tab+2) 	+			`target: $("#textarea${options.descForm}")[0]`
-		+t(tab+1) 	+		`}, function () { `
+		+t(tab+1) 	+		`}, function () {`
 		+t(tab+2) 	+			`textAceHTML${options.descForm} = $("#textarea${options.descForm}")[0].ace;`
 		+t(tab+2) 	+			`textAceHTML${options.descForm}.setOption('theme',"monokai");`
 		+t(tab+2) 	+			`textAceHTML${options.descForm}.setOption('mode',"html");`
@@ -4478,7 +4507,7 @@ function buildPreview(text, options) {
 	var json = text;
 	var id = options.descForm;
 
-	try { 
+	try {
 		eval(`json = ${json}`);
 		$("#textareaJson"+id).val(text);
 		$("#divPreview"+id).html(resolvConfig(json, 0, true));
@@ -4499,22 +4528,22 @@ function buildPreview(text, options) {
 			injectHtml${id}({
 				baseUrl: "${options.pathAce || './lib/ace'}",
 				target: $("#textarea${id}")[0]
-			}, function () { 
+			}, function() {
 				textAceHTML${id} = $("#textarea${id}")[0].ace;
 				${attrs}
 			});
 		`);
 		(options.onBuild || function() { })();
-	} catch(e) { 
+	} catch(e) {
 		console.error(e);
 		alert('Falha ao gerar preview!');
 	}
 }
 
-function resolvRow(options, tab=0) { 
+function resolvRow(options, tab=0) {
 	return ""
 		+t(tab)	+ 	"<div class='row'>"
-				+ (function(array){
+				+ (function(array) {
 					var html = '';
 					for (var i = 0; i < array.length; i++) html += resolvConfig(array[i],tab+1);
 					return html;
@@ -4523,13 +4552,13 @@ function resolvRow(options, tab=0) {
 }
 
 /*
-	Dependencias 
+	Dependências
 	<script src="jquery/dist/jquery.min.js"></script>
 	<script src="jquery-ui/jquery-ui.min.js"></script>
 */
 
 /* GER */
-function resolvSortable(option, data=[]) { 
+function resolvSortable(option, data=[]) {
 	/*
 		objParamGrade: {
 			tamanhoFont: 		11
@@ -4550,40 +4579,40 @@ function resolvSortable(option, data=[]) {
 					head: ''												// Descrição no titulo da tabela
 					class: ''												// Class para delimitar o range de cada coluna Ex: (col-xs-11)
 
-					param: '' 												// Parametro a ser mostrado na celula OR
-					param: function(data, option, indice) 					// Parametro a ser mostrado por function usará como callback, 
-					... 													// 		o option é referente as opções do input e o indice é dos dados OR
-					param: { 												// Parametro mais personalizado para mostrar valores
+					param: '' 												// Parâmetro a ser mostrado na célula OR
+					param: function(data, option, index) 					// Parâmetro a ser mostrado por function usará como callback, 
+					... 													// 		o option é referente as opções do input e o índice é dos dados OR
+					param: { 												// Parâmetro mais personalizado para mostrar valores
 						op: (CONCAT|SUM), 									// operação a ser realizada pelos valores
 						val: [ { attr,literal } ] 							// valores a serem trabalhos para mostrar
 					}
 
 					dateFormat: { 											// Indica que o campo é data
 						format: 'DD/MM/Y' 									// Define com vai ser impresso o formato da data
-						format: function(data, option, indice) 				// Pode usar como callback, similar ao atributo param
+						format: function(data, option, index) 				// Pode usar como callback, similar ao atributo param
 						useDataTable: 										// (0|1) default: 1
 					}
 					format: { 												// Indica que o campo é um número
 						casas: 	  0 										// numero de casas decimais
-						dec: 	',' 										// separedor decimal
-						mili: 	'.' 										// separedor de milhar
+						dec: 	',' 										// separador decimal
+						mili: 	'.' 										// separador de milhar
 					}
 				}
 			],
-			descForm: '' 													// referica para a função de editar e apagar registros
+			descForm: '' 													// referencia para a função de editar e apagar registros
 			objParamGrade: '' 												// objeto de estilização do qualidade
 			ck_remove: (0|1) 												// informe se vai ter opção para remover o item
-			icon_ball: (0|1) 												// se vai ser icone de bolinha ou setinha
+			icon_ball: (0|1) 												// se vai ser ícone de bolinha ou seta
 		}
 	*/
 
-	let html = ''
+	var html = ''
 		+ 	`<ul id="sortable${option.descForm}" class="todo-list">`
 		+ 		`<li class="unsortable disable-sort-item row" style="margin:0;">`
 		+ 			`<div class="row" style="width:100%">`
 		+ 				`<div class="col-xs-1">`
 		+ 					`<span class="" style="opacity: 0;white-space: nowrap;">`
-		+ ((option.icon_ball || '') == '' 
+		+ ((option.icon_ball || '') == ''
 			? 					`<i class="fa fa-long-arrow-up" style="margin-left:1px"></i>`
 			+ 					`<i class="fa fa-long-arrow-down" style="margin-right:1px"></i>`
 			: 					`<i class="fa fa-ellipsis-v" style="margin-right:1px"></i>`
@@ -4609,7 +4638,7 @@ function resolvSortable(option, data=[]) {
 		+ 		data.map(function(dt) { return returnItemSortable(dt, option)}).join('')
 		+ 	`</ul>`
 		+ 	`<style>`
-		+ 		`.todo-list li { `
+		+ 		`.todo-list li {`
 		+ 			`padding: 5px !important;`
 		+ 		`}`
 		+ 	`</style>`
@@ -4619,14 +4648,14 @@ function resolvSortable(option, data=[]) {
 		+ 		`dataSortable${option.descForm}.forEach(function(dt,i) {`
 		+ 			`dataSortable${option.descForm}[i].li = $("#sortable${option.descForm}").find("li")[i+1]`
 		+ 		`});`
-		+ 		`$('#sortable${option.descForm}').sortable({ `
+		+ 		`$('#sortable${option.descForm}').sortable({`
 		+ 			`placeholder: 'sort-highlight',`
 		+ 			`handle: '.handle',`
 		+ 			`forcePlaceholderSize: true,`
 		+ 			`zIndex: 999999,`
 		// + 			`cancel: ".disable-sort-item",`
 		+ 			`items: "li:not(.unsortable)",`
-		+ 			`update: function(event, ui) { `
+		+ 			`update: function(event, ui) {`
 		+ 				`reorderSortable("${option.descForm}");`
 		+ 			`}`
 		+ 		`});`
@@ -4635,13 +4664,13 @@ function resolvSortable(option, data=[]) {
 	return html;
 }
 
-function returnItemSortable(data, option) { 
+function returnItemSortable(data, option) {
 	return ''
 		+ 	`<li data-id="${data[(option.id || '')]}" style="margin:0;background-color:white;border:1px solid black;margin-bottom:2px;">`
 		+ 		`<div class="row" style="width:100%">`
 		+ 			`<div class="col-xs-1">`
 		+ 				`<span class="handle" style="white-space: nowrap;">`
-		+ ((option.icon_ball || '') == '' 
+		+ ((option.icon_ball || '') == ''
 			? 				`<i class="fa fa-long-arrow-up" style="margin-left:1px"></i>`
 			+ 				`<i class="fa fa-long-arrow-down" style="margin-right:1px"></i>`
 			: 				`<i class="fa fa-ellipsis-v" style="margin-right:1px"></i>`
@@ -4649,9 +4678,9 @@ function returnItemSortable(data, option) {
 		)
 		+ 				`</span>`
 		+ 			`</div>`
-		+ (option.inputs || []).map(function(input, indice) { return ''
+		+ (option.inputs || []).map(function(input, index) { return ''
 			+ 		`<div class="${(input.class || '')} text-${input.align || 'left'}">`
-			+ 			`<span class="text">${resolveValPrintSortable($.extend(option, input), data, indice)}</span>`
+			+ 			`<span class="text">${resolveValPrintSortable($.extend(option, input), data, index)}</span>`
 			+ 		`</div>`
 		}).join('')
 		+ ((option.ck_remove || '') == '' ? '' : ''
@@ -4667,126 +4696,120 @@ function returnItemSortable(data, option) {
 		+ 	`</li>`
 }
 
-function reorderSortable(id) { 
-	let option = window['optionsSortable'+id]
+function reorderSortable(id) {
+	var option = window['optionsSortable'+id]
 	, 	li = $('#sortable'+id).find('li')
 	, 	newArrayId = [];
 
-	for (let i = 1; i < li.length; i++) 
+	for (var i = 1; i < li.length; i++)
 		newArrayId.push(window['dataSortable'+id]
 			.filter(function(dt) { return String(dt[option.id]) == String($(li[i]).data('id')) })[0]);
 
 	window['dataSortable'+id] = newArrayId;
 }
 
-var getSortable = function(id) { return window['dataSortable'+id]};
+var getSortable = function(id) { return window['dataSortable'+id]; };
 
-function addSortable(id, value) { 
-	let newValue = {};
+function addSortable(id, value) {
+	var newValue = {};
 	eval(`newValue = ${ jsonToString(value) }`);
 	// eval(`newValue = { ${ Object.keys(value).map(key => `${key}: value.${key}`) } }`);
 
 	$('#sortable'+id).append(returnItemSortable(newValue, window['optionsSortable'+id]));
-	let indice = window['dataSortable'+id].length;
+	var index = window['dataSortable'+id].length;
 	window['dataSortable'+id].push(newValue);
-	window['dataSortable'+id][indice].li = $('#sortable'+id).find("li")[indice+1];
+	window['dataSortable'+id][index].li = $('#sortable'+id).find("li")[index+1];
 }
 
-function removeItemSortable(id, item) { 
-	let data = getSortable(id)
+function removeItemSortable(id, item) {
+	var data = getSortable(id)
 	, 	option = window['optionsSortable'+id]
-	, 	indice = data.map(function(dt) { return String(dt[option.id])} ).indexOf(String(item));
+	, 	index = data.map(function(dt) { return String(dt[option.id])} ).indexOf(String(item));
 
-	if (indice >= 0) { 
-		$(data[indice].li).remove();
-		data.splice(indice, 1);
+	if (index >= 0) {
+		$(data[index].li).remove();
+		data.splice(index, 1);
 	}
 }
 
-function resolveValPrintSortable(option, data, indice) { 
-	let mask = (data[option.param] == undefined) ? '%0%' : (option.mask || '%0%');
+function resolveValPrintSortable(option, data, index) {
+	var mask = (data[option.param] == undefined) ? '%0%' : (option.mask || '%0%');
 
-	let valData = '';
-	if (typeof(option.param) == 'function') { 
-		valData = option.param(data, option, indice)
+	var valData = '';
+	if (typeof(option.param) == 'function') {
+		valData = option.param(data, option, index)
 	}
-	else if (typeof(option.param) == 'object') { 
+	else if (typeof(option.param) == 'object') {
 		if (['sum'].indexOf(option.param.op) < 0) valData = 0;
 
-		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') { 
+		if ((option.param.op || 'CONCAT').toUpperCase() == 'CONCAT') {
 			valData = option.param.val.map(function(val) { return val.literal || data[val.attr]; }).join('');
 		}
-		if (option.param.op.toUpperCase() == 'SUM') { 
+		if (option.param.op.toUpperCase() == 'SUM') {
 			valData = option.param.val
 				.map(function(val) { return parseFloat(val.literal || data[val.attr] || 0) })
 				.reduce(function(t,v) { return t + v; }, 0);
 		}
 	}
-	else { 
+	else {
 		valData = (data[option.param] || '');
 	}
 
 
-	let val = '';
-	if((option.format || '') != '') { 
-		let { casas, dec, mili } = option.format;
-		if (
-			(typeof(option.param) == 'function' && valData == '') || 
+	var val = '';
+	if ((option.format || '') != '') {
+		var { casas, dec, mili } = option.format;
+		if ((typeof(option.param) == 'function' && valData == '') ||
 			(typeof(option.param) != 'function' && data[option.param] == undefined)
 		) { 
 			valData = option.default || '';
-		} else { 
+		} else {
 			valData = (valData || 0);
-			if (valData == 0 && (option.setDefaultValZero || false)) { 
+			if (valData == 0 && (option.setDefaultValZero || false)) {
 				val = option.default || '';
-			} else { 
+			} else {
 				val = number_format(valData, (casas || 0), (dec || ','), (mili || '.'));
 			}
 		}
 	}
-	else if ((option.dateFormat || '') != '') { 
+	else if ((option.dateFormat || '') != '') {
 		option.dateFormat.format = ((option.dateFormat || {}).format || 'DD/MM/Y')
-		let valHide = "<spam style='display:none;'>%0%</spam>";
+		var valHide = "<spam style='display:none;'>%0%</spam>";
 		try { valHide = valHide.replace('%0%', moment(valData).format('Y-MM-DD')); } catch(e) { }
 
 		if (valData == '') {
 			valData = option.default || '';
 		} else {
 			valData = moment(valData).format(
-				eval(`option.dateFormat.format${ typeof(option.dateFormat.format) == 'string' ? '' : '(data, option, indice)' }`)
+				eval(`option.dateFormat.format${ typeof(option.dateFormat.format) == 'string' ? '' : '(data, option, index)' }`)
 			)
 		}
 		val = valHide + valData;
 	}
-	else { 
+	else {
 		val = valData || option.default || '';
 	}
 
 	return mask.replace(/%0%/g, val);
 }
 
-function resolvStyle(obj) { 
-	// var html = '';
+function resolvStyle(obj) {
+	if (typeof obj == 'string') return obj;
+
 	var keys = Object.keys(obj);
-
-	// return keys.map(k => k + ':' + obj[k] + ';').join('');
 	return keys.map(function(k) { return k + ':' + obj[k] + ';'; }).join('');
-
-	// for (var i = 0; i < keys.length; i++)
-	// 	html += keys[i] + ':' + obj[keys[i]] + ';';
-	// return html;
 }
 
-function getForm(obj,options={}) { 
+function getForm(obj,options={}) {
 	return serealizeForm(obj,options);
 }
 
-function serealizeForm(obj,options={}) { 
+function serealizeForm(obj,options={}) {
 	/*
 		options: {
 			options do valid 		-- Opções descritas na função returnInputValid()
-			onlyValue: (0|1) 	-- Buscar somente valores do formulario
-			onlyValuePre: (0|1) 	-- Buscar valores predefinido no formulario
+			onlyValue: (0|1) 	-- Buscar somente valores do formulário
+			onlyValuePre: (0|1) 	-- Buscar valores predefinido no formulário
 		}
 	*/
 	options = $.extend({},{ }, options);
@@ -4794,40 +4817,39 @@ function serealizeForm(obj,options={}) {
 	var inputs = returnInputObj(obj);
 	if ((options.onlyValuePre || '') == '' && (options.onlyValue || '') == '') {
 		var valid = returnInputValid(inputs, options);
-	} else { 
+	} else {
 		var valid = true;
 	}
 	var keys = returnIdObj(obj);
 	var param = {}, paramAdd;
 	var input = {};
 
-	for (var i = 0; i < keys.length; i++) { 
-		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
+	for (var i = 0; i < keys.length; i++) {
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
 			paramAdd = ['codigoConsulta'].indexOf(keys[i].parent) < 0 ? '' : ',"id"'
 			if ((options.onlyValuePre || '') == '') {
 				param[keys[i].id] = eval(`resolvVal(keys[i].id ${paramAdd});`);
-			} else { 
+			} else {
 				param[keys[i].id] = keys[i].obj.value != undefined ? keys[i].obj.value : eval(`resolvVal(keys[i].id ${paramAdd});`);
 			}
 		}
 
-		if (
-			(keys[i].obj.input || '') != '' || 
-			((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
+		if ((keys[i].obj.input || '') != ''
+			|| ((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
 		) { 
-			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) { 
+			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) {
 				if ((options.onlyValuePre || '') == '') {
 					input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
-				} else { 
+				} else {
 					input[keys[i].obj.input] = keys[i].obj.value;
 				}
 			} else {
-				if ((options.onlyValuePre || '') == '') { 
+				if ((options.onlyValuePre || '') == '') {
 					try { input[keys[i].obj.id] 			= eval(`resolvVal(keys[i].id,"id");`); 		} catch(e) {}
 					try { input[keys[i].obj.codigo.input] 	= eval(`resolvVal(keys[i].id,"codigo");`); 	} catch(e) {}
 					try { input[keys[i].obj.desc.input] 	= eval(`resolvVal(keys[i].id,"desc");`); 	} catch(e) {}
 					try { input[keys[i].obj.select.value] 	= eval(`resolvVal(keys[i].id,"select");`); 	} catch(e) {}
-				} else { 
+				} else {
 					input[(keys[i].obj.id || keys[i].obj.codigo.input)] = keys[i].obj.value;
 				}
 			}
@@ -4836,7 +4858,7 @@ function serealizeForm(obj,options={}) {
 	return { valid , inputs , param , input };
 }
 
-function clearForm(obj) { 
+function clearForm(obj) {
 	var keys = returnIdObj(obj);
 	for (var i = 0; i < keys.length; i++) {
 		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
@@ -4862,17 +4884,17 @@ function clearForm(obj) {
 	}
 }
 
-function setForm(data, obj, options={}) { 
+function setForm(data, obj, options={}) {
 	/*
 		options: {
-			dec: ',' 	-- Caso valor seja numerico formatará o separador decimal
+			dec: ',' 	-- Caso valor seja numérico formatará o separador decimal
 		}
 	*/
 	clearForm(obj);
 	var keys = returnIdObj(obj);
-	for (var i = 0; i < keys.length; i++) { 
-		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
-			if (keys[i].parent == 'codigoConsulta') { 
+	for (var i = 0; i < keys.length; i++) {
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
+			if (keys[i].parent == 'codigoConsulta') {
 				try { resolvVal(keys[i].id , 'id'		, (data[keys[i].obj.id || keys[i].obj.codigo.input] || '')); } catch(e){}
 				try { resolvVal(keys[i].id , 'codigo'	, (data[keys[i].obj.codigo.input] 	|| '')); } catch(e){}
 				try { resolvVal(keys[i].id , 'desc'		, (data[keys[i].obj.desc.input] 	|| '')); } catch(e){}
@@ -4881,9 +4903,9 @@ function setForm(data, obj, options={}) {
 					window[capitalize(keys[i].descForm) + 'Selected_Global'] = (data[(keys[i].codigo || {}).input] || '');
 				} catch(e){}
 			}
-			else { 
+			else {
 				var val = data[keys[i].obj.input];
-				if (data[keys[i].obj.input] == undefined) { 
+				if (data[keys[i].obj.input] == undefined) {
 					val = (keys[i].obj.value || keys[i].obj.val || '');
 				}
 
@@ -4902,14 +4924,14 @@ function setForm(data, obj, options={}) {
 	}
 }
 
-function disabledForm(obj, disabled=true) { 
+function disabledForm(obj, disabled=true) {
 	var keys = returnIdObj(obj);
-	for (var i = 0; i < keys.length; i++) { 
-		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) { 
-			if (keys[i].parent == 'codigoConsulta') { 
+	for (var i = 0; i < keys.length; i++) {
+		if ( returnRefInputObj().indexOf(keys[i].parent) >= 0 ) {
+			if (keys[i].parent == 'codigoConsulta') {
 				resolvDisabled(keys[i].id, 'id', disabled);
 			}
-			else { 
+			else {
 				resolvDisabled(keys[i].id, disabled);
 				$("#" + keys[i].id + "_obs").html('');
 			}
@@ -4917,21 +4939,21 @@ function disabledForm(obj, disabled=true) {
 	}
 }
 
-function returnInputValid(inputs,options={}) { 
+function returnInputValid(inputs,options={}) {
 	/*
 		options: {
-			paramReq: 'required' | ['required'] 		-- Parametro para informar quais atributos devem ser vistos com obrigatório
+			paramReq: 'required' | ['required'] 		-- Parâmetro para informar quais atributos devem ser vistos com obrigatório
 		}
 	*/
 	var paramReqArray = (options.paramReq || 'required'), paramReq;
 	if (typeof(paramReqArray) == 'string') paramReqArray = [paramReqArray];
 
 	var valid, msm;
-	for (var i = 0; i < inputs.length; i++) { 
-		for (var j = 0; j < paramReqArray.length; j++) { 
+	for (var i = 0; i < inputs.length; i++) {
+		for (var j = 0; j < paramReqArray.length; j++) {
 			paramReq = paramReqArray[j];
 
-			if ((inputs[i][paramReq] || '') != '') { 
+			if ((inputs[i][paramReq] || '') != '') {
 
 				if (typeof(inputs[i][paramReq]) == 'function') {
 
@@ -4944,7 +4966,7 @@ function returnInputValid(inputs,options={}) {
 					if (msm == '') // Caso o campo esteja preenchido verifica a função de validação
 						msm = (inputs[i][paramReq]('valid') || '');
 
-					if (typeof(msm) == 'string' && msm != ''){
+					if (typeof(msm) == 'string' && msm != '') {
 						alert(msm);
 						msm = false;
 					} else {
@@ -4987,7 +5009,7 @@ function returnInputValid(inputs,options={}) {
 	return true;
 }
 
-function focusInput(obj) { 
+function focusInput(obj) {
 	var paramIDs = returnRefId(),
 		id = (obj || {})[Object.keys(obj).filter(function(e) { return paramIDs.indexOf(e) != -1; })[0]],
 		path = resolvPath(id);
@@ -5005,7 +5027,7 @@ function focusInput(obj) {
 	if (obj.tipoCampo == 'codigoConsulta') {
 		try {
 			$("#" + obj.descForm).find('.codigo').find('input')[0].focus();
-		} catch(e){ 
+		} catch(e){
 			try {
 				$("#" + obj.descForm).find('button')[0].focus();
 			} catch(e){}
@@ -5013,19 +5035,19 @@ function focusInput(obj) {
 	}
 }
 
-function returnInputObj(obj) { 
+function returnInputObj(obj) {
 	return returnFromEl(obj, returnRefInputObj());
 }
 
-function returnRefInputObj() { 
+function returnRefInputObj() {
 	return ['input','select','codigoConsulta','textarea'];
 }
 
-function returnRefId() { 
+function returnRefId() {
 	return ['descForm','id','name'];
 }
 
-function returnIdObj(obj) { 
+function returnIdObj(obj) {
 	var ref = returnRefId();
 	var el = returnFromEl(obj, ref, { first: true });
 	var map = el.map(function(e) {
@@ -5037,7 +5059,7 @@ function returnIdObj(obj) {
 	return el;
 }
 
-function returnFromEl(obj, types) { 
+function returnFromEl(obj, types) {
 	/*
 		options: {
 			first: false 	-- Server para quando tiver pesquisando as chaves do objeto parar no primeiro que encontrar
@@ -5048,13 +5070,13 @@ function returnFromEl(obj, types) {
 	var keys 		= Object.keys(obj);
 	var options 	= $.extend( {}, { first: false }, (arguments[2] || {}) );
 
-	for (var i = 0; i < types.length; i++) { 
-		if (obj[types[i]] != undefined) { 
+	for (var i = 0; i < types.length; i++) {
+		if (obj[types[i]] != undefined) {
 			inputs.push(
 				$.extend(
 					{},
-					(typeof(obj[types[i]]) == 'object' 
-						? obj[types[i]] 
+					(typeof(obj[types[i]]) == 'object'
+						? obj[types[i]]
 						: JSON.parse("{\"" + types[i] + "\":\"" + String(obj[types[i]]) + "\"}")
 					),
 					{ tipoCampo: types[i], parent: (arguments[3] || ''), obj: obj }
@@ -5064,8 +5086,8 @@ function returnFromEl(obj, types) {
 		}
 	}
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (types.indexOf(keys[i]) == -1 && typeof(obj[keys[i]]) == 'object') { 
+	for (var i = 0; i < keys.length; i++) {
+		if (types.indexOf(keys[i]) == -1 && typeof(obj[keys[i]]) == 'object') {
 			temp = returnFromEl(obj[keys[i]], types, options, keys[i]);
 			for (j = 0; j < temp.length; j++) inputs.push(temp[j]);
 		}
@@ -5178,13 +5200,24 @@ var modalinputFile = `<style>
 `;
 var modalmenu = `<script>
 function mudarPagina(el, divId, name, nameDiv) {
+	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
 	var elementoMenu = document.getElementsByName(name);
 	var elementoContMenu = document.getElementsByName(nameDiv);
 	for (var i = 0; i < elementoMenu.length; i++) {
-		$(elementoMenu[i]).attr('class','');
+		if (bootstrap == '4') {
+			$(elementoMenu[i]).find('a').attr('class','nav-link');
+		} else {
+			$(elementoMenu[i]).attr('class','');
+		}
 		$(elementoContMenu[i]).css('display','none');
 	}
-	$(el).attr('class','active');
+
+	if (bootstrap == '4') {
+		$(el).find('a').attr('class','nav-link active');
+	} else {
+		$(el).attr('class','active');
+	}
+
 	$("#" + divId).css('display','block');
 }
 </script>`;
@@ -5238,50 +5271,50 @@ function resolvConfigModal(obj, forceSet=false) {
 
 	// fim função de resolução
 
-function resolvEl(id,cla='') { 
+function resolvEl(id,cla='') {
 	var ids 		= returnIdObj(objRefConfig_Global);
 	var map 		= ids.map(function(e){ return e.id; });
 	var objReturn 	= ids[map.indexOf(id)];
 
-	if (ids[map.indexOf(id)].parent == 'codigoConsulta') { 
+	if (ids[map.indexOf(id)].parent == 'codigoConsulta') {
 		cla = cla.indexOf('select') == 0 ? 'select' : cla;
 		objReturn.el = $("#" + id).find("." + cla).find(cla == 'select' ? 'select' : "input");
-	} else if (objReturn.parent == 'input' && objReturn.obj.type == "radio") { 
+	} else if (objReturn.parent == 'input' && objReturn.obj.type == "radio") {
 		var els = document.getElementsByName(objReturn.obj.name);
-		for (var i = 0; i < els.length; i++) { 
+		for (var i = 0; i < els.length; i++) {
 			if (els[i].checked) objReturn.el = $(els[i]);
 		}
-	} else if (objReturn.parent == 'preview') { 
+	} else if (objReturn.parent == 'preview') {
 		objReturn.el = $("#textareaJson" + id);
-	} else { 
+	} else {
 		objReturn.el = $("#" + id);
 	}
 	return objReturn;
 }
 
-function resolvVal(id) { 
+function resolvVal(id) {
 	/*
 		Set codigoConsulta type select: resolvVal('?id', 'SELECT', '?value')
 	*/
 	var el = resolvEl(id, (arguments[1] || ''));
 	var func = "val";
 
-	if (el.parent == 'menu') { 
+	if (el.parent == 'menu') {
 		var val = arguments[1];
-		if (val === 0 || ((val || '') != '' && !isNaN(val))) { 
-			try { 
+		if (val === 0 || ((val || '') != '' && !isNaN(val))) {
+			try {
 				$("#" + id + val).click();
 			} catch(e) { console.error(e); }
 		}
 
-		var itensMenu = document.getElementsByName(id), indiceMenu = -1;
-		for (var i = 0; i < itensMenu.length; i++) { 
-			if (itensMenu[i].className.indexOf('active') >= 0) indiceMenu = i;
+		var itensMenu = document.getElementsByName(id), indexMenu = -1;
+		for (var i = 0; i < itensMenu.length; i++) {
+			if (itensMenu[i].className.indexOf('active') >= 0) indexMenu = i;
 		}
-		return indiceMenu;
+		return indexMenu;
 	}
 
-	if (el.parent == 'codigoConsulta') { 
+	if (el.parent == 'codigoConsulta') {
 		var getDesc = arguments[1] == 'selectDesc';
 		var isSelect = arguments[1].toLowerCase().indexOf('select') == 0;
 		if (arguments.length > 2 && isSelect) 	return el.el.val(arguments[2]).trigger('change');
@@ -5291,7 +5324,7 @@ function resolvVal(id) {
 	} else { 
 		var value = (arguments[1] != undefined ? arguments[1] : el.obj.value);
 
-		switch ((((el.obj || {}).style || {})["text-transform"] || '').toLowerCase()) { 
+		switch ((((el.obj || {}).style || {})["text-transform"] || '').toLowerCase()) {
 			case 'uppercase': 	value = (value || '').toUpperCase(); break;
 			case 'lowercase': 	value = (value || '').toLowerCase(); break;
 			case 'capitalize': 	value = capitalize((value || '')); break;
@@ -5299,26 +5332,26 @@ function resolvVal(id) {
 
 		if (['div','span'].indexOf(el.parent) != -1) func = 'html';
 
-		if ((el.obj.isMonth || false) && arguments[1] != undefined) { 
-			if ((value || '') == '') { 
+		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
+			if ((value || '') == '') {
 				$("#"+id+'Datepicker').val('');
 			} else { 
 				$("#"+id+'Datepicker').datepicker('setDate', new Date(value+'-02'));
 			}
 		}
 
-		if (el.obj.type == 'file') { 
-			if (arguments[1] != undefined) { 
+		if (el.obj.type == 'file') {
+			if (arguments[1] != undefined) {
 				$('#' + id + '_desc_file').html(arguments[1]);
-				if (el.obj.fileType == 'img') { 
+				if (el.obj.fileType == 'img') {
 					var nameFile = arguments[1];
-					setTimeout(function() { 
+					setTimeout(function() {
 						var path = typeof el.obj.upload.path == 'string' ? el.obj.upload.path : el.obj.upload.path();
 						$('#'+ id + 'preview').attr('src', path + '/' + nameFile.replace(/ /g, '_'));
 
-						try { 
-							if ((el.obj.defaultImg || '') != '') { 
-								$('#'+ id + 'preview')[0].onerror = function() { 
+						try {
+							if ((el.obj.defaultImg || '') != '') {
+								$('#'+ id + 'preview')[0].onerror = function() {
 									var comp = typeof el.obj.defaultImg == 'string' ? '' : '.path';
 									eval(`$('#'+ id + 'preview').attr('src', el.obj.defaultImg${comp});`)
 								}
@@ -5328,7 +5361,7 @@ function resolvVal(id) {
 					// if (path[path.length-1] != '/') path += '/';
 				}
 				return;
-			} else { 
+			} else {
 				var val = el.el[func]().replace(/\\/g, '/');
 				val = val.substring(val.lastIndexOf('/')+1, val.length);
 				if (val == '') val = $('#' + id + '_desc_file').html();
@@ -5336,7 +5369,7 @@ function resolvVal(id) {
 			}
 		}
 
-		if (el.obj.type == 'checkbox' && ([0,1,true,false,'1','0']).indexOf(arguments[1]) >= 0) { 
+		if (el.obj.type == 'checkbox' && ([0,1,true,false,'1','0']).indexOf(arguments[1]) >= 0) {
  			if ((el.obj.id || '') != '' && (el.obj.toggle || '') != '') {
 				if (arguments[1] == 1) {
 					if ($('#' + el.obj.id).parent().attr('class').indexOf('off') >= 0) {
@@ -5353,41 +5386,41 @@ function resolvVal(id) {
 				}
 			}
 			return el.el[0].checked = arguments[1] == 1;
-		} else if (el.obj.type == 'checkbox') { 
+		} else if (el.obj.type == 'checkbox') {
 			return el.el[0].checked;
 		}
 
-		if ((el.obj.type == 'radio' || (el.obj.radio || '') != '') && 
-			arguments[1] != undefined && 
-			el.el.attr('id') != id
+		if ((el.obj.type == 'radio' || (el.obj.radio || '') != '')
+			&& arguments[1] != undefined
+			&& el.el.attr('id') != id
 		) { 
 			var setValue = -1;
 			var els = document.getElementsByName(id);
-			for (var i = 0; i < els.length; i++) { 
-				if (els[i].value == arguments[1]) { 
+			for (var i = 0; i < els.length; i++) {
+				if (els[i].value == arguments[1]) {
 					els[i].checked = true;
 					setValue = i;
 				}
 			}
 			if (setValue >= 0) return els[setValue];
 		}
-		if (arguments.length > 1) 	return el.el[func]( value );
+		if (arguments.length > 1) 	return el.el[func](value);
 									return el.el[func]();
 	}
 }
 
-function resolvDisabled(id, cla='') { 
+function resolvDisabled(id, cla='') {
 	var el = resolvEl(id, cla);
 
-	if (el.parent == 'codigoConsulta') { 
-		if (arguments.length > 2) { 
+	if (el.parent == 'codigoConsulta') {
+		if (arguments.length > 2) {
 			$("#"+id).find('button').attr('disabled',(arguments[2] || false))
 			return el.el			.attr('disabled',(arguments[2] || false));
-		} else { 
+		} else {
 			$("#"+id).find('button').attr('disabled',true);
 			return el.el			.attr('disabled',true);
 		}
-	} else { 
+	} else {
 		if (['div','spam'].indexOf(el.parent) < 0) { // se NÃO for div
 			if ((el.obj.isMonth || false)) $("#"+id+'Datepicker').attr('disabled', (arguments[1] || false));
 
@@ -5397,19 +5430,19 @@ function resolvDisabled(id, cla='') {
 	}
 }
 
-function resolvFocus(id, cla='') { 
+function resolvFocus(id, cla='') {
 	var el = resolvEl(id, cla);
 
-	function resolvFocusAction(el, op="focus") { 
+	function resolvFocusAction(el, op="focus") {
 		try { el[0][op](); } catch(e) { }
 	}
 
-	if (el.parent == 'codigoConsulta') { 
+	if (el.parent == 'codigoConsulta') {
 		var isBtn = (el.obj.dist || 'B').indexOf('B') >= 0 && (el.obj.dist || 'C').indexOf('C') < 0;
 		return resolvFocusAction(isBtn ? $("#"+id).find('button') : el.el);
 	} 
 
-	if (['input','button'].indexOf(el.parent) >= 0) { 
+	if (['input','button'].indexOf(el.parent) >= 0) {
 		if ((el.obj.isMonth || false)) {
 			return resolvFocusAction($("#"+id+'Datepicker'));
 		}
@@ -5417,18 +5450,18 @@ function resolvFocus(id, cla='') {
 	}
 }
 
-function resolvVisibled(id, cla='') { 
+function resolvVisibled(id, cla='') {
 	var el = resolvEl(id, cla);
 
-	if (el.parent == 'codigoConsulta') { 
+	if (el.parent == 'codigoConsulta') {
 		return el.el.parent().parent().css('display', (arguments[2] || 'none'));
-	} else { 
+	} else {
 		if (['div','spam'].indexOf(el.parent) < 0) { // se NÃO for div
 			var keys = Object.keys(el.obj);
 			var tiposDiv = ['idDiv','classDiv','styleDiv','clickDiv','isRow'];
 
-			for (var i = 0; i < keys.length; i++) { 
-				if (tiposDiv.indexOf(keys[i]) >= 0) { 
+			for (var i = 0; i < keys.length; i++) {
+				if (tiposDiv.indexOf(keys[i]) >= 0) {
 					return el.el.parent().css('display',(arguments[1] || 'none'));
 				}
 			}
@@ -5440,15 +5473,15 @@ function resolvVisibled(id, cla='') {
 	}
 }
 
-function resolvEvento(ev, id) { 
+function resolvEvento(ev, id) {
 	/*
 		registerEventAll: {
 			evento: '' 			evento esperado
 			id: ''				campo esperado
 			func: function 		a rotina em si
 		}
-		Eventos: 
-			menu: 
+		Eventos:
+			menu:
 				click
 			input:
 				onchange
@@ -5458,15 +5491,15 @@ function resolvEvento(ev, id) {
 			codigoConsutla:
 				trigger
 	*/
-	registerEventAll.forEach(function(evento) { 
-		if (evento.evento == ev && evento.id == id) { 
+	registerEventAll.forEach(function(evento) {
+		if (evento.evento == ev && evento.id == id) {
 			evento.func();
 		}
 	});
 }
 
-function resolvIcon(icon) { 
-	var classFa = fa_icon_Global.find(function(i) { 
+function resolvIcon(icon) {
+	var classFa = fa_icon_Global.find(function(i) {
 		return i != 'fa' && (icon == i || icon.indexOf(i+' ') == 0);
 	}) || '';
 
@@ -5476,14 +5509,14 @@ function resolvIcon(icon) {
 	);
 }
 
-function jsonToStringParam(obj,tab=0,indent=false) { 
+function jsonToStringParam(obj,tab=0,indent=false) {
 	var objParam = {}, val, func, keys = Object.keys(obj);
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (typeof(obj[keys[i]]) == 'function') { 
+	for (var i = 0; i < keys.length; i++) {
+		if (typeof(obj[keys[i]]) == 'function') {
 			func = obj[keys[i]];
 			val = func();
-		} else { 
+		} else {
 			val = obj[keys[i]];
 		}
 		objParam[keys[i]] = val;
@@ -5491,17 +5524,16 @@ function jsonToStringParam(obj,tab=0,indent=false) {
 	return jsonToString(objParam, tab, indent);
 }
 
-function jsonToString(obj, tab=0, indent=false) { 
+function jsonToString(obj, tab=0, indent=false) {
 	if (typeof(obj) != 'object') return false;
 
 	var keys = Object.keys(obj);
 	var isObj = isNaN(keys[0] || 0) || JSON.stringify(obj).substring(0,1) == '{';
 	var text = (isObj  ? '{' : '['); // (indent ? t(tab) : '') +
 
-	for (var i = 0; i < keys.length; i++) { 
-		if (
-			['undefined','null','xml'].indexOf(typeof(obj[keys[i]])) != -1 ||
-			obj[keys[i]] == null
+	for (var i = 0; i < keys.length; i++) {
+		if (['undefined','null','xml'].indexOf(typeof(obj[keys[i]])) != -1
+			|| obj[keys[i]] == null
 		) continue;
 
 		text += ''
@@ -5509,13 +5541,13 @@ function jsonToString(obj, tab=0, indent=false) {
 			+ (indent ? t(tab+1) : '')
 			+ (isObj ? "\"" + keys[i] + "\":" : '')
 
-		switch (typeof(obj[keys[i]])) { 
+		switch (typeof(obj[keys[i]])) {
 			case 'number': 
 			case 'boolean': text += obj[keys[i]]; 								break;
 			case 'string': 	text += "\"" + obj[keys[i]] + "\""; 				break;
 			case 'object': 	text += jsonToString(obj[keys[i]],tab+1,indent); 	break;
 				// text += (indent ? t(tab+1) : '') + jsonToString(obj[keys[i]],tab+1,indent); break;
-			case 'function': 
+			case 'function':
 				text += indent ? ajusteTabFunc(obj[keys[i]],tab+1) : String(obj[keys[i]]); break;
 		}
 	}
@@ -5523,29 +5555,29 @@ function jsonToString(obj, tab=0, indent=false) {
 	return text;
 }
 
-function ajusteTabFunc(func,tab=0,initTab=false) { 
+function ajusteTabFunc(func,tab=0,initTab=false) {
 	if (typeof func == 'function') func = String(func);
 
 	func = func.replace(/&nbsp;/g, '[&nb;]');
 	func = func.replace(/ /g, '&nbsp;');
 	func = func.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 
-	while (func.indexOf('&nbsp;') == 0) { 
+	while (func.indexOf('&nbsp;') == 0) {
 		func = func.replace('&nbsp;','');
 	}
 	func = func.split('\n');
 
 	var defaultTab = 0, contTabIni, linha;
-	for (var i = 1; i < func.length; i++) { 
+	for (var i = 1; i < func.length; i++) {
 		contTabIni = 0
 		linha = func[i].split('&nbsp;');
-		for (var j = 0; j < linha.length; j++) { 
+		for (var j = 0; j < linha.length; j++) {
 			if (linha[j] == '') contTabIni++;
 			else 				j = linha.length;
 		}
 		if (defaultTab == 0 || contTabIni < defaultTab) defaultTab = contTabIni;
 	}
-	for (var i = 1; i < func.length; i++) { 
+	for (var i = 1; i < func.length; i++) {
 		linha = func[i].split('&nbsp;');
 		linha.splice(0, defaultTab);
 		func[i] = linha.join('&nbsp;');
@@ -5558,24 +5590,24 @@ function ajusteTabFunc(func,tab=0,initTab=false) {
 	return func;
 }
 
-function t() { 
+function t() {
 	var num = (arguments[0] || 0);
 	var tab = '\n';
 	for (var i = 0; i < num; i++) tab += '\t'
 	return returnObjIdentado_Global ? tab : '';
 }
 
-function tirarAcentuacao(texto, isParam=false) { 
-	var chars = [ 
+function tirarAcentuacao(texto, isParam=false) {
+	var chars = [
 		'áàãäâÃÂÁÀÄéèëêÉÈËÊíìïîÍÌÏÎóòôõöÕÔÓÒÖúùüûÚÙÜÛýÿÝñÑçÇ°º¹²³ÅÂž¡ËØŽƒ‰ŠÐ×—ß÷',
 		'aaaaaAAAAAeeeeEEEEiiiiIIIIoooooOOOOOuuuuuuuuyyYnNcCoo123AAziEOZF%SDX-B/'
 	]
 	var char3 = '§´ª£¢¬¤¬©¨«°†¹®¶¢¼©€®’½µ¶¢™“¼„¢“¿±˜þ¾¯•‡„«';
 
-	for (var i = 0; i < chars[0].length; i++) 
+	for (var i = 0; i < chars[0].length; i++)
 		texto = texto.replace( new RegExp(chars[0][i], 'g'), chars[1][i] );
 
-	for (var i = 0; i < char3.length; i++) 
+	for (var i = 0; i < char3.length; i++)
 		texto = texto.replace( new RegExp(char3[i], 'g'), '' );
 
 	texto = texto.replace(/œ/g, "AE");
@@ -5584,26 +5616,26 @@ function tirarAcentuacao(texto, isParam=false) {
 	texto = texto.replace(/™/g, "TM");
 	texto = texto.replace(/…/g, "...");
 
-	if (isParam) { 
+	if (isParam) {
 		texto = texto.replace(/ /gi, '_');
 		texto = texto.replace(/[-.=()\[\]\\/*+,!@#$%¨&{}?`^:><ºª°§|¹²³£¢¬"']/g, '');
 	}
 	return texto;
 }
 
-function returnDescAccesskey(text, options) { 
+function returnDescAccesskey(text, options) {
 	/*
 		options: {
 			accesskey: ''			-- Tecla do atalho
 			numKeyVerifAlt: 0 		-- Numero de caracteres que vai verificar dentro do text default = text.length
 		}
 	*/
-	if ((options.accesskey || '') != '') { 
+	if ((options.accesskey || '') != '') {
 		if (!testP(options.numKeyVerifAlt)) options.numKeyVerifAlt = text.length;
 		var textT = text.toLowerCase();
 
-		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) { 
-			if (textT[i] == options.accesskey.toLowerCase()) { 
+		for (var i = 0; i < options.numKeyVerifAlt && i < text.length; i++) {
+			if (textT[i] == options.accesskey.toLowerCase()) {
 				text = ""
 					+ (i == 0 ? '' : text.substring(0, i))
 					+ "<spam style='text-decoration: underline;'>" + text[i] + "</spam>"
@@ -5615,31 +5647,31 @@ function returnDescAccesskey(text, options) {
 	return text;
 }
 
-// Teste parametro retorna se diferente de ( undefined | null | 0 | '' )
-function testP(param) { 
+// Teste parametro retorna se diferente de (undefined | null | 0 | '')
+function testP(param) {
 	return (param || '') != '';
 }
 
-function resolvConfig(options, tab=0, isRegister=false) { 
+function resolvConfig(options, tab=0, isRegister=false) {
 	var html = '', keys = Object.keys(options);
 
-	if (isRegister) { 
+	if (isRegister) {
 		$("body").append(resolvConfigModal(options));
 
 		var objRegisted = returnIdObj(options);
-		if (objRegisted.length) { 
+		if (objRegisted.length) {
 			desregistrarConfig(objRegisted[0][objRegisted[0].tipoCampo]);
 		}
 		objRefConfig_Global.push(options);
 	}
 
-	for (var i = 0; i < keys.length; i++) { 
-		try { 
+	for (var i = 0; i < keys.length; i++) {
+		try {
 			// html += document['resolv' + capitalize(keys[i])](options[keys[i]]);
 			html += !isNaN(keys[i]) 
 				? resolvConfig(options[keys[i]], tab) 
 				: resolvGlobalParam(options[keys[i]], tab, window['resolv' + capitalize(keys[i])](options[keys[i]], tab));
-		} catch(e) { 
+		} catch(e) {
 			console.error(e);
 			// console.error(
 			// 	'Falha ao tentar rodar função "resolv' + capitalize(keys[i]) + "(" + options[keys[i]] + "," + tab + ")'"
@@ -5649,27 +5681,27 @@ function resolvConfig(options, tab=0, isRegister=false) {
 	return html;
 }
 
-function resolvPath(id, obj=objRefConfig_Global) { 
+function resolvPath(id, obj=objRefConfig_Global) {
 	var path 	= [],
 		refId 	= returnRefId(),
 		key 	= Object.keys(obj),
 		idParam = key.filter(function(e) { return refId.indexOf(e) != -1; }),
 		pathTemp, x;
 
-	if (idParam.length > 0) { 
-		for (var i = 0; i < idParam.length; i++) { 
-			if (obj[idParam[i]] == id) { 
+	if (idParam.length > 0) {
+		for (var i = 0; i < idParam.length; i++) {
+			if (obj[idParam[i]] == id) {
 				path.push(idParam[0]);
 				return path;
 			}
 		}
 	}
 
-	for (var i = 0; i < key.length; i++) { 
+	for (var i = 0; i < key.length; i++) {
 		x = key[i];
-		if (typeof(obj[x]) == 'object') { 
+		if (typeof(obj[x]) == 'object') {
 			pathTemp = resolvPath(id, obj[x]);
-			if (pathTemp != false && pathTemp.length != 0) { 
+			if (pathTemp != false && pathTemp.length != 0) {
 				path.push(x + ( x == 'menu' ? '-' + (obj[x].descForm || 'error') : '') )
 				pathTemp.forEach(function(e) { path.push(e) });
 				return path;
@@ -5679,18 +5711,18 @@ function resolvPath(id, obj=objRefConfig_Global) {
 	return path;
 }
 
-function desregistrarConfig(id) { 
+function desregistrarConfig(id) {
 	var path = resolvPath(id);
 	if (path.length) { 
 		path.splice(path.length-1,1);
-		path.forEach(function(p,i) { 
+		path.forEach(function(p,i) {
 			if (p.indexOf('menu') == 0) path[i] = 'menu';
 		});
 		eval(`objRefConfig_Global["${path.join('"]["')}"] = undefined;`);
 	}
 }
 
-function resolvGlobalParam(options, tab, html) { 
+function resolvGlobalParam(options, tab, html) {
 	/*
 		options: {
 			classDiv: '' -- Colocar o parametro em volta de uma div e com a class especifica
@@ -5698,7 +5730,7 @@ function resolvGlobalParam(options, tab, html) {
 			isRow: (0|1) -- Colocar o parametro em volta de uma div com a class row
 		}
 	*/
-	var valid = [ 
+	var valid = [
 		{ param: 'idDiv' 	, attr: 'id' 		, },
 		{ param: 'classDiv' , attr: 'class' 	, },
 		{ param: 'styleDiv' , attr: 'style' 	, valid: 'resolvStyle' },
@@ -5706,18 +5738,18 @@ function resolvGlobalParam(options, tab, html) {
 	], param = '', result;
 	var random;
 
-	if (valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0) { 
+	if (valid.filter(function(e) { return (options[e.param] || '') != '' }).length > 0) {
 		valid.forEach(function(x) {
-			if ((options[x.param] || '') != '') { 
-				do { 
+			if ((options[x.param] || '') != '') {
+				do {
 					random = parseInt( Math.random() * 100000 );
 				} while (registerRandom_Global.indexOf(random) != -1);
 				registerRandom_Global.push(random);
 
-				if (typeof(options[x.param]) == 'function') { 
+				if (typeof(options[x.param]) == 'function') {
 					window['click'+random] = options[x.param];
 					param += ` ${x.attr}="click${random}();"`;
-				} else { 
+				} else {
 					var funcAux = x.attr == 'class' ? 'resolvClassDiv' : '';
 					result = typeof(options[x.param]) == 'string' ? `"${options[x.param]}"` : JSON.stringify(options[x.param]);
 					result = `${(x.valid || '')}(${ result })`;
@@ -5731,7 +5763,7 @@ function resolvGlobalParam(options, tab, html) {
 			+ 	tAjuste(html,1)
 			+ 	t(tab) 		+ 	"</div>"
 	}
-	if ((options.isRow || '') != '') { 
+	if ((options.isRow || '') != '') {
 		html = ""
 			+ 	t(tab) 		+ 	"<div class='row'>"
 			+ 	tAjuste(html,1)
@@ -5740,33 +5772,33 @@ function resolvGlobalParam(options, tab, html) {
 	return html;
 }
 
-function tAjuste(text,ajuste) { 
-	return t().indexOf('\n') < 0 ? text : text.split('\n').join( t(ajuste) );
+function tAjuste(text,ajuste) {
+	return t().indexOf('\n') < 0 ? text : text.split('\n').join(t(ajuste));
 }
 
-function resolvFindParam(obj, search) { 
+function resolvFindParam(obj, search) {
 	var keys = Object.keys(obj), isFind = false;
 	if (keys.indexOf(search) >= 0) return true;
 
-	for (var i = 0; i < keys.length; i++) { 
+	for (var i = 0; i < keys.length; i++) {
 		if (typeof(obj[keys[i]]) == 'object') isFind = resolvFindParam(obj[keys[i]], search);
 		if (isFind) i = keys.length;
 	}
 	return isFind;
 }
 
-function resolvParamAjax(options) { 
+function resolvParamAjax(options) {
 	var param = "";
-	if (Object.keys((options.param || ['']))[0] == '0') { 
-		for (var i = 0; i < (options.param || []).length; i++) { 
+	if (Object.keys((options.param || ['']))[0] == '0') {
+		for (var i = 0; i < (options.param || []).length; i++) {
 			var aspas = typeof options.param[i].val == 'string' ? '"' : '';
 			param += ''
 				+ (i == 0 ? '' : ',')
 				+ `'${options.param[i].key}':${aspas}${String(options.param[i].val)}${aspas}`;
 		}
 		param += ',';
-	} else { 
-		param = Object.keys(options.param).map(function(key) { 
+	} else {
+		param = Object.keys(options.param).map(function(key) {
 			var aspas = typeof options.param[key] == 'string' ? '"' : '';
 			return `'${key}':${aspas}${String(options.param[key])}${aspas}`;
 		}).join(',') + ',';
@@ -5774,11 +5806,11 @@ function resolvParamAjax(options) {
 	return param;
 }
 
-function number_format(num, numDec, decimal=',', milhar='.') { 
+function number_format(num, numDec, decimal=',', milhar='.') {
 	var limitDec = decimal.length, opcionalDesc = false, cont = 0;
 	if (num != 0 && ((num || '') == '' || isNaN(num))) 	return num;
 	try { num = parseFloat(num); } catch(erro){ 		return num; }
-	if (typeof numDec == 'string' && numDec[0] == '?') { 
+	if (typeof numDec == 'string' && numDec[0] == '?') {
 		opcionalDesc = true;
 		numDec = numDec.substring(1, numDec.length);
 	}
@@ -5788,12 +5820,12 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 	var negativo = num[0] == '-' ? (num = num.substring(1, num.length), true) : false;
 	decimal = ((formNum[1] || '') != '' ? decimal + String(formNum[1]) : '');
 	formNum = '';
-	for (var i = num.length-1; i >= 0; i--) { 
+	for (var i = num.length-1; i >= 0; i--) {
 		formNum = num[i] + formNum;
 		if ((cont++, cont) % 3 == 0 && i > 0) formNum = milhar + formNum;
 	}
-	if (opcionalDesc) { 
-		for (var i = decimal.length-1; i >= limitDec; i--) { 
+	if (opcionalDesc) {
+		for (var i = decimal.length-1; i >= limitDec; i--) {
 			if (decimal[i] != '0') { i = -1; continue; }
 			decimal = decimal.substring(0,i);
 		}
@@ -5802,7 +5834,7 @@ function number_format(num, numDec, decimal=',', milhar='.') {
 	return (negativo ? '-' : '') + formNum + decimal;
 }
 
-function numberTextOrder(num, dec=0) { 
+function numberTextOrder(num, dec=0) {
 	if (num == '' || isNaN(num)) return '';
 	num = parseFloat(num).toFixed(dec);
 	num = num.split('.');
@@ -5810,9 +5842,9 @@ function numberTextOrder(num, dec=0) {
 	num = num.join('');
 	dec = dec.join('');
 
-	function action(num) { 
+	function action(num) {
 		var numForm = '', count = -1, aplha = 'abcdefghijklmnopqrstuvwxyz';
-		for (var i = num.length-1; i >= 0; i--) { 
+		for (var i = num.length-1; i >= 0; i--) {
 			count++;
 			numForm = aplha[aplha.length <= count ? aplha.length : count] + num[i] + numForm;
 		}
@@ -5822,30 +5854,30 @@ function numberTextOrder(num, dec=0) {
 }
 
 /* Envetos de teclado */
-$(document).ready(function() { 
+$(document).ready(function() {
 	if (navigator.appName != "Microsoft Internet Explorer")
 		document.captureEvents(Event.KEYDOWN);
 	document.body.onkeydown = NetscapeResolvKeyDown;
-	function NetscapeResolvKeyDown(key,e) { 
+	function NetscapeResolvKeyDown(key,e) {
 		ResolvKeyDown(key, key.which);
 	}
 	if (window.event) ResolvKeyDown(window.event, window.event.keyCode);
-	function ResolvKeyDown(e, whichkey) { 
+	function ResolvKeyDown(e, whichkey) {
 		var setComand = false;
 
-		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) { 
+		if (whichkey == 115 && $(".codigoConsulta").is(':focus')) {
 			var itens = $(".codigoConsulta");
-			$.each(itens, function(i,x) { 
-				if ($(x).is(':focus')) { 
+			$.each(itens, function(i,x) {
+				if ($(x).is(':focus')) {
 					window['pesquisa' + $(x).data('ref')]();
 				}
 			})
 		}
 
 		var proximoIndice, setInput = false;
-		if (whichkey == 13 && registerInputFocus.filter(function(e){ return $(e.el[0]).is(':focus') }).length == 1 ) { 
-			$.each(registerInputFocus, function(i,x) { 
-				if ($(x.el[0]).is(":focus") && !setInput) { 
+		if (whichkey == 13 && registerInputFocus.filter(function(e) { return $(e.el[0]).is(':focus') }).length == 1 ) {
+			$.each(registerInputFocus, function(i,x) {
+				if ($(x.el[0]).is(":focus") && !setInput) {
 					setInput = true;
 
 					x.el[0].blur();
@@ -5854,29 +5886,29 @@ $(document).ready(function() {
 					var teste = {};
 					teste[x.parent] = x.obj;
 					teste = serealizeForm(teste);
-					if (!teste.valid) { 
+					if (!teste.valid) {
 						setComand = true;
 						return false;
 					}
 
-					if ((x.obj.onEnter || '') == '') { 
+					if ((x.obj.onEnter || '') == '') {
 						proximoIndice = -1;
-						for (var j = (i+1); j < registerInputFocus.length; j++) { 
-							if (!$(registerInputFocus[j].el[0]).attr('disabled')) { 
+						for (var j = (i+1); j < registerInputFocus.length; j++) {
+							if (!$(registerInputFocus[j].el[0]).attr('disabled')) {
 								proximoIndice = j;
 								j = registerInputFocus.length;
 							}
 						}
 						registerInputFocus[proximoIndice].el[0].focus();
 						setComand = true;
-					} else { 
+					} else {
 						x.el[0].focus();
 					}
 				}
 			});
 		}
-		if (!setComand) { 
-			registerEventKeyboard.forEach(function(x) { 
+		if (!setComand) {
+			registerEventKeyboard.forEach(function(x) {
 				window[x](e,whichkey);
 			});
 		}

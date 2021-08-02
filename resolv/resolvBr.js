@@ -1,9 +1,9 @@
 
-function resolvHr(options) { 
-	return resolvBr( $.extend({}, options, { hr: true }) ,(arguments[1] || 0));
+function resolvHr(options) {
+	return resolvBr($.extend({}, options, { hr: true }) ,(arguments[1] || 0));
 }
 
-function resolvBr(options, tab=0) { 
+function resolvBr(options, tab=0) {
 	/*
 		options: {
 			num: 1 			-- Numero de br que vai montar
@@ -19,7 +19,8 @@ function resolvBr(options, tab=0) {
 
 	if (num < 0 || isNaN(num)) num = 1;
 
-	for (var i = 0; i < parseInt(num); i++) 
+	for (var i = 0; i < parseInt(num); i++) {
 		html += "<" + ((options.hr || false) ? 'h' : 'b') + "r " + style + ">";
+	}
 	return html;
 }

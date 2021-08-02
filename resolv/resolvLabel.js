@@ -1,8 +1,8 @@
 
-function resolvLabel(options, tab=0) { 
+function resolvLabel(options, tab=0) {
 	/*
 		options: {
-			text: '' 		-- Conteudo da label
+			text: '' 		-- Conteúdo da label
 		}
 	*/
 	var html = ''

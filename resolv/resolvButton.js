@@ -1,31 +1,31 @@
 
 
-function resolvButton(options, tab=0) { 
+function resolvButton(options, tab=0) {
 	/*
 		options: {
-			class: ''					-- Classe do botao
+			class: ''					-- Classe do botão
 			desc: ''					-- descrição do botão
-			id: ''						-- ID do botao
+			id: ''						-- ID do botão
 			name: '' 					-- Atributo Name do Button
 			disable: (0|1)				-- Desabilita o botão
-			icon: ''					-- icone
-			onclick: function(el){}		-- enveto de click
-			onchange: function(el){}	-- enveto de mudar
-			onfocus: function(el){}		-- enveto de focar
-			onblur: function(el){}		-- enveto de desfocar
+			icon: ''					-- ícone
+			onclick: function(el){}		-- evento de click
+			onchange: function(el){}	-- evento de mudar
+			onfocus: function(el){}		-- evento de focar
+			onblur: function(el){}		-- evento de desfocar
 			compensador: (0|1) 			-- Cria um compensador para alinha o botão
-			title: '' 					-- Texto que aparece quando passa o mouse emcima
+			title: '' 					-- Texto que aparece quando passa o mouse encima
 			style: objStyle 			-- Resolve o estilo do botão
 			accesskey: ''				-- tecla de atalho
-			data: { 					-- Parametro do objeto data
+			data: { 					-- Parâmetro do objeto data
 				key: value
 			}
 		}
 	*/
 
 	var random;
-	do { 
-		random = parseInt( Math.random() * 100000 );
+	do {
+		random = parseInt(Math.random() * 100000);
 	} while (registerRandom_Global.indexOf(random) != -1);
 	registerRandom_Global.push(random);
 
@@ -34,13 +34,13 @@ function resolvButton(options, tab=0) {
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
 
 	var classBtn = (options.class || '') == '' ? '' : options.class
-	, 	classBootstrap = [ 
+	, 	classBootstrap = [
 		'primary','success','danger','warning','info','default',	// v3
 		'secondary','light','dark','link', 							// v4
 		'outline-primary','outline-secondary','outline-info', 		// v4 outline
 		'outline-success','outline-danger','outline-warning',
 		'outline-light','outline-dark','outline-link',
-	].find(function(i) { 
+	].find(function(i) {
 		return (classBtn == i || classBtn.indexOf(i+' ') == 0);
 	}) || '';
 
@@ -76,20 +76,20 @@ function resolvButton(options, tab=0) {
 					+ 		((options.style 	|| '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
 					// + 		(accesskey 				   == '' ? '' : " accesskey='" + accesskey + "'")
 					+ 		((options.title 	|| '') == '' && accesskey == '' ? '' : ''
-								+ 	" title='" 
+								+ 	" title='"
 								+ 		(options.title || '') 
 								+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
 								+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
 								+ 	"'"
 							)
-					+ (Object.keys(options.data || {})).map(function(key) { 
+					+ (Object.keys(options.data || {})).map(function(key) {
 						return " data-" + key + "='" + String(options.data[key]) + "'"
 					}).join('')
 					// + 		((options.click || '') == '' ? '' : " onclick='" + options.class + "'")
 
 
-					// ** Enveto do botão ****************************** //
-					+	(function(opt){
+					// ** Evento do botão ****************************** //
+					+	(function(opt) {
 						var html = '';
 						for (var i = 0; i < opt.length; i++) {
 							html += ((options[opt[i]] || '') == '' ? '' : ' ' + opt[i] + '="' + opt[i] + random + '(this);"')
@@ -109,11 +109,11 @@ function resolvButton(options, tab=0) {
 					)
 		+t(tab)		+ 	"</button>"
 		+t(tab)		+ 	"<script>"
-					+	(function(opt) { 
+					+	(function(opt) {
 						var html = '';
-						for (var i = 0; i < opt.length; i++) { 
+						for (var i = 0; i < opt.length; i++) {
 							html += ((options[opt[i]] 	|| '') == '' ? '' : ''
-							+t(tab+1)	+ 	"function " + opt[i] + random + "(el) { "
+							+t(tab+1)	+ 	"function " + opt[i] + random + "(el) {"
 							+t(tab+2)	+ (
 											(typeof(options[opt[i]]) == 'string')
 											? options[opt[i]]
@@ -127,8 +127,8 @@ function resolvButton(options, tab=0) {
 						return html;
 					}(['onchange','onclick','onfocus','onblur']))
 					+ (accesskey == '' ? '' : ''
-						+t(tab+1)	+ 	`function btnClickAccesskey${random}(e) { `
-						+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) { `
+						+t(tab+1)	+ 	`function btnClickAccesskey${random}(e) {`
+						+t(tab+2)	+ 		`if (e.altKey && e.key == "${accesskey}".toLowerCase()) {`
 						+t(tab+3)	+ 			`e.preventDefault();`
 						+t(tab+3)	+ 			`$("button[data-customerid='btn${random}']").click();`
 						+t(tab+2)	+ 		`}`

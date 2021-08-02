@@ -15,7 +15,7 @@ var styleGenerico_Global = {
 function resolvChart(data, options) {
 	/*
 		styleGenerico = {
-			alternarColor: (0|1) 					-- Colore o fundo do grafico cor sim e cor não
+			alternarColor: (0|1) 					-- Colore o fundo do gráfico cor sim e cor não
 			numberFormat: '#' 						-- Formatação do numero
 			tamanhoFixo: (0|1) 						-- Se vai ter ou não
 			legendaChart: (0|1) 					-- Se vai ter ou não
@@ -25,14 +25,14 @@ function resolvChart(data, options) {
 		}
 
 		options: {
-			category: { 							-- Parâmetro que indica a categoria do grafico
+			category: { 							-- Parâmetro que indica a categoria do gráfico
 				text: ''							-- Texto do parâmetro
 				param: ''							-- Parâmetro do objeto data correspondente
 				click: function(index){}			-- Click considerando a categoria inteira, passar como parâmetro o índice da categoria / dado
 				rotation: num/graus					-- Graus de rotação da descrição da categoria
 				textUpDown: (0|1) 					-- Descrição, no eixo da categorias, colocando um para cima e outro para baixo
 			}
-			value: [] / { 							-- Parâmetro que indica o valor do grafico / Pode ser um objeto ou array de objetos
+			value: [] / { 							-- Parâmetro que indica o valor do gráfico / Pode ser um objeto ou array de objetos
 				text: ''							-- Texto do parâmetro
 				min: num 							-- O valor minimo que começa o gráfico, geralmente fica para a lib definir automático
 				max: num 							-- O valor máximo que pode chegar o gráfico, geralmente fica para a lib definir automático
@@ -41,46 +41,48 @@ function resolvChart(data, options) {
 				... 								-- valor é o índice da outra escala
 			}
 			serie: [] / { 							-- Pode ser apenas um objeto ou um array de objetos
-				type: (column|line)  				-- Tipo de serie se vai montar grafico de linha ou coluna, padrão é column
+				type: (column|line)  				-- Tipo de serie se vai montar gráfico de linha ou coluna, padrão é column
 				param: ''							-- Parâmetro do objeto data correspondente
 				click: function(){} 				-- Quando clicar no gráfico
 				name: '' 							-- Nome do gráfico
-				color: 'lightblue' 					-- Cor que vai ter no grafico
-				onlyColumn: (0|1) 					-- Deixar uma coluna em cima da outra, padrão verdadeiro
+				color: 'lightblue' 					-- Cor que vai ter no gráfico
+				onlyColumn: (0|1) 					-- Deixar uma coluna encima da outra, padrão verdadeiro
 				label: (0|1) / { 					-- Caso for definido como false não irá mostrar no gráfico
-					color: 'black' 					-- Cor da font da label que é mostrar o valor no grafico
+					color: 'black' 					-- Cor da font da label que é mostrar o valor no gráfico
 					align: (center|in|out)			-- Alinhamento da label se é centralizado dentro ou fora o padrão é 'out'
 					mask: '%0%' 					-- Mascara da label
 				}
 				ball: (0|1) / { 					-- Caso gráfico de linha sem click na serie irá desenhar somente as bolas em cada categoria
 					color: '' 						-- Preenchimento da cor da bolinha
 				}
-				pontilhado: (0|1) 					-- Caso gráfico de linha desenhar a linha pontilhada ou reta
+				pontilhado: (0|1) 					-- Caso gráfico de linha, desenhar a linha pontilhada ou reta
 				tooltip: '' 						-- Texto em HTML
 				value: index 						-- Se possui mais de uma escala precisa informar qual escala é referente a essa serie
 				... 								-- valor é o índice da escala
 				hide: (0|1) 						-- Indicar se vai ocultar no gráfico, padrão false, atualizado pre e pos-render
 			}
 			descForm: '' 							-- Parâmetro de identificação
-			padination: num 						-- Trazer tantos valores pré definidos na tela
-			orientation: 'horizontal' 				-- Orientação do grafico, (horizontal | vertical)
-			percentual: (0|1) 						-- Se o grafico vai mostrar valor percentual de 0 a 100
-			width: '100%' 							-- Largura do grafico
+			pagination: num 						-- Trazer tantos valores pré definidos na tela
+			orientation: 'horizontal' 				-- Orientação do gráfico, (horizontal | vertical)
+			percentual: (0|1) 						-- Se o gráfico vai mostrar valor percentual de 0 a 100
+			width: '100%' 							-- Largura do gráfico
 			height: '400px' 						-- Altura do gráfico
-			styleGenerico: {} 						-- Configurações genéricas para todos os grafico gerados a partir
-			setLegend: (0|1) 						-- Se vai mostrar legenda do grafico
+			styleGenerico: {} 						-- Configurações genéricas para todos os gráfico gerados a partir
+			setLegend: (0|1) 						-- Se vai mostrar legenda do gráfico
 			legend: { 								-- Configurações de legenda
 				position: 'bottom|top|right|left' 	-- Posição onde vai ficar a legenda (padrão bottom)
 				align: 'top|middle|bottom' 			-- Caso posição for right ou left pode escolher onde vai ficar  (padrão top)
 			}
 			title: '' 								-- Titulo do gráfico
-			colors: [] 								-- Array com as cores que o grafico vai seguir para ser montado
+			colors: [] 								-- Array com as cores que o gráfico vai seguir para ser montado
 			...										-- ex: ['blue','green','orange']
 			forceSet: (0|1) 						-- Forçar montar o gráfico
 		}
 	*/
 
 	var styleGenerico = $.extend({}, styleGenerico_Global, (options.styleGenerico || {}));
+
+	if ((options.pagination || '') == '' && (options.padination || '') != '') options.pagination = options.padination;
 
 	if (
 		(options.forceSet || '') != '' && registerChart_Global.indexOf(options.descForm) >= 0
@@ -107,16 +109,16 @@ function resolvChart(data, options) {
 
 	window['indexCursorChart' + options.descForm + '_Global'] = 0;
 
-	if (registerChart_Global.indexOf(options.descForm) != -1) { // grafico já exite
+	if (registerChart_Global.indexOf(options.descForm) != -1) { // gráfico já exite
 
 		$("#chartdiv"+options.descForm)
 			.css('height', ((options.height || '') != '' ? options.height : "400px"));
 
 		window["chart"+options.descForm].data = data;
 
-		if ((options.padination || '') != '' && !isNaN(options.padination)) {
+		if ((options.pagination || '') != '' && !isNaN(options.pagination)) {
 			window["categoryAxis"+options.descForm].start 	= 0;
-			window["categoryAxis"+options.descForm].end 	= data.length < parseInt(options.padination) ? 1 : parseInt(options.padination) / data.length;
+			window["categoryAxis"+options.descForm].end 	= data.length < parseInt(options.pagination) ? 1 : parseInt(options.pagination) / data.length;
 		}
 
 		options.serie.forEach(function(s,i) {
@@ -129,7 +131,6 @@ function resolvChart(data, options) {
 
 		return true;
 	}
-
 
 	var setLegend = false; // variável para mostrar legenda
 
@@ -251,18 +252,18 @@ function resolvChart(data, options) {
 		)
 
 		+ ((styleGenerico.alternarColor || '') == '' ? '' : ''
-			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.disabled 		= false;`	// Grafico de avaliações
-			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.fillOpacity 	= 0.05;`	// Grafico de avaliações
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.disabled 		= false;`	// Gráfico de avaliações
+			+t(1) + 	`categoryAxis${options.descForm}.renderer.axisFills.template.fillOpacity 	= 0.05;`	// Gráfico de avaliações
 		)
 
 		+ (options.orientation == 'horizontal'  ? '' : ''
 			+t(1) + 	`categoryAxis${options.descForm}.renderer.inversed 							= true;`
 		)
-		+ ((options.padination || '') == '' ? '' : ''
+		+ ((options.pagination || '') == '' ? '' : ''
 			+t(1) + 	`categoryAxis${options.descForm}.start = 0;`
 			+t(1) + 	`setTimeout(function(){`
 				  + 		`categoryAxis${options.descForm}.end = `
-				  + 			(data.length < parseInt(options.padination) ? 1 : parseInt(options.padination) / data.length) + `;`
+				  + 			(data.length < parseInt(options.pagination) ? 1 : parseInt(options.pagination) / data.length) + `;`
 				  + 	`},1000);`
 		)
 		+ (((options.category || {}).textUpDown || '') == '' ? '' : ''
@@ -282,32 +283,32 @@ function resolvChart(data, options) {
 		// ***************************************************************************************************** //
 		// ** Valor * //
 		+ t()
-		+ (options.value || []).map(function(value={}, indiceVlr) { return ''
+		+ (options.value || []).map(function(value={}, indexVlr) { return ''
 			+ t(1) + 'var '
 			+ (options.orientation == 'horizontal'
-				? 			`valueAxis${options.descForm + String(indiceVlr)} = chart${options.descForm}.yAxes.push(new am4charts.ValueAxis());`
-				: 			`valueAxis${options.descForm + String(indiceVlr)} = chart${options.descForm}.xAxes.push(new am4charts.ValueAxis());`
+				? 			`valueAxis${options.descForm + String(indexVlr)} = chart${options.descForm}.yAxes.push(new am4charts.ValueAxis());`
+				: 			`valueAxis${options.descForm + String(indexVlr)} = chart${options.descForm}.xAxes.push(new am4charts.ValueAxis());`
 			)
-			+t(1)	+ 		`valueAxis${options.descForm + String(indiceVlr)}.title.text = "${(value.text || '')}";`
+			+t(1)	+ 		`valueAxis${options.descForm + String(indexVlr)}.title.text = "${(value.text || '')}";`
 			+ (value.min == undefined ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.min = ${value.min};`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.min = ${value.min};`
 			)
 			+ (value.max == undefined ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.max = ${value.max};`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.max = ${value.max};`
 			)
 			+ ((value.opposite || '') == '' ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.opposite = true;`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.renderer.opposite = true;`
 			)
 			+ (value.syncWithAxis == undefined ? '' : ''
-				+t(1)	+ 	`valueAxis${options.descForm + String(indiceVlr)}.syncWithAxis = valueAxis${options.descForm + String(value.syncWithAxis)};`
+				+t(1)	+ 	`valueAxis${options.descForm + String(indexVlr)}.syncWithAxis = valueAxis${options.descForm + String(value.syncWithAxis)};`
 			)
-			+ ((options.percentual || '') == '' ? '' : '' // Ex: grafico de avaliação RUIM / BOM / OTIMO (por item da avaliação)
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.min = 0;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.max = 100;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.minGridDistance = 50;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.length = 5;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.disabled = false;`
-				+t(1) + 	`valueAxis${options.descForm + String(indiceVlr)}.renderer.ticks.template.strokeOpacity = 0.4;`
+			+ ((options.percentual || '') == '' ? '' : '' // Ex: gráfico de avaliação RUIM / BOM / ÓTIMO (por item da avaliação)
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.min = 0;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.max = 100;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.minGridDistance = 50;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.ticks.template.length = 5;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.ticks.template.disabled = false;`
+				+t(1) + 	`valueAxis${options.descForm + String(indexVlr)}.renderer.ticks.template.strokeOpacity = 0.4;`
 			)
 		}).join('')
 		// ***************************************************************************************************** //
@@ -472,7 +473,7 @@ function resolvChart(data, options) {
 	html += ''+t()+t()
 		// ***************************************************************************************************** //
 		// ** Reta final * //
-		// +t(1)	+ 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrescenta legenda no grafico"
+		// +t(1)	+ 		"chart"+options.descForm+".legend 									= new am4charts.Legend(); // acrescenta legenda no gráfico"
 		+t(1)	+ 		`chart${options.descForm}.scrollbarY 								= new am4core.Scrollbar();`
 		+t(1)	+ 		`var scrollbarX${options.descForm} 									= new am4core.Scrollbar();`
 		+t(1)	+ 		`chart${options.descForm}.scrollbarX 								= scrollbarX${options.descForm};`
@@ -498,8 +499,6 @@ function resolvChart(data, options) {
 			+t(1) + 		`console.log(indexCursorChart${options.descForm}_Global);`
 			+t(1) + 		`var func = ${String(options.category.click)};`
 			+t(1) + 		`func(indexCursorChart${options.descForm}_Global);`
-			// +t(1) + 		`montarGraficoOS(indexCursorChartPrincipal_Global);`
-			// +t(1) + 		`montarGraficoAvalaiacao(indexCursorChartPrincipal_Global);`
 			+t(1) + 	`});`
 		)
 		+ (!setLegend && (options.legend || '') == '' ? '' : ''
