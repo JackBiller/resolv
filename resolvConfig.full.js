@@ -45,7 +45,7 @@ var registerInputFocus 		= [];
 var registerEventKeyboard 	= [];
 var registerEventAll 		= [];
 
-var returnObjIdentado_Global = true;
+var returnObjIndentado_Global = true;
 var isMobile_Global = isMobile();
 
 var fa_icon_Global = [
@@ -536,17 +536,22 @@ function resolvCalendar(options) {
 	return html;
 }
 
-function CheckLumaColor(c) { 
+
+function toHex(color) {
 	function rgb2hex(rgb) {
 		try {
-			rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-			return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-		} catch(e) { 
+			var t = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+			if (t != null) {
+				return "#" + hex(t[1]) + hex(t[2]) + hex(t[3]);
+			}
+			rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)\)$/);
+			return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]) + hex(rgb[4]);
+		} catch(e) {
 			return false;
 		}
 	}
 
-	function colourName2Hex(colour) {
+	function colorName2Hex(colour) {
 		return {
 			"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
 			"beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
@@ -557,7 +562,7 @@ function CheckLumaColor(c) {
 			"firebrick":"#b22222","floralwhite":"#fffaf0","forestgreen":"#228b22","fuchsia":"#ff00ff",
 			"gainsboro":"#dcdcdc","ghostwhite":"#f8f8ff","gold":"#ffd700","goldenrod":"#daa520","gray":"#808080","green":"#008000","greenyellow":"#adff2f",
 			"honeydew":"#f0fff0","hotpink":"#ff69b4",
-			"indianred ":"#cd5c5c","indigo":"#4b0082","ivory":"#fffff0","khaki":"#f0e68c",
+			"indianred":"#cd5c5c","indigo":"#4b0082","ivory":"#fffff0","khaki":"#f0e68c",
 			"lavender":"#e6e6fa","lavenderblush":"#fff0f5","lawngreen":"#7cfc00","lemonchiffon":"#fffacd","lightblue":"#add8e6","lightcoral":"#f08080","lightcyan":"#e0ffff","lightgoldenrodyellow":"#fafad2",
 			"lightgrey":"#d3d3d3","lightgreen":"#90ee90","lightpink":"#ffb6c1","lightsalmon":"#ffa07a","lightseagreen":"#20b2aa","lightskyblue":"#87cefa","lightslategray":"#778899","lightsteelblue":"#b0c4de",
 			"lightyellow":"#ffffe0","lime":"#00ff00","limegreen":"#32cd32","linen":"#faf0e6",
@@ -580,7 +585,26 @@ function CheckLumaColor(c) {
 		return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
 	}
 
-	var color = colourName2Hex(c) || rgb2hex(c);
+	var c = colorName2Hex(color) || rgb2hex(color);
+	if (c) color = c;
+
+	return color;
+}
+
+function forceHex6(hex) {
+	hex = hex.replace('#','');
+	var n = hex.length;
+	if (n == 3 || n == 4) {
+		return '#' + hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+	}
+	if (n == 8) {
+		return '#' + hex.substring(0,6);
+	}
+	return '#' + hex;
+}
+
+function CheckLumaColor(c) {
+	var color = toHex(c);
 	if (color) c = color;
 
 	var c = c.replace('#', '');  // strip # 
@@ -1723,7 +1747,7 @@ function resolvCodigoConsulta(options, tab=0) {
 							$("#modalConsulta").find('input')[1].focus();
 						}
 						// , no_dataTable: true
-					},(options.grade || {}) ), tab+2, returnObjIdentado_Global)
+					},(options.grade || {}) ), tab+2, returnObjIndentado_Global)
 		+t(tab+2)	+ 				`);`
 		+t(tab+1)	+ 			`}`
 		+t(tab+1)	+ 			`$("#modalConsulta").find('.conteudo').html(grade);`
@@ -3294,8 +3318,8 @@ function resolvInput(options,tab=0) {
 				"i" 							-- Informa para colocar o input
 				OR "text" 						-- Informa o texto que vai acompanhar o input
 				OR {
-					"text": "" 					-- Informa o texto que vai acompanhar o input
-					"click": "" 				-- Evento de click no text
+					text: "" 					-- Informa o texto que vai acompanhar o input
+					click: "" 					-- Evento de click no text
 				}
 			]
 		}
@@ -3353,6 +3377,7 @@ function resolvInputIn(options,tab=0) {
 	if ((options.numKeyVerifAlt || ``) == ``) options.numKeyVerifAlt = (options.text || ``).length;
 
 	var isToggle = (options.toggle || '') != '' && (options.id || '') != '';
+	var group = options.group || '';
 
 	options.ck_blur = (options.ck_blur || ``) == `` ? true : options.ck_blur;
 
@@ -3485,18 +3510,37 @@ function resolvInputIn(options,tab=0) {
 					+ (opt != `onblur` || !options.ck_blur || !options.requiredFull ? `` : (options.ck_blur = false, ``)
 						+ onblurRequired
 					)
+					+ (opt != `onchange` || options.type != 'color' ? `` : ''
+						+ 	`$(\\"#refTextColor${random}\\").val(`
+						+ 		`$(\\"*[data-customerid='input${random}']\\").val()`
+						+ 	`);`
+					)
 					+ 	`"`
 			}).join('')
-		+ [`onchange`,`onclick`,`onfocus`,`onkeyup`]
+		+ [`onclick`,`onfocus`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) == ``; })
 			.map(function(opt) {
 				return ` ${opt}="resolvEvento('${opt}','${(options.id || options.name || '')}');"`
 			}).join('')
 		// ******************************************************
 
-		+ (!options.ck_blur || !options.requiredFull ? `` : (options.ck_blur = false, ``)
+		+ (!options.ck_blur || !options.requiredFull 
+			? ``
+			+ 	` onblur="resolvEvento('onblur','${(options.id || options.name || '')}');"`
+			: (options.ck_blur = false, ``)
 			+ 	` onblur="${onblurRequired}`
 			+ 		`resolvEvento('onblur','${(options.id || options.name || '')}');`
+			+ 	`"`
+		)
+		+ ((options.onchange || '') != '' || options.type != 'color' 
+			? ``
+			+ 	` onchange="resolvEvento('onchange','${(options.id || options.name || '')}');"`
+			: ''
+			+ 	` onchange="`
+			+ 		`$('#refTextColor${random}\\').val(`
+			+ 			`$(\`*[data-customerid='input${random}']\`).val()`
+			+ 		`);`
+			+ 		`resolvEvento('onchange','${(options.id || options.name || '')}');`
 			+ 	`"`
 		)
 
@@ -3536,9 +3580,9 @@ function resolvInputIn(options,tab=0) {
 
 	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
 
-	if ((options.group || '') != '') {
+	if ((group || '') != '') {
 		var indexOpGroup = -1;
-		options.group.forEach(function(op, index) {
+		group.forEach(function(op, index) {
 			if (op == 'i') { indexOpGroup = index }
 		});
 
@@ -3548,7 +3592,7 @@ function resolvInputIn(options,tab=0) {
 				? '<div class="input-group mb-3">'
 				: '<div class="input-group">'
 			)
-			+ options.group.map(function(op,index) {
+			+ group.map(function(op,index) {
 				if (op == 'i') return input;
 
 				var text;
@@ -3641,27 +3685,71 @@ function resolvInputIn(options,tab=0) {
 						+ t(tab+1)	+ 		"});"
 						+ t(tab)	+ 	"</"+"script>"
 					)
-				: (options.type == 'file' && (options.upload || '') != ''
+				: (options.type == 'color'
 					? ''
-						+ t(tab)	+ 	`<table width="100%">`
-						+ t(tab+1)	+ 		`<tr>`
-						+ t(tab+2)	+ 			`<td>`
-						+ t(tab*0)	+ 				tAjuste(label + input,3)
-						+ t(tab+2)	+ 			`</td>`
-						+ t(tab+2)	+ 			`<td width='10%' align="left" style="vertical-align:bottom;padding-left:15px;">`
-						+ t(tab+3) 	+ 				`<button id="${options.id}_btnUpload" title="Enviar"`
-									+ 					` class="btn btn-warning btn-block"`
-									+ 					` style="margin-top: 5px;"`
-									+ 					` onclick="enviarArquivo${options.id}();"`
-									+ 				`>`
-						+ t(tab+4) 	+ 					`<i class="fa fa-upload"></i>`
-						+ t(tab+3) 	+ 				`</button>`
-						+ t(tab+2)	+ 			`</td>`
-						+ t(tab+1)	+ 		`</tr>`
-						+ t(tab)	+ 	`</table>`
-						+ t(tab)	+ 	`<div id="${options.id}_desc_file" style="display:none;"></div>`
-						+ t(tab) 	+ 	`<div id="${options.id}_progressFile"></div>`
-					: label + input
+					+ 	label
+					+ 	'<table width="100%">'
+					+ 		'<tr>'
+					+ 			'<td width="50px">'
+					+ 				input
+					+ 			'</td>'
+					+ 			'<td>'
+					+ resolvConfig({ input: { id: 'refTextColor' + random
+						, value: $("*[data-customerid='input" + random + "']").val()
+						, onfocus: function(el) { $(el).select() }
+						, onkeyup: (function() {
+							var onkeyup = '';
+							eval(''
+								+ 	`onkeyup = function() {`
+								+ 		`if (isColor($("#refTextColor${random}").val())) {`
+								+ 			`$("*[data-customerid='input${random}']").val(`
+								+ 				`forceHex6(toHex($("#refTextColor${random}").val()))`
+								+ 			`);`
+								+ 		`}`
+								+ 	`}`
+							);
+							return onkeyup;
+						})()
+						, onblur: (function() {
+							var onblur = '';
+							eval(``
+								+ 	`onblur = function() {`
+								+ 		`$("#refTextColor${random}").val(`
+								+ 			`$("*[data-customerid='input${random}']").val()`
+								+ 		`);`
+								+ 	`}`
+							);
+							return onblur;
+						})()
+					} })
+					+ 				'<script>'
+					+ 					`$("#refTextColor${random}").val($("*[data-customerid='input${random}']").val());`
+					+ 				'</'+'script>'
+					+ 			'</td>'
+					+ 		'</tr>'
+					+ 	'</table>'
+					: (options.type == 'file' && (options.upload || '') != ''
+						? ''
+							+ t(tab)	+ 	`<table width="100%">`
+							+ t(tab+1)	+ 		`<tr>`
+							+ t(tab+2)	+ 			`<td>`
+							+ t(tab*0)	+ 				tAjuste(label + input,3)
+							+ t(tab+2)	+ 			`</td>`
+							+ t(tab+2)	+ 			`<td width='10%' align="left" style="vertical-align:bottom;padding-left:15px;">`
+							+ t(tab+3) 	+ 				`<button id="${options.id}_btnUpload" title="Enviar"`
+										+ 					` class="btn btn-warning btn-block"`
+										+ 					` style="margin-top: 5px;"`
+										+ 					` onclick="enviarArquivo${options.id}();"`
+										+ 				`>`
+							+ t(tab+4) 	+ 					`<i class="fa fa-upload"></i>`
+							+ t(tab+3) 	+ 				`</button>`
+							+ t(tab+2)	+ 			`</td>`
+							+ t(tab+1)	+ 		`</tr>`
+							+ t(tab)	+ 	`</table>`
+							+ t(tab)	+ 	`<div id="${options.id}_desc_file" style="display:none;"></div>`
+							+ t(tab) 	+ 	`<div id="${options.id}_progressFile"></div>`
+						: label + input
+					)
 				)
 			)
 		)
@@ -4077,6 +4165,66 @@ function doneSendBase64(options) {
 			if (typeof options.ondone == 'function') options.ondone(options, data);
 		}
 	});
+}
+
+function isColor(color) {
+	function checkColorName(c) {
+		return [
+			"darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta",
+			"darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen",
+			"darkslateblue","darkslategray","darkturquoise","darkviolet",
+			"lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgrey","lightgreen",
+			"lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue",
+			"lightyellow",
+			"mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen",
+			"mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred",
+
+			"aliceblue","antiquewhite","aqua","aquamarine","azure",
+			"beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood",
+			"cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan",
+			"deeppink","deepskyblue","dimgray","dodgerblue",
+			"firebrick","floralwhite","forestgreen","fuchsia",
+			"gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow",
+			"honeydew","hotpink","indianred","indigo","ivory","khaki",
+			"lavender","lavenderblush","lawngreen","lemonchiffon","lime","limegreen","linen",
+			"magenta","maroon","midnightblue","mintcream","mistyrose","moccasin",
+			"navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid",
+			"palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru",
+			"pink","plum","powderblue","purple",
+			"rebeccapurple","red","rosybrown","royalblue",
+			"saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue",
+			"slateblue","slategray","snow","springgreen","steelblue",
+			"tan","teal","thistle","tomato","turquoise","violet",
+			"wheat","white","whitesmoke","yellow","yellowgreen2"
+		].indexOf(c.toLowerCase()) >= 0;
+	}
+
+	function checkRgb(rgb) {
+		var teste = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		if (teste != null) return true;
+		teste = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)\)$/);
+		if (teste != null) return true;
+		return false;
+	}
+
+	function checkHex(hex) {
+		hex = hex.replace('#','');
+		if ([3,4,6,8].indexOf(hex.length) < 0) return false;
+
+		hex = hex.replace(/\d/g,'');
+
+		if (hex.search(/([\\\-\|?&%$#@£¢§!:;.,=+_*"'¬/)(][}{><~´`^¨¹²³ªº°])/) >= 0
+			|| hex.search(/([áàâãéèêíìîóòôõúùûçñý])/i) >= 0
+			|| hex.search(/[g-z]/gi) >= 0
+		) {
+			return false;
+		}
+		return true;
+	}
+
+	if (checkColorName(color) || checkRgb(color) || checkHex(color)) return true;
+
+	return false;
 }
 
 function resolvLabel(options, tab=0) {
@@ -5594,7 +5742,7 @@ function t() {
 	var num = (arguments[0] || 0);
 	var tab = '\n';
 	for (var i = 0; i < num; i++) tab += '\t'
-	return returnObjIdentado_Global ? tab : '';
+	return returnObjIndentado_Global ? tab : '';
 }
 
 function tirarAcentuacao(texto, isParam=false) {

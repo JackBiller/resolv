@@ -214,17 +214,22 @@ function resolvCalendar(options) {
 	return html;
 }
 
-function CheckLumaColor(c) { 
+
+function toHex(color) {
 	function rgb2hex(rgb) {
 		try {
-			rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-			return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-		} catch(e) { 
+			var t = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+			if (t != null) {
+				return "#" + hex(t[1]) + hex(t[2]) + hex(t[3]);
+			}
+			rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)\)$/);
+			return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]) + hex(rgb[4]);
+		} catch(e) {
 			return false;
 		}
 	}
 
-	function colourName2Hex(colour) {
+	function colorName2Hex(colour) {
 		return {
 			"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
 			"beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
@@ -235,7 +240,7 @@ function CheckLumaColor(c) {
 			"firebrick":"#b22222","floralwhite":"#fffaf0","forestgreen":"#228b22","fuchsia":"#ff00ff",
 			"gainsboro":"#dcdcdc","ghostwhite":"#f8f8ff","gold":"#ffd700","goldenrod":"#daa520","gray":"#808080","green":"#008000","greenyellow":"#adff2f",
 			"honeydew":"#f0fff0","hotpink":"#ff69b4",
-			"indianred ":"#cd5c5c","indigo":"#4b0082","ivory":"#fffff0","khaki":"#f0e68c",
+			"indianred":"#cd5c5c","indigo":"#4b0082","ivory":"#fffff0","khaki":"#f0e68c",
 			"lavender":"#e6e6fa","lavenderblush":"#fff0f5","lawngreen":"#7cfc00","lemonchiffon":"#fffacd","lightblue":"#add8e6","lightcoral":"#f08080","lightcyan":"#e0ffff","lightgoldenrodyellow":"#fafad2",
 			"lightgrey":"#d3d3d3","lightgreen":"#90ee90","lightpink":"#ffb6c1","lightsalmon":"#ffa07a","lightseagreen":"#20b2aa","lightskyblue":"#87cefa","lightslategray":"#778899","lightsteelblue":"#b0c4de",
 			"lightyellow":"#ffffe0","lime":"#00ff00","limegreen":"#32cd32","linen":"#faf0e6",
@@ -258,7 +263,26 @@ function CheckLumaColor(c) {
 		return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
 	}
 
-	var color = colourName2Hex(c) || rgb2hex(c);
+	var c = colorName2Hex(color) || rgb2hex(color);
+	if (c) color = c;
+
+	return color;
+}
+
+function forceHex6(hex) {
+	hex = hex.replace('#','');
+	var n = hex.length;
+	if (n == 3 || n == 4) {
+		return '#' + hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+	}
+	if (n == 8) {
+		return '#' + hex.substring(0,6);
+	}
+	return '#' + hex;
+}
+
+function CheckLumaColor(c) {
+	var color = toHex(c);
 	if (color) c = color;
 
 	var c = c.replace('#', '');  // strip # 

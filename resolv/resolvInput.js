@@ -111,8 +111,8 @@ function resolvInput(options,tab=0) {
 				"i" 							-- Informa para colocar o input
 				OR "text" 						-- Informa o texto que vai acompanhar o input
 				OR {
-					"text": "" 					-- Informa o texto que vai acompanhar o input
-					"click": "" 				-- Evento de click no text
+					text: "" 					-- Informa o texto que vai acompanhar o input
+					click: "" 					-- Evento de click no text
 				}
 			]
 		}
@@ -170,6 +170,7 @@ function resolvInputIn(options,tab=0) {
 	if ((options.numKeyVerifAlt || ``) == ``) options.numKeyVerifAlt = (options.text || ``).length;
 
 	var isToggle = (options.toggle || '') != '' && (options.id || '') != '';
+	var group = options.group || '';
 
 	options.ck_blur = (options.ck_blur || ``) == `` ? true : options.ck_blur;
 
@@ -302,18 +303,37 @@ function resolvInputIn(options,tab=0) {
 					+ (opt != `onblur` || !options.ck_blur || !options.requiredFull ? `` : (options.ck_blur = false, ``)
 						+ onblurRequired
 					)
+					+ (opt != `onchange` || options.type != 'color' ? `` : ''
+						+ 	`$(\\"#refTextColor${random}\\").val(`
+						+ 		`$(\\"*[data-customerid='input${random}']\\").val()`
+						+ 	`);`
+					)
 					+ 	`"`
 			}).join('')
-		+ [`onchange`,`onclick`,`onfocus`,`onkeyup`]
+		+ [`onclick`,`onfocus`,`onkeyup`]
 			.filter(function(el) { return (options[el] || ``) == ``; })
 			.map(function(opt) {
 				return ` ${opt}="resolvEvento('${opt}','${(options.id || options.name || '')}');"`
 			}).join('')
 		// ******************************************************
 
-		+ (!options.ck_blur || !options.requiredFull ? `` : (options.ck_blur = false, ``)
+		+ (!options.ck_blur || !options.requiredFull 
+			? ``
+			+ 	` onblur="resolvEvento('onblur','${(options.id || options.name || '')}');"`
+			: (options.ck_blur = false, ``)
 			+ 	` onblur="${onblurRequired}`
 			+ 		`resolvEvento('onblur','${(options.id || options.name || '')}');`
+			+ 	`"`
+		)
+		+ ((options.onchange || '') != '' || options.type != 'color' 
+			? ``
+			+ 	` onchange="resolvEvento('onchange','${(options.id || options.name || '')}');"`
+			: ''
+			+ 	` onchange="`
+			+ 		`$('#refTextColor${random}\\').val(`
+			+ 			`$(\`*[data-customerid='input${random}']\`).val()`
+			+ 		`);`
+			+ 		`resolvEvento('onchange','${(options.id || options.name || '')}');`
 			+ 	`"`
 		)
 
@@ -353,9 +373,9 @@ function resolvInputIn(options,tab=0) {
 
 	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
 
-	if ((options.group || '') != '') {
+	if ((group || '') != '') {
 		var indexOpGroup = -1;
-		options.group.forEach(function(op, index) {
+		group.forEach(function(op, index) {
 			if (op == 'i') { indexOpGroup = index }
 		});
 
@@ -365,7 +385,7 @@ function resolvInputIn(options,tab=0) {
 				? '<div class="input-group mb-3">'
 				: '<div class="input-group">'
 			)
-			+ options.group.map(function(op,index) {
+			+ group.map(function(op,index) {
 				if (op == 'i') return input;
 
 				var text;
@@ -458,27 +478,71 @@ function resolvInputIn(options,tab=0) {
 						+ t(tab+1)	+ 		"});"
 						+ t(tab)	+ 	"</"+"script>"
 					)
-				: (options.type == 'file' && (options.upload || '') != ''
+				: (options.type == 'color'
 					? ''
-						+ t(tab)	+ 	`<table width="100%">`
-						+ t(tab+1)	+ 		`<tr>`
-						+ t(tab+2)	+ 			`<td>`
-						+ t(tab*0)	+ 				tAjuste(label + input,3)
-						+ t(tab+2)	+ 			`</td>`
-						+ t(tab+2)	+ 			`<td width='10%' align="left" style="vertical-align:bottom;padding-left:15px;">`
-						+ t(tab+3) 	+ 				`<button id="${options.id}_btnUpload" title="Enviar"`
-									+ 					` class="btn btn-warning btn-block"`
-									+ 					` style="margin-top: 5px;"`
-									+ 					` onclick="enviarArquivo${options.id}();"`
-									+ 				`>`
-						+ t(tab+4) 	+ 					`<i class="fa fa-upload"></i>`
-						+ t(tab+3) 	+ 				`</button>`
-						+ t(tab+2)	+ 			`</td>`
-						+ t(tab+1)	+ 		`</tr>`
-						+ t(tab)	+ 	`</table>`
-						+ t(tab)	+ 	`<div id="${options.id}_desc_file" style="display:none;"></div>`
-						+ t(tab) 	+ 	`<div id="${options.id}_progressFile"></div>`
-					: label + input
+					+ 	label
+					+ 	'<table width="100%">'
+					+ 		'<tr>'
+					+ 			'<td width="50px">'
+					+ 				input
+					+ 			'</td>'
+					+ 			'<td>'
+					+ resolvConfig({ input: { id: 'refTextColor' + random
+						, value: $("*[data-customerid='input" + random + "']").val()
+						, onfocus: function(el) { $(el).select() }
+						, onkeyup: (function() {
+							var onkeyup = '';
+							eval(''
+								+ 	`onkeyup = function() {`
+								+ 		`if (isColor($("#refTextColor${random}").val())) {`
+								+ 			`$("*[data-customerid='input${random}']").val(`
+								+ 				`forceHex6(toHex($("#refTextColor${random}").val()))`
+								+ 			`);`
+								+ 		`}`
+								+ 	`}`
+							);
+							return onkeyup;
+						})()
+						, onblur: (function() {
+							var onblur = '';
+							eval(``
+								+ 	`onblur = function() {`
+								+ 		`$("#refTextColor${random}").val(`
+								+ 			`$("*[data-customerid='input${random}']").val()`
+								+ 		`);`
+								+ 	`}`
+							);
+							return onblur;
+						})()
+					} })
+					+ 				'<script>'
+					+ 					`$("#refTextColor${random}").val($("*[data-customerid='input${random}']").val());`
+					+ 				'</'+'script>'
+					+ 			'</td>'
+					+ 		'</tr>'
+					+ 	'</table>'
+					: (options.type == 'file' && (options.upload || '') != ''
+						? ''
+							+ t(tab)	+ 	`<table width="100%">`
+							+ t(tab+1)	+ 		`<tr>`
+							+ t(tab+2)	+ 			`<td>`
+							+ t(tab*0)	+ 				tAjuste(label + input,3)
+							+ t(tab+2)	+ 			`</td>`
+							+ t(tab+2)	+ 			`<td width='10%' align="left" style="vertical-align:bottom;padding-left:15px;">`
+							+ t(tab+3) 	+ 				`<button id="${options.id}_btnUpload" title="Enviar"`
+										+ 					` class="btn btn-warning btn-block"`
+										+ 					` style="margin-top: 5px;"`
+										+ 					` onclick="enviarArquivo${options.id}();"`
+										+ 				`>`
+							+ t(tab+4) 	+ 					`<i class="fa fa-upload"></i>`
+							+ t(tab+3) 	+ 				`</button>`
+							+ t(tab+2)	+ 			`</td>`
+							+ t(tab+1)	+ 		`</tr>`
+							+ t(tab)	+ 	`</table>`
+							+ t(tab)	+ 	`<div id="${options.id}_desc_file" style="display:none;"></div>`
+							+ t(tab) 	+ 	`<div id="${options.id}_progressFile"></div>`
+						: label + input
+					)
 				)
 			)
 		)
@@ -894,4 +958,64 @@ function doneSendBase64(options) {
 			if (typeof options.ondone == 'function') options.ondone(options, data);
 		}
 	});
+}
+
+function isColor(color) {
+	function checkColorName(c) {
+		return [
+			"darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta",
+			"darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen",
+			"darkslateblue","darkslategray","darkturquoise","darkviolet",
+			"lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgrey","lightgreen",
+			"lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue",
+			"lightyellow",
+			"mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen",
+			"mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred",
+
+			"aliceblue","antiquewhite","aqua","aquamarine","azure",
+			"beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood",
+			"cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan",
+			"deeppink","deepskyblue","dimgray","dodgerblue",
+			"firebrick","floralwhite","forestgreen","fuchsia",
+			"gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow",
+			"honeydew","hotpink","indianred","indigo","ivory","khaki",
+			"lavender","lavenderblush","lawngreen","lemonchiffon","lime","limegreen","linen",
+			"magenta","maroon","midnightblue","mintcream","mistyrose","moccasin",
+			"navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid",
+			"palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru",
+			"pink","plum","powderblue","purple",
+			"rebeccapurple","red","rosybrown","royalblue",
+			"saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue",
+			"slateblue","slategray","snow","springgreen","steelblue",
+			"tan","teal","thistle","tomato","turquoise","violet",
+			"wheat","white","whitesmoke","yellow","yellowgreen2"
+		].indexOf(c.toLowerCase()) >= 0;
+	}
+
+	function checkRgb(rgb) {
+		var teste = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		if (teste != null) return true;
+		teste = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)\)$/);
+		if (teste != null) return true;
+		return false;
+	}
+
+	function checkHex(hex) {
+		hex = hex.replace('#','');
+		if ([3,4,6,8].indexOf(hex.length) < 0) return false;
+
+		hex = hex.replace(/\d/g,'');
+
+		if (hex.search(/([\\\-\|?&%$#@£¢§!:;.,=+_*"'¬/)(][}{><~´`^¨¹²³ªº°])/) >= 0
+			|| hex.search(/([áàâãéèêíìîóòôõúùûçñý])/i) >= 0
+			|| hex.search(/[g-z]/gi) >= 0
+		) {
+			return false;
+		}
+		return true;
+	}
+
+	if (checkColorName(color) || checkRgb(color) || checkHex(color)) return true;
+
+	return false;
 }
