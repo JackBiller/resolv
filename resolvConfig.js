@@ -45,7 +45,7 @@ var registerInputFocus 		= [];
 var registerEventKeyboard 	= [];
 var registerEventAll 		= [];
 
-var returnObjIdentado_Global = true;
+var returnObjIndentado_Global = true;
 var isMobile_Global = isMobile();
 
 var fa_icon_Global = [
@@ -479,7 +479,7 @@ function t() {
 	var num = (arguments[0] || 0);
 	var tab = '\n';
 	for (var i = 0; i < num; i++) tab += '\t'
-	return returnObjIdentado_Global ? tab : '';
+	return returnObjIndentado_Global ? tab : '';
 }
 
 function tirarAcentuacao(texto, isParam=false) {
