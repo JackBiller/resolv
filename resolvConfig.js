@@ -278,7 +278,7 @@ function resolvVal(id) {
 		if ((el.obj.type == 'radio' || (el.obj.radio || '') != '')
 			&& arguments[1] != undefined
 			&& el.el.attr('id') != id
-		) { 
+		) {
 			var setValue = -1;
 			var els = document.getElementsByName(id);
 			for (var i = 0; i < els.length; i++) {
@@ -289,6 +289,14 @@ function resolvVal(id) {
 			}
 			if (setValue >= 0) return els[setValue];
 		}
+
+		if ((el.obj.ck_editor || '') != '' && CKEDITOR != undefined
+			&& CKEDITOR.instances[el.obj.id] != undefined
+		) {
+			if (arguments.length > 1) 	return CKEDITOR.instances[el.obj.id].setData(value);
+										return CKEDITOR.instances[el.obj.id].getData().replace(/\n\<p\>&nbsp;\<\/p\>\n/gi, '');
+		}
+
 		if (arguments.length > 1) 	return el.el[func](value);
 									return el.el[func]();
 	}

@@ -28,6 +28,7 @@ function resolvInput(options,tab=0) {
 			}
 
 			isTextarea: (0|1)					-- Se o campo é textarea
+			ck_editor: (0|1)					-- Caso seja textarea usa o ck_editor
 			cols: num 							-- Col para quando o campo for textarea
 			rows: num 							-- Row para quando o campo for textarea
 
@@ -591,7 +592,7 @@ function resolvInputIn(options,tab=0) {
 
 
 		// ****  correção do bug de quebra de linha como valor padrão no textarea ****
-		+ ((options.isTextarea || false)
+		+ ((options.isTextarea || false) && (options.ck_editor || '') == '' && (options.id || '') == ''
 			? ''
 			+ t(tab+1)	+ 	`setTimeout(function() {`
 			+ t(tab+2)	+ 		`$("#${options.id}").val($("#${options.id}").val().replace(/<br>/gi, "\\n"));`
@@ -810,11 +811,20 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+2)	+ 		`$(fileInput${options.id}).change();`
 			+ t(tab+1)	+ 	`});`
 		)
+		// ***************************************************************************
+
+
+
+		// ****  verificar se vai usar o ckEditor ****
+		+ ((options.id || '') == '' || (options.isTextarea || '') == '' || (options.ck_editor || '') == '' ? '' : ''
+			+ t(tab+1)	+ 		`CKEDITOR.replace('${options.id}');`
+		)
 		+t(tab)	+ 	`</`+`script>`
 		// ***************************************************************************
 
 	return html;
 }
+
 
 
 var base64Foto_Global = [];
