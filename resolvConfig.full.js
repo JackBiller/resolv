@@ -3235,6 +3235,7 @@ function resolvInput(options,tab=0) {
 			}
 
 			isTextarea: (0|1)					-- Se o campo é textarea
+			ck_editor: (0|1)					-- Caso seja textarea usa o ck_editor
 			cols: num 							-- Col para quando o campo for textarea
 			rows: num 							-- Row para quando o campo for textarea
 
@@ -3655,7 +3656,7 @@ function resolvInputIn(options,tab=0) {
 					+ t(tab)	+ ((options.inline || '' ) == ''
 						? `<table width="100%">`
 						// : `<table style="display:inline-block;padding-right: 20px;">`
-						: `<table style="display:inline-block;padding-right: 20px;border: 1px solid #A7B0B6;border-radius:5px;padding-left:5px;">`
+						: `<table style="display:inline-block;padding-right: 20px;border: 1px solid #A7B0B6;border-radius:5px;padding-left:5px;background-color: white;">`
 					)
 					+ t(tab+1)	+ 		`<tr>`
 					+ t(tab+2)	+ 			`<td width='20px'>`
@@ -3798,7 +3799,7 @@ function resolvInputIn(options,tab=0) {
 
 
 		// ****  correção do bug de quebra de linha como valor padrão no textarea ****
-		+ ((options.isTextarea || false)
+		+ ((options.isTextarea || false) && (options.ck_editor || '') == '' && (options.id || '') == ''
 			? ''
 			+ t(tab+1)	+ 	`setTimeout(function() {`
 			+ t(tab+2)	+ 		`$("#${options.id}").val($("#${options.id}").val().replace(/<br>/gi, "\\n"));`
@@ -4017,11 +4018,20 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+2)	+ 		`$(fileInput${options.id}).change();`
 			+ t(tab+1)	+ 	`});`
 		)
+		// ***************************************************************************
+
+
+
+		// ****  verificar se vai usar o ckEditor ****
+		+ ((options.id || '') == '' || (options.isTextarea || '') == '' || (options.ck_editor || '') == '' ? '' : ''
+			+ t(tab+1)	+ 		`CKEDITOR.replace('${options.id}');`
+		)
 		+t(tab)	+ 	`</`+`script>`
 		// ***************************************************************************
 
 	return html;
 }
+
 
 
 var base64Foto_Global = [];
@@ -5541,7 +5551,7 @@ function resolvVal(id) {
 		if ((el.obj.type == 'radio' || (el.obj.radio || '') != '')
 			&& arguments[1] != undefined
 			&& el.el.attr('id') != id
-		) { 
+		) {
 			var setValue = -1;
 			var els = document.getElementsByName(id);
 			for (var i = 0; i < els.length; i++) {
@@ -5552,6 +5562,14 @@ function resolvVal(id) {
 			}
 			if (setValue >= 0) return els[setValue];
 		}
+
+		if ((el.obj.ck_editor || '') != '' && CKEDITOR != undefined
+			&& CKEDITOR.instances[el.obj.id] != undefined
+		) {
+			if (arguments.length > 1) 	return CKEDITOR.instances[el.obj.id].setData(value);
+										return CKEDITOR.instances[el.obj.id].getData().replace(/\n\<p\>&nbsp;\<\/p\>\n/gi, '');
+		}
+
 		if (arguments.length > 1) 	return el.el[func](value);
 									return el.el[func]();
 	}
