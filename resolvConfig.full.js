@@ -1294,6 +1294,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		required: '' 				-- se o componente é obrigatório ou não
 		accesskey: '' 				-- tecla de atalho para focar no componente. Order de para foca ['campo código','botão']
 		onFalseDebug: function(dt) 	-- Caso tenha que personalizar quando o retorno for vazio ou o debug for diferente de OK
+		title: '' 					-- Título do modal de consulta
 
 		dist: 'C-B-D' 				-- referencia para a disposição do componentes na tela
 		... 						-- 	Ref: (
@@ -1692,7 +1693,13 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+1)	+ 			`$("#modalConsulta").find('.conteudo').html('Carregando...');`
 		+t(tab+1)	+ 			`if (!$('#modalConsulta').is(':visible')) {`
 		+t(tab+2)	+ 				`abrirModalConsulta({`
-		+t(tab+3)	+ 					`search:'${((options.codigo || {}).text || '')}',`
+		+t(tab+3)	+ 					`search:'${((options.title || '') != ''
+											? options.title
+											: ((options.codigo || {}).text || '' != ''
+												? (options.codigo || {}).text
+												: ((options.desc || {}).text || '')
+											)
+										)}',`
 		+t(tab+3)	+ 					`click:function() { pesquisa${capitalize(options.descForm)}(); }`
 		+t(tab+2)	+ 				`});`
 		+t(tab+2)	+ 				`return false;`
@@ -5300,11 +5307,22 @@ $('#modalConsulta').on('hidden.bs.modal', function () {
 	$('#modalConsulta').find('.conteudo').html('');
 });
 
-function abrirModalConsulta(options) { 
-	$("#modalConsulta").modal('show').find('spam').html((options.search || '')).parent('.modal-body')
-	$("#modalConsulta").find('.btn-search')[0].onclick = options.click
+function abrirModalConsulta(options) {
+	$("#modalConsulta").modal('show').find('spam').html((options.search || '')).parent('.modal-body');
+	$("#modalConsulta").find('.btn-search')[0].onclick = options.click;
 }
-</script>`;
+
+if ($.fn.tooltip.Constructor.VERSION.slice(0,1) == '4') {
+	$("#modalConsulta").attr('class', $("#modalConsulta").attr('class').replace('fade',''));
+	$("#modalConsulta").attr('role', '');
+	$("#modalConsulta").find('.modal-footer').find('button').attr('class', 'btn btn-light');
+	$("#modalConsulta").find('.modal-header').html(''
+		+ "<h4 class='modal-title'>Consultar <spam></spam>:</h4>"
+		+ "<button class='close' id='closeModaBuscaAtendimento' data-dismiss='modal'>&times;</button>"
+	);
+}
+</script>
+`;
 var modalimagens = `<!-- ********************************************************************************************** -->
 <!-- * Modal Para Visualizar Fotos -->
 <!-- ********************************************************************************************** -->
