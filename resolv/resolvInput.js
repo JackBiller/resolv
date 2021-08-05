@@ -449,7 +449,7 @@ function resolvInputIn(options,tab=0) {
 					+ t(tab)	+ ((options.inline || '' ) == ''
 						? `<table width="100%">`
 						// : `<table style="display:inline-block;padding-right: 20px;">`
-						: `<table style="display:inline-block;padding-right: 20px;border: 1px solid #A7B0B6;border-radius:5px;padding-left:5px;">`
+						: `<table style="display:inline-block;padding-right: 20px;border: 1px solid #A7B0B6;border-radius:5px;padding-left:5px;background-color: white;">`
 					)
 					+ t(tab+1)	+ 		`<tr>`
 					+ t(tab+2)	+ 			`<td width='20px'>`
