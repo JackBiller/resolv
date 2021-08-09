@@ -46,7 +46,11 @@ function resolvButton(options, tab=0) {
 
 	classBtn = classBootstrap != '' ? 'btn btn-' + classBtn : classBtn;
 
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 	if (bootstrap == '4') {
 		if (classBtn.indexOf('btn-default') >= 0) {
 			classBtn = classBtn.replace('btn-default', 'btn-light');

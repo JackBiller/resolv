@@ -372,7 +372,11 @@ function resolvInputIn(options,tab=0) {
 		);
 
 
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 
 	if ((group || '') != '') {
 		var indexOpGroup = -1;

@@ -73,7 +73,11 @@ function resolvCodigoConsulta(options, tab=0) {
 	var param = resolvParamAjax(options);
 	var descRef = '';
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 	var classBtn = bootstrap == '4' ? 'light' : 'default';
 
 	var title = accesskey == '' ? '' : " title='Alt + " + accesskey + "'";

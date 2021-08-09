@@ -25,7 +25,11 @@ function resolvDiv(options, tab=0) {
 }
 
 function resolvClassDiv(classDiv) {
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 	var orderClass = ['xs','sm','md','lg','xl','xxl'];
 
 	if (bootstrap == '4') {

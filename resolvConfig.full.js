@@ -227,7 +227,11 @@ function resolvButton(options, tab=0) {
 
 	classBtn = classBootstrap != '' ? 'btn btn-' + classBtn : classBtn;
 
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 	if (bootstrap == '4') {
 		if (classBtn.indexOf('btn-default') >= 0) {
 			classBtn = classBtn.replace('btn-default', 'btn-light');
@@ -1326,7 +1330,11 @@ function resolvCodigoConsulta(options, tab=0) {
 	var param = resolvParamAjax(options);
 	var descRef = '';
 	var accesskey = (options.accesskey || '') == '' || options.accesskey.length > 1 ? '' : options.accesskey;
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 	var classBtn = bootstrap == '4' ? 'light' : 'default';
 
 	var title = accesskey == '' ? '' : " title='Alt + " + accesskey + "'";
@@ -1825,7 +1833,11 @@ function resolvDiv(options, tab=0) {
 }
 
 function resolvClassDiv(classDiv) {
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 	var orderClass = ['xs','sm','md','lg','xl','xxl'];
 
 	if (bootstrap == '4') {
@@ -3586,7 +3598,11 @@ function resolvInputIn(options,tab=0) {
 		);
 
 
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 
 	if ((group || '') != '') {
 		var indexOpGroup = -1;
@@ -4375,7 +4391,11 @@ function resolvMenu(options={}, tab=0) {
 	var TA = isLateral ? 1 : 0;
 
 	var selected = options.selected || 0;
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 
 	var html = ''
 		+ (!isLateral || (options.abas || []).length < 2 ? '' : ''
@@ -5376,7 +5396,11 @@ var modalinputFile = `<style>
 `;
 var modalmenu = `<script>
 function mudarPagina(el, divId, name, nameDiv) {
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 	var elementoMenu = document.getElementsByName(name);
 	var elementoContMenu = document.getElementsByName(nameDiv);
 	for (var i = 0; i < elementoMenu.length; i++) {

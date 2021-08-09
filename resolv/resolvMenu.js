@@ -34,7 +34,11 @@ function resolvMenu(options={}, tab=0) {
 	var TA = isLateral ? 1 : 0;
 
 	var selected = options.selected || 0;
-	var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	try {
+		var bootstrap = $.fn.tooltip.Constructor.VERSION.slice(0,1);
+	} catch(e) {
+		var bootstrap = '0';
+	}
 
 	var html = ''
 		+ (!isLateral || (options.abas || []).length < 2 ? '' : ''
