@@ -2,16 +2,20 @@
 function resolvDiv(options, tab=0) {
 	/*
 		options: {
-			class: '' 		-- Class da div
-			id: '' 			-- Id da div
-			ctx: '' 		-- Conteúdo div
-			style: obj 		-- Objeto CSS
-			text: '' 		-- Texto de conteúdo dentro da div
+			class: '' 			-- Class da div
+			id: '' 				-- Id da div
+			ctx: '' 			-- Conteúdo div
+			style: obj 			-- Objeto CSS
+			isCenter: (0/1) 	-- Se vai envolver a div numa tag center
+			text: '' 			-- Texto de conteúdo dentro da div
 		}
 	*/
 	var classDiv = resolvClassDiv(options.class || '');
 
 	var html = ''
+		+ ((options.isCenter || '') == '' ? '' : ''
+			+t(tab) + '<center>'
+		)
 		+t(tab)		+ 	"<div"
 					+ 		(classDiv == '' ? '' : " class='" + classDiv + "'")
 					+ 		((options.id || '') == '' ? '' : " id='" + options.id + "'")
@@ -20,6 +24,9 @@ function resolvDiv(options, tab=0) {
 					+ 		((options.text || "") == '' ? '' : t(tab+1)+options.text)
 					+ 		resolvConfig((options.ctx || {}),tab+1)
 		+t(tab)		+ 	"</div>"
+		+ ((options.isCenter || '') == '' ? '' : ''
+			+t(tab) + '</center>'
+		)
 
 	return html;
 }
