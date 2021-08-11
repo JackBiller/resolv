@@ -178,7 +178,7 @@ function resolvInputIn(options,tab=0) {
 	// se tem que validar o requerimento completo, com mensagem embaixo do campo
 	// options.requiredFull = ((options.id || ``) != `` && typeof(options.required) == `function`);
 	// options.requiredFull = ((options.id || ``) != `` && (options.required || ``) != ``);
-	options.requiredFull = ( testP(options.id) && testP(options.required) && (testP(options.text) || typeof(options.required) == `function`) );
+	options.requiredFull = ( testP(options.id) && testP(options.required) && (testP(options.text || options.placeholder) || typeof(options.required) == `function`) );
 
 	if (options.isTextarea || false) options.value = (options.value || '').replace(/\r/g,'').replace(/\n/g, '<br>');
 
@@ -265,6 +265,10 @@ function resolvInputIn(options,tab=0) {
 			.map(function(opt) { return ` ${opt}="${options[opt]}"`; })
 			.join('')
 		// ***************************************************************************
+
+		+ ((options.type || '') != '' ? '' : ''
+			+ ' type="text"'
+		)
 
 		+ ((options.data || '') == '' || typeof(options.data) != 'object' ? `` : ``
 			+ Object.keys(options.data).map(function(key) {
@@ -386,52 +390,86 @@ function resolvInputIn(options,tab=0) {
 
 
 		input = ''
-			+ (bootstrap == '4'
-				? '<div class="input-group mb-3">'
-				: '<div class="input-group">'
+			+ (bootstrap == '0'
+				? ''
+				+ 	'<table width="100%">'
+				+ 		'<tr>'
+				: ''
+				+ (bootstrap == '4'
+					? '<div class="input-group mb-3">'
+					: '<div class="input-group">'
+				)
 			)
 			+ group.map(function(op,index) {
-				if (op == 'i') return input;
+				if (op == 'i') return bootstrap != '0' ? input : '<td>' + input + '</td>';
 
 				var text;
 				var classInput = indexOpGroup < index ? 'append' : 'prepend';
 
 				if (typeof op == 'string') {
 					text = ''
-						+ (bootstrap == '4'
+						+ (bootstrap == '0'
 							? ''
-							+ 	`<div class="input-group-${classInput}">`
-							+ 		`<span class="input-group-text" id="basic-addon${random}">`
-							+ 			`${op}`
-							+ 		`</span>`
-							+ 	`</div>`
+							+ 	'<td>'
+							+ 		`${op}`
+							+ 	'</td>'
 							: ''
-							+ 	`<span class="input-group-addon" id="basic-addon${random}">${op}</span>`
+							+ (bootstrap == '4'
+								? ''
+								+ 	`<div class="input-group-${classInput}">`
+								+ 		`<span class="input-group-text" id="basic-addon${random}">`
+								+ 			`${op}`
+								+ 		`</span>`
+								+ 	`</div>`
+								: ''
+								+ 	`<span class="input-group-addon" id="basic-addon${random}">${op}</span>`
+							)
 						)
 				} else {
 					text = ''
-						+ (bootstrap != '4' ? '' : ''
-							+ `<div class="input-group-${classInput}">`
-							// + `<div class="input-group-append">`
-						)
-						+ 	`<span id="basic-addon${random}"`
-						+ ((op.click || '') == '' ? '' : ''
-							+ 	` onclick="${op.click}"`
-						)
-						+ 		` class="input-group-` + (bootstrap == '4' ? 'text' : 'addon')
-						+ 			((op.class || '') == '' ? '' : ` ${op.class}`)
-						+ 			((op.click || '') == '' ? '' : ' btn btn-' + (bootstrap == '4' ? 'light' : 'default'))
-						+		`"`
-						+	`>`
-						+		`${op.text}`
-						+	`</span>`
-						+ (bootstrap != '4' ? '' : ''
-							+ `</div>`
+						+ (bootstrap == '0'
+							? ''
+							+ 	'<td>'
+							+ ((op.click || '') == '' ? `${op.text}` : ``
+								+ 	`<button onclick="${op.click}"`
+								+ ((op.style || '') == '' ? '' : ''
+									+ 	` style="${resolvStyle(op.style)}"`
+								)
+								+ 	`>`
+								+ 		`${op.text}`
+								+ 	`</button>`
+							)
+							+ 	'</td>'
+							: ''
+							+ (bootstrap != '4' ? '' : ''
+								+ `<div class="input-group-${classInput}">`
+								// + `<div class="input-group-append">`
+							)
+							+ 	`<span id="basic-addon${random}"`
+							+ ((op.click || '') == '' ? '' : ''
+								+ 	` onclick="${op.click}"`
+							)
+							+ 		` class="input-group-` + (bootstrap == '4' ? 'text' : 'addon')
+							+ 			((op.class || '') == '' ? '' : ` ${op.class}`)
+							+ 			((op.click || '') == '' ? '' : ' btn btn-' + (bootstrap == '4' ? 'light' : 'default'))
+							+		`"`
+							+	`>`
+							+		`${op.text}`
+							+	`</span>`
+							+ (bootstrap != '4' ? '' : ''
+								+ `</div>`
+							)
 						)
 				}
 				return text;
 			}).join('')
-			+ '</div>'
+			+ (bootstrap == '0'
+				? ''
+				+ 		'</tr>'
+				+ 	'</table>'
+				: ''
+				+ '</div>'
+			)
 	}
 
 	input += ''
@@ -569,7 +607,7 @@ function resolvInputIn(options,tab=0) {
 			// )
 			+ t(tab+2) 	+ 		`return (`
 			+ t(tab+3) 	+ 			`resolvVal("${options.id}") == ''`
-			+ t(tab+4) 	+ 				`? "Informe ${options.text}"`
+			+ t(tab+4) 	+ 				`? "Informe ${options.text || options.placeholder}"`
 			+ t(tab+4) 	+ 				`: ${typeof(options.required) == `function` ? `${String(options.required)}(op)` : `true`}`
 			+ t(tab+2) 	+ 		`);`
 			+ t(tab+1) 	+ 	`}`
