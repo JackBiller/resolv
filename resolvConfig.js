@@ -1,8 +1,8 @@
 
 /*
 	Dependências:
-		jQuery 
-		bootstrap 3 
+		jQuery
+		bootstrap 3
 		moment
 		jquery.mask
 		jquery.browser.detection
@@ -14,7 +14,7 @@
 */
 
 /*
-	Tipos de Operação: 
+	Tipos de Operação:
 		- blur 		: Disparado quando der blur no campo
 		- check 	: Disparado quando for checar campo, nome padrão para quando não tem especificação do parâmetro
 		- valid 	: Disparado quando tiver validado o campo no serialize
@@ -148,7 +148,7 @@ function isMobile() {
 	return false;
 }
 
-function capitalize(s) { 
+function capitalize(s) {
 	if (typeof s !== "string") return "";
 	return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -206,7 +206,7 @@ function resolvVal(id) {
 		if (arguments.length > 2) 				return el.el.val(arguments[2]);
 		if (getDesc) 							return el.el[0].options[el.el[0].selectedIndex].innerHTML;
 												return el.el.val();
-	} else { 
+	} else {
 		var value = (arguments[1] != undefined ? arguments[1] : el.obj.value);
 
 		switch ((((el.obj || {}).style || {})["text-transform"] || '').toLowerCase()) {
@@ -220,7 +220,7 @@ function resolvVal(id) {
 		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
 			if ((value || '') == '') {
 				$("#"+id+'Datepicker').val('');
-			} else { 
+			} else {
 				$("#"+id+'Datepicker').datepicker('setDate', new Date(value+'-02'));
 			}
 		}
@@ -333,7 +333,7 @@ function resolvFocus(id, cla='') {
 	if (el.parent == 'codigoConsulta') {
 		var isBtn = (el.obj.dist || 'B').indexOf('B') >= 0 && (el.obj.dist || 'C').indexOf('C') < 0;
 		return resolvFocusAction(isBtn ? $("#"+id).find('button') : el.el);
-	} 
+	}
 
 	if (['input','button'].indexOf(el.parent) >= 0) {
 		if ((el.obj.isMonth || false)) {
@@ -360,7 +360,7 @@ function resolvVisibled(id, cla='') {
 			}
 			$("#label_"+id).css('display', (arguments[1] || 'none'));
 			return el.el.css('display', (arguments[1] || 'none') );
-		} else { 
+		} else {
 			return el.el.css('display', (arguments[1] || 'none') );
 		}
 	}
@@ -397,7 +397,7 @@ function resolvIcon(icon) {
 	}) || '';
 
 	return (
-		classFa != '' ? 'fa fa-' + icon 
+		classFa != '' ? 'fa fa-' + icon
 		: icon
 	);
 }
@@ -435,7 +435,7 @@ function jsonToString(obj, tab=0, indent=false) {
 			+ (isObj ? "\"" + keys[i] + "\":" : '')
 
 		switch (typeof(obj[keys[i]])) {
-			case 'number': 
+			case 'number':
 			case 'boolean': text += obj[keys[i]]; 								break;
 			case 'string': 	text += "\"" + obj[keys[i]] + "\""; 				break;
 			case 'object': 	text += jsonToString(obj[keys[i]],tab+1,indent); 	break;
@@ -561,8 +561,8 @@ function resolvConfig(options, tab=0, isRegister=false) {
 	for (var i = 0; i < keys.length; i++) {
 		try {
 			// html += document['resolv' + capitalize(keys[i])](options[keys[i]]);
-			html += !isNaN(keys[i]) 
-				? resolvConfig(options[keys[i]], tab) 
+			html += !isNaN(keys[i])
+				? resolvConfig(options[keys[i]], tab)
 				: resolvGlobalParam(options[keys[i]], tab, window['resolv' + capitalize(keys[i])](options[keys[i]], tab));
 		} catch(e) {
 			console.error(e);
@@ -606,7 +606,7 @@ function resolvPath(id, obj=objRefConfig_Global) {
 
 function desregistrarConfig(id) {
 	var path = resolvPath(id);
-	if (path.length) { 
+	if (path.length) {
 		path.splice(path.length-1,1);
 		path.forEach(function(p,i) {
 			if (p.indexOf('menu') == 0) path[i] = 'menu';

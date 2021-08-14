@@ -35,7 +35,7 @@ function serealizeForm(obj,options={}) {
 
 		if ((keys[i].obj.input || '') != ''
 			|| ((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
-		) { 
+		) {
 			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) {
 				if ((options.onlyValuePre || '') == '') {
 					input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
@@ -279,7 +279,7 @@ function returnFromEl(obj, types) {
 						: JSON.parse("{\"" + types[i] + "\":\"" + String(obj[types[i]]) + "\"}")
 					),
 					{ tipoCampo: types[i], parent: (arguments[3] || ''), obj: obj }
-				) 
+				)
 			);
 			if (options.first) i = types.length;
 		}

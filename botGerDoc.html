@@ -22,17 +22,17 @@
 <script>
 	var files_Global = [], indiceFiles_Global = -1, documentacao_Global = [];
 
-	function startBot() { 
+	function startBot() {
 		$.ajax({
 			url: 'controller.php',
 			type: 'POST',
 			dataType: 'text',
-			data: { 
+			data: {
 				'listarDiretorio': true,
 				'path': './resolv',
 			},
 			error: function(){ $('#lastUpdate').val('Falha ao fazer a requisição!'); }
-		}).done(function(data) { 
+		}).done(function(data) {
 			console.log(data);
 			data = JSON.parse(data);
 			console.log(data);
@@ -43,8 +43,8 @@
 		});
 	}
 
-	function readFileDoc() { 
-		if (indiceFiles_Global >= files_Global.length-1) { 
+	function readFileDoc() {
+		if (indiceFiles_Global >= files_Global.length-1) {
 			console.log('final')
 			montarDocumentacao();
 			return;
@@ -57,15 +57,15 @@
 			type: 'GET',
 			dataType: 'text',
 			error: () => { alert('Falha ao fazer a requisição!'); }
-		}).done(source => { 
+		}).done(source => {
 			let doc = '', indiceFunc = source.indexOf(file.name.split('.')[0]);
 
-			if (indiceFunc >= 0) { 
+			if (indiceFunc >= 0) {
 				doc = source.substring(indiceFunc, source.length);
 
 				indiceFunc = doc.indexOf('/*');
 
-				if (indiceFunc >= 0) { 
+				if (indiceFunc >= 0) {
 					doc = doc.substring(indiceFunc + '/*'.length, source.length);
 					doc = doc.substring(0, doc.indexOf('*/'));
 					tratarDoc(doc);
@@ -74,13 +74,13 @@
 		});
 	}
 
-	function tratarDoc(doc) { 
+	function tratarDoc(doc) {
 		doc = doc.replace(/\r/g,'');
 		doc = doc.replace(/\t/g,'    ');
 
 		let linhas = doc.split('\n'), minTab = -1;
 
-		linhas.forEach((linha, i) => { 
+		linhas.forEach((linha, i) => {
 			linhas[i] = removeLastCharSpace(linha);
 
 			let tabs = calcTab(linha);
@@ -89,7 +89,7 @@
 
 		let linhasUteis = linhas.filter(l => l != '');
 
-		for (let i = 0; i < linhasUteis.length; i++) { 
+		for (let i = 0; i < linhasUteis.length; i++) {
 			linhasUteis[i] = linhasUteis[i].substring(minTab, linhasUteis[i].length);
 			linhasUteis[i] = linhasUteis[i].split('--');
 			linhasUteis[i][0] = removeLastCharSpace(linhasUteis[i][0]);
@@ -97,7 +97,7 @@
 
 		let documentacao = ''
 			+ '<table>'
-			+ linhasUteis.map(linha => { 
+			+ linhasUteis.map(linha => {
 				return ''
 					+ '<tr>'
 					+ 		'<td style="padding-right:15px;">'
@@ -120,23 +120,23 @@
 		readFileDoc();
 	}
 
-	function removeLastCharSpace(text='') { 
-		while(text.substring(text.length-1,text.length) == ' ') 
+	function removeLastCharSpace(text='') {
+		while(text.substring(text.length-1,text.length) == ' ')
 			text = text.substring(0,text.length-1);
 		return text;
 	}
 
-	function calcTab(text) { 
+	function calcTab(text) {
 		text = text.split('');
 		let tabs = 0;
-		while(text[0] == ' ') { 
+		while(text[0] == ' ') {
 			text.splice(0,1);
 			tabs++;
 		}
 		return text.length == 0 ? -1 : tabs;
 	}
 
-	function montarDocumentacao() { 
+	function montarDocumentacao() {
 		console.log('documentacao_Global');
 		console.log(documentacao_Global);
 
@@ -172,11 +172,11 @@
 					).join('')
 			+t(1) 	+ 		`eval(\`$("#conteudoPagina").html("<h1>" + desc + "</h1>" + \${desc});\`);`
 			+t(0) 	+ 	`}`
-			+t(0) 	+ 	`</`+`script>` 
+			+t(0) 	+ 	`</`+`script>`
 			+t(0) 	+ 	`</html>`
 	}
 
-	function t() { 
+	function t() {
 		var num = arguments.length > 0 ? arguments[0] : 1, html = "\n";
 		for (var i = 0; i < num; i++) html += "\t";
 		return html;

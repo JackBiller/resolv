@@ -133,7 +133,7 @@ function resolvMenu(options={}, tab=0) {
 		}).join('')
 		+t(tab+TA)		+ '</'+'script>'
 
-	for (var i = 0; i < (options.abas || []).length; i++) { 
+	for (var i = 0; i < (options.abas || []).length; i++) {
 		html += ""
 		+t(tab+TA)	+ 	"<div"
 					+ 		" id='" + options.descForm + "Ctx" + i + "'"

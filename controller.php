@@ -6,7 +6,7 @@ include './class/PadraoObjeto.php';
 include './class/funcoes.php';
 
 
-if (!empty($_POST['atualizarArquivoConfig'])) { 
+if (!empty($_POST['atualizarArquivoConfig'])) {
 	$files = array();
 
 	// $diretorio = listDir($_POST['dir']);
@@ -93,10 +93,10 @@ var modal$modalName = `$modal`;";
 				$modalFuncHTML .= "
 	/*****************************************************************/
 	// Resolv $modalName
-	var checkModal$modalName = (function (obj) { 
+	var checkModal$modalName = (function (obj) {
 $modalFunc
 	}(obj));
-	var checkModalGlobal$modalName = (function (obj) { 
+	var checkModalGlobal$modalName = (function (obj) {
 $modalFunc
 	}(objRefConfig_Global));
 	if (checkModal$modalName && (!checkModalGlobal$modalName || forceSet)) { html += modal$modalName; }
@@ -105,14 +105,14 @@ $modalFunc
 		}
 
 		$isFindModal = false;
-		for ($i=0; $i < sizeof($modais); $i++) { 
+		for ($i=0; $i < sizeof($modais); $i++) {
 			$isFindModal = false;
-			for ($j=0; $j < sizeof($modaisF); $j++) { 
+			for ($j=0; $j < sizeof($modaisF); $j++) {
 				if ($modais[$i] == $modaisF[$j]) {
 					$isFindModal = true;
 				}
 			}
-			if (!$isFindModal) 
+			if (!$isFindModal)
 				$modalFuncHTML .= '
 	html += modal' . $modalName . ';';
 		}
@@ -120,7 +120,7 @@ $modalFunc
 		$conteudoAdd .= "
 $modalHTML
 
-function resolvConfigModal(obj, forceSet=false) { 
+function resolvConfigModal(obj, forceSet=false) {
 	var html = '';
 $modalFuncHTML
 	if (t().indexOf('\\n') == -1) html.replace(/\\n|\\t/g, '');
@@ -134,25 +134,25 @@ $modalFuncHTML
 
 
 
-		createFile('resolvConfig.full.js', // 'resolvConfig.mim.js', 
+		createFile('resolvConfig.full.js', // 'resolvConfig.mim.js',
 			$conteudo[0] . "// funções de resolução\n" . $conteudoAdd . "\n\t// fim função de resolução" . $conteudoFoot
 		);
 	}
 }
 
-if (!empty($_POST['listarDiretorio'])) { 
+if (!empty($_POST['listarDiretorio'])) {
 	$path = $_POST['path'];
 	echo toJson(listDir($path));
 }
 
-if (!empty($_POST['criarDiretorioDoc'])) { 
+if (!empty($_POST['criarDiretorioDoc'])) {
 	mkdir('./resolvDoc');
 	$doc = $_POST['doc'];
 	createFile('./resolvDoc/documentacao.html', $doc);
 }
 
-if (!empty($_POST['testeApiDados'])) { 
-	class DadoGenericos extends PadraoObjeto { 
+if (!empty($_POST['testeApiDados'])) {
+	class DadoGenericos extends PadraoObjeto {
 		var $id;
 		var $desc;
 		var $codigo;
@@ -160,7 +160,7 @@ if (!empty($_POST['testeApiDados'])) {
 	}
 	$arrayTeste = array();
 
-	for ($i=0; $i < 50; $i++) { 
+	for ($i=0; $i < 50; $i++) {
 		$dadoGenerico = new DadoGenericos();
 		$dadoGenerico->set($i, 'id');
 		$dadoGenerico->set(($i * 1000), 'codigo');
@@ -171,7 +171,7 @@ if (!empty($_POST['testeApiDados'])) {
 }
 
 /* Enviar arquivo via base64 */
-if (!empty($_POST['sendBase64'])) { 
+if (!empty($_POST['sendBase64'])) {
 	$tempName = !empty($_POST['tempName']) ? $_POST['tempName'] : date('ymdHis').rand(0,100);
 	$base64 = $_POST['base64'];
 
@@ -183,7 +183,7 @@ if (!empty($_POST['sendBase64'])) {
 	echo $tempName;
 }
 
-if (!empty($_POST['doneSendBase64'])) { 
+if (!empty($_POST['doneSendBase64'])) {
 	$tempName 		= $_POST['tempName'];
 	$fileName 		= $_POST['fileName'];
 	$path 			= $_POST['path'];
@@ -197,13 +197,13 @@ if (!empty($_POST['doneSendBase64'])) {
 	$path = resolvPath($path);
 
 	$arquivo2 = fopen($path.$fileName.'.'.$ext, "w") or die("Unable to open file!");
-	if (empty($_POST['no_base64'])) { 
-		if (in_array(strtolower($ext), $arrayExtText)) { 
+	if (empty($_POST['no_base64'])) {
+		if (in_array(strtolower($ext), $arrayExtText)) {
 			fwrite($arquivo2, utf8_encode(base64_decode($ctx)));
-		} else { 
+		} else {
 			fwrite($arquivo2, base64_decode($ctx));
 		}
-	} else { 
+	} else {
 		fwrite($arquivo2, $ctx);
 	}
 	fclose($arquivo2);
@@ -214,31 +214,31 @@ if (!empty($_POST['doneSendBase64'])) {
 }
 /* End: Enviar arquivo via base64 */
 
-function ajusteTab($text, $numTab=0, $boolComentario=false) { 
+function ajusteTab($text, $numTab=0, $boolComentario=false) {
 	$text = explode("\n", str_replace("\r", "", $text));
 
-	for ($i=0; $i < sizeof($text); $i++) { 
+	for ($i=0; $i < sizeof($text); $i++) {
 		$text[$i] = str_replace("\t", "    ", $text[$i]);
 		// remover comentario
-		if (!$boolComentario) { 
-			if (strpos($text[$i], "//") !== '') { 
+		if (!$boolComentario) {
+			if (strpos($text[$i], "//") !== '') {
 				$text[$i] = explode('//', $text[$i]);
 				$text[$i] = $text[$i][0];
 			}
 		}
 		// remover espaço no final da linha
-		while (substr($text[$i], strlen($text[$i])-1, 1) == ' ') { 
+		while (substr($text[$i], strlen($text[$i])-1, 1) == ' ') {
 			$text[$i] = substr($text[$i], 0, strlen($text[$i])-1);
 		}
 		// remover linhas vazias
-		if ($text[$i] == '') { 
+		if ($text[$i] == '') {
 			array_splice($text, $i, 1);
 			$i--;
 		}
 	}
 
-	for ($i=0; $i < $numTab; $i++) { 
-		for ($j=0; $j < sizeof($text); $j++) { 
+	for ($i=0; $i < $numTab; $i++) {
+		for ($j=0; $j < sizeof($text); $j++) {
 			$text[$j] = "    " . $text[$j];
 		}
 	}

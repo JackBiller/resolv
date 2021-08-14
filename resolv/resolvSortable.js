@@ -28,7 +28,7 @@ function resolvSortable(option, data=[]) {
 					class: ''												// Class para delimitar o range de cada coluna Ex: (col-xs-11)
 
 					param: '' 												// Parâmetro a ser mostrado na célula OR
-					param: function(data, option, index) 					// Parâmetro a ser mostrado por function usará como callback, 
+					param: function(data, option, index) 					// Parâmetro a ser mostrado por function usará como callback,
 					... 													// 		o option é referente as opções do input e o índice é dos dados OR
 					param: { 												// Parâmetro mais personalizado para mostrar valores
 						op: (CONCAT|SUM), 									// operação a ser realizada pelos valores
@@ -209,7 +209,7 @@ function resolveValPrintSortable(option, data, index) {
 		var { casas, dec, mili } = option.format;
 		if ((typeof(option.param) == 'function' && valData == '') ||
 			(typeof(option.param) != 'function' && data[option.param] == undefined)
-		) { 
+		) {
 			valData = option.default || '';
 		} else {
 			valData = (valData || 0);

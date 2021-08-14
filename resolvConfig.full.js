@@ -1,8 +1,8 @@
 
 /*
 	Dependências:
-		jQuery 
-		bootstrap 3 
+		jQuery
+		bootstrap 3
 		moment
 		jquery.mask
 		jquery.browser.detection
@@ -14,7 +14,7 @@
 */
 
 /*
-	Tipos de Operação: 
+	Tipos de Operação:
 		- blur 		: Disparado quando der blur no campo
 		- check 	: Disparado quando for checar campo, nome padrão para quando não tem especificação do parâmetro
 		- valid 	: Disparado quando tiver validado o campo no serialize
@@ -148,7 +148,7 @@ function isMobile() {
 	return false;
 }
 
-function capitalize(s) { 
+function capitalize(s) {
 	if (typeof s !== "string") return "";
 	return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -262,8 +262,8 @@ function resolvButton(options, tab=0) {
 					// + 		(accesskey 				   == '' ? '' : " accesskey='" + accesskey + "'")
 					+ 		((options.title 	|| '') == '' && accesskey == '' ? '' : ''
 								+ 	" title='"
-								+ 		(options.title || '') 
-								+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
+								+ 		(options.title || '')
+								+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n')
 								+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
 								+ 	"'"
 							)
@@ -326,7 +326,7 @@ function resolvButton(options, tab=0) {
 }
 
 
-function resolvCalendar(options) { 
+function resolvCalendar(options) {
 	/*
 		options: {
 			descForm: '' 						-- Parâmetro de identificação
@@ -360,7 +360,7 @@ function resolvCalendar(options) {
 	var events = [];
 	for (var i = 0; i < (options.events || []).length; i++) {
 		events.push({});
-		Object.keys(options.events[i]).forEach(function(e) { 
+		Object.keys(options.events[i]).forEach(function(e) {
 			events[i][e] = options.events[i][e];
 		});
 	}
@@ -369,7 +369,7 @@ function resolvCalendar(options) {
 	var time = (options.minTime || [])[0]
 	, 	type = (options.minTime || [])[1]
 
-	if ((options.minTime || '') != '') { 
+	if ((options.minTime || '') != '') {
 		minTime = function(start, end, time, type) {
 			if (moment(end).diff(moment(start), type) < time)
 				return moment(start).add(time, type).format('Y-MM-DD HH:mm').replace(' ','T');
@@ -414,7 +414,7 @@ function resolvCalendar(options) {
 		+t(1)+ 		"try { $('#" + options.descForm + "Calendar').fullCalendar('destroy'); } catch(error) {}"
 		+t(1)+ 		"$('#" + options.descForm + "Calendar').fullCalendar({"
 		+t(2)+ 			"themeSystem: 'bootstrap3'," // 'bootstrap4',
-		+t(2)+ 			"header: {" 
+		+t(2)+ 			"header: {"
 		+t(3)+ 				"left: '',"
 		+t(3)+ 				"center: 'title',"
 		+t(3)+ 				"right: ''"
@@ -527,7 +527,7 @@ function resolvCalendar(options) {
 		+t(4)+ 					"$el.popover({"
 		+t(5)+ 						"title: eventObj.descricao,"
 		+t(5)+ 						"trigger: 'hover',"
-		+t(5)+ 						"container: 'body'," 
+		+t(5)+ 						"container: 'body',"
 		+t(5)+ 						"placement: 'top',"
 		+t(4)+ 					"});"
 		+t(4)+ 					"return false;"
@@ -611,7 +611,7 @@ function CheckLumaColor(c) {
 	var color = toHex(c);
 	if (color) c = color;
 
-	var c = c.replace('#', '');  // strip # 
+	var c = c.replace('#', '');  // strip #
 	var rgb = parseInt(c, 16);   // convert rrggbb to decimal
 	var r = (rgb >> 16) & 0xff;  // extract red
 	var g = (rgb >>  8) & 0xff;  // extract green
@@ -1341,8 +1341,8 @@ function resolvCodigoConsulta(options, tab=0) {
 
 	if (accesskey != '') {
 		descRef = (
-			options.dist.indexOf('C') >= 0 ? 'C' 
-			: (options.dist.indexOf('S') >= 0 ? 'S' 
+			options.dist.indexOf('C') >= 0 ? 'C'
+			: (options.dist.indexOf('S') >= 0 ? 'S'
 			: 'D'
 		));
 	}
@@ -1535,7 +1535,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
 		+t(tab+1)	+ (typeof(options.ajax) == 'string'
-						? options.ajax 
+						? options.ajax
 						: `window[(function() { var func = ${String(options.ajax)}; return func(); })()]`
 					) + `({`
 		+t(tab+2)	+ 				`param: {`
@@ -2120,8 +2120,8 @@ function listarFotos(descForm, id, error=0) {
 }
 
 /*
-	Dependências 
-	
+	Dependências
+
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="print">
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="screen">
@@ -2446,7 +2446,7 @@ function resolvGrade(data, option) {
 						)
 						+ 	">"
 
-						+ ((input.tooltip || '') == '' 
+						+ ((input.tooltip || '') == ''
 							? valPrint  					// não é tooltip
 							: (ck_tooltip = true, '') 		// caso for tooltip
 							+ 	`<div data-toggle='tooltip' data-html='true'`
@@ -2588,9 +2588,9 @@ function resolvGrade(data, option) {
 	// Setinhas da grade
 	if ((option.trClick || '') != '') {
 		window['tableEventKeyboard' + option.descForm] = function(e, whichkey) {
-			if ($("#divTable" + option.descForm).find('input').is(":focus") 
+			if ($("#divTable" + option.descForm).find('input').is(":focus")
 				|| $("#divTable" + option.descForm).find('.pagination').find('a').is(':focus')
-			) { 
+			) {
 				if (whichkey == 38 || whichkey == 40 || whichkey == 13) {
 					e.preventDefault();
 					var elTable = $("#divTable" + option.descForm);
@@ -2607,7 +2607,7 @@ function resolvGrade(data, option) {
 							if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) {
 								$(pagination).find(".previous").click();
 								indice = $(elTable).find('tr.cursorClick').length-1;
-							} else { 
+							} else {
 								indice = 0;
 							}
 						}
@@ -2686,7 +2686,7 @@ function resolvGrade(data, option) {
 			)
 			+		`});`
 			+ 	"</"+"script>"
-	} else { 
+	} else {
 		$((option.div || '')).html(grade);
 
 		if (ck_tooltip) $('[data-toggle="tooltip"]').tooltip();
@@ -2710,7 +2710,7 @@ function resolvGrade(data, option) {
 			, 'scrollX': (ck_tooltip || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
 				+ "'" + (option.scrollX || objParamGrade.isMobile_Global ? "100%" : false) + "'"
 			)
-			, 'search': { 
+			, 'search': {
 				'search': (option.search || '')
 			}
 			, 'initComplete': option.initComplete
@@ -2925,7 +2925,7 @@ function resolveParam(data, format, options) {
 	return param;
 }
 
-// resolveParamSetFunc("#0param0#", {setFunc: 'teste'}, 0) 
+// resolveParamSetFunc("#0param0#", {setFunc: 'teste'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123)'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste);'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123...456) ? "continua" : "ou não";'}, 0)
@@ -2951,7 +2951,7 @@ function resolveParamSetFunc(val, options, indice) {
 		setFunc = setFunc.join('');
 		isParamPre = true;
 	}
-	
+
 	if (!isEtc && setFunc.indexOf(')') != -1) {
 		if (isParamPre) pre_param += "(" + setFunc.split(')')[0];
 		else 			pre_param += setFunc.split(')')[0] + "(";
@@ -3223,7 +3223,7 @@ function resolvH(options, tab=0) {
 		}
 	*/
 	var html = ''
-		+t(tab)		+ 	"<h" + (options.num || 1) 
+		+t(tab)		+ 	"<h" + (options.num || 1)
 					+ 		((options.style || '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
 					+ 	">"
 		+t(tab+1)	+ 		(options.text || '')
@@ -3300,7 +3300,7 @@ function resolvInput(options,tab=0) {
 					region: '' 					-- Região onde está os arquivos
 				}
 				fileName: '' 					-- Nome do arquivo a ser salvo (padrão é vir o nome original)
-				param: { } 						-- Parâmetros adicionais para enviar no ajax 
+				param: { } 						-- Parâmetros adicionais para enviar no ajax
 				no_alert: (0|1) 				-- Não mostra um alerta quando termina de enviar o arquivo
 				onsend: function() 				-- Validar se pode ou não enviar aquivo
 				ondone: function(options, data) -- Dispara quando termina de enviar o arquivo
@@ -3441,7 +3441,7 @@ function resolvInputIn(options,tab=0) {
 
 	var title = ''
 		+ ((options.title || '') == '' && accesskey == '' ? '' : ''
-			+ 	" title='" 
+			+ 	" title='"
 			+ 		(options.title || '')
 			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n')
 			+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
@@ -3555,7 +3555,7 @@ function resolvInputIn(options,tab=0) {
 			}).join('')
 		// ******************************************************
 
-		+ (!options.ck_blur || !options.requiredFull 
+		+ (!options.ck_blur || !options.requiredFull
 			? ``
 			+ 	` onblur="resolvEvento('onblur','${(options.id || options.name || '')}');"`
 			: (options.ck_blur = false, ``)
@@ -3563,7 +3563,7 @@ function resolvInputIn(options,tab=0) {
 			+ 		`resolvEvento('onblur','${(options.id || options.name || '')}');`
 			+ 	`"`
 		)
-		+ ((options.onchange || '') != '' || options.type != 'color' 
+		+ ((options.onchange || '') != '' || options.type != 'color'
 			? ``
 			+ 	` onchange="resolvEvento('onchange','${(options.id || options.name || '')}');"`
 			: ''
@@ -3580,7 +3580,7 @@ function resolvInputIn(options,tab=0) {
 		+ 	">"
 		+ 	((options.isTextarea || false) ? `${(options.value || '')}</textarea>` : `` )
 		+ 	((options.enum || '') == '' ? `` : ``
-			+ t(tab+1) 	+ 		Object.keys(options.enum).map(function(value) { 
+			+ t(tab+1) 	+ 		Object.keys(options.enum).map(function(value) {
 									return `<option value="${value}">${options.enum[value]}</option>`;
 								}).join(t(tab+1))
 			+ t(tab) 	+ 	`</select>`
@@ -3834,7 +3834,7 @@ function resolvInputIn(options,tab=0) {
 		+ (!options.requiredFull ? `` : ``
 			+ t(tab+1) 	+ 	`function check${random}() {`
 			+ t(tab+2) 	+ 		`var op = arguments.length > 0 ? arguments[0] : 'check';`
-			// + (typeof(options.required) == 'function' 
+			// + (typeof(options.required) == 'function'
 			// 	? t(tab+2) + "return (" + String(options.required) + "());"
 			// 	: t(tab+2) + "return (resolvVal(\"" + options.id + "\") == '' ? 'Informe " + options.text + "' : true);"
 			// )
@@ -4535,7 +4535,7 @@ function resolvMenu(options={}, tab=0) {
 		}).join('')
 		+t(tab+TA)		+ '</'+'script>'
 
-	for (var i = 0; i < (options.abas || []).length; i++) { 
+	for (var i = 0; i < (options.abas || []).length; i++) {
 		html += ""
 		+t(tab+TA)	+ 	"<div"
 					+ 		" id='" + options.descForm + "Ctx" + i + "'"
@@ -4559,7 +4559,7 @@ function resolvMenu(options={}, tab=0) {
 
 function resolvPreview(options={}, tab=0) {
 	/*
-		options: { 
+		options: {
 			descForm: '' 					-- Parâmetro Identificador
 			ctx: '' 						-- Conteúdo do Preview
 			pathAce: './lib/ace' 			-- Caminho para lib do editor ace
@@ -4810,7 +4810,7 @@ function resolvSortable(option, data=[]) {
 					class: ''												// Class para delimitar o range de cada coluna Ex: (col-xs-11)
 
 					param: '' 												// Parâmetro a ser mostrado na célula OR
-					param: function(data, option, index) 					// Parâmetro a ser mostrado por function usará como callback, 
+					param: function(data, option, index) 					// Parâmetro a ser mostrado por function usará como callback,
 					... 													// 		o option é referente as opções do input e o índice é dos dados OR
 					param: { 												// Parâmetro mais personalizado para mostrar valores
 						op: (CONCAT|SUM), 									// operação a ser realizada pelos valores
@@ -4991,7 +4991,7 @@ function resolveValPrintSortable(option, data, index) {
 		var { casas, dec, mili } = option.format;
 		if ((typeof(option.param) == 'function' && valData == '') ||
 			(typeof(option.param) != 'function' && data[option.param] == undefined)
-		) { 
+		) {
 			valData = option.default || '';
 		} else {
 			valData = (valData || 0);
@@ -5066,7 +5066,7 @@ function serealizeForm(obj,options={}) {
 
 		if ((keys[i].obj.input || '') != ''
 			|| ((keys[i].obj.id || '') != '' && keys[i].parent == 'codigoConsulta')
-		) { 
+		) {
 			if (['codigoConsulta'].indexOf(keys[i].parent) < 0) {
 				if ((options.onlyValuePre || '') == '') {
 					input[keys[i].obj.input] = eval(`resolvVal(keys[i].id);`);
@@ -5310,7 +5310,7 @@ function returnFromEl(obj, types) {
 						: JSON.parse("{\"" + types[i] + "\":\"" + String(obj[types[i]]) + "\"}")
 					),
 					{ tipoCampo: types[i], parent: (arguments[3] || ''), obj: obj }
-				) 
+				)
 			);
 			if (options.first) i = types.length;
 		}
@@ -5340,7 +5340,7 @@ var modalconsulta = `<!-- ******************************************************
 				<table width="100%" style="display:none;">
 					<tr>
 						<td>
-							Pesquisar: 
+							Pesquisar:
 							<input class="form-control" style="resize:vertical;">
 						</td>
 						<td>
@@ -5416,7 +5416,7 @@ var modalimagens = `<!-- *******************************************************
 				</div>
 			</div>
 			<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-				<div class="pswp__share-tooltip"></div> 
+				<div class="pswp__share-tooltip"></div>
 			</div>
 			<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
 			</button>
@@ -5429,11 +5429,11 @@ var modalimagens = `<!-- *******************************************************
 	</div>
 </div>`;
 var modalinputFile = `<style>
-.imagemFile_resolvInput { 
+.imagemFile_resolvInput {
 	border: dashed 1px black;
 	text-align: center;
 }
-.dragging_resolvInput { 
+.dragging_resolvInput {
 	opacity: 0.6;
 	background-color: rgba(255, 255, 0, .3);
 }
@@ -5467,45 +5467,45 @@ function mudarPagina(el, divId, name, nameDiv) {
 }
 </script>`;
 
-function resolvConfigModal(obj, forceSet=false) { 
+function resolvConfigModal(obj, forceSet=false) {
 	var html = '';
 
 	/*****************************************************************/
 	// Resolv consulta
-	var checkModalconsulta = (function (obj) { 
+	var checkModalconsulta = (function (obj) {
 		return resolvFindParam(obj,'codigoConsulta') && (obj.dist || 'B').indexOf('B') >= 0;
 	}(obj));
-	var checkModalGlobalconsulta = (function (obj) { 
+	var checkModalGlobalconsulta = (function (obj) {
 		return resolvFindParam(obj,'codigoConsulta') && (obj.dist || 'B').indexOf('B') >= 0;
 	}(objRefConfig_Global));
 	if (checkModalconsulta && (!checkModalGlobalconsulta || forceSet)) { html += modalconsulta; }
 
 	/*****************************************************************/
 	// Resolv imagens
-	var checkModalimagens = (function (obj) { 
+	var checkModalimagens = (function (obj) {
 		return resolvFindParam(obj,'fotos');
 	}(obj));
-	var checkModalGlobalimagens = (function (obj) { 
+	var checkModalGlobalimagens = (function (obj) {
 		return resolvFindParam(obj,'fotos');
 	}(objRefConfig_Global));
 	if (checkModalimagens && (!checkModalGlobalimagens || forceSet)) { html += modalimagens; }
 
 	/*****************************************************************/
 	// Resolv inputFile
-	var checkModalinputFile = (function (obj) { 
+	var checkModalinputFile = (function (obj) {
 		return resolvFindParam(obj,'input') && resolvFindParam(obj,'defaultImg');
 	}(obj));
-	var checkModalGlobalinputFile = (function (obj) { 
+	var checkModalGlobalinputFile = (function (obj) {
 		return resolvFindParam(obj,'input') && resolvFindParam(obj,'defaultImg');
 	}(objRefConfig_Global));
 	if (checkModalinputFile && (!checkModalGlobalinputFile || forceSet)) { html += modalinputFile; }
 
 	/*****************************************************************/
 	// Resolv menu
-	var checkModalmenu = (function (obj) { 
+	var checkModalmenu = (function (obj) {
 		return resolvFindParam(obj,'menu');
 	}(obj));
-	var checkModalGlobalmenu = (function (obj) { 
+	var checkModalGlobalmenu = (function (obj) {
 		return resolvFindParam(obj,'menu');
 	}(objRefConfig_Global));
 	if (checkModalmenu && (!checkModalGlobalmenu || forceSet)) { html += modalmenu; }
@@ -5566,7 +5566,7 @@ function resolvVal(id) {
 		if (arguments.length > 2) 				return el.el.val(arguments[2]);
 		if (getDesc) 							return el.el[0].options[el.el[0].selectedIndex].innerHTML;
 												return el.el.val();
-	} else { 
+	} else {
 		var value = (arguments[1] != undefined ? arguments[1] : el.obj.value);
 
 		switch ((((el.obj || {}).style || {})["text-transform"] || '').toLowerCase()) {
@@ -5580,7 +5580,7 @@ function resolvVal(id) {
 		if ((el.obj.isMonth || false) && arguments[1] != undefined) {
 			if ((value || '') == '') {
 				$("#"+id+'Datepicker').val('');
-			} else { 
+			} else {
 				$("#"+id+'Datepicker').datepicker('setDate', new Date(value+'-02'));
 			}
 		}
@@ -5693,7 +5693,7 @@ function resolvFocus(id, cla='') {
 	if (el.parent == 'codigoConsulta') {
 		var isBtn = (el.obj.dist || 'B').indexOf('B') >= 0 && (el.obj.dist || 'C').indexOf('C') < 0;
 		return resolvFocusAction(isBtn ? $("#"+id).find('button') : el.el);
-	} 
+	}
 
 	if (['input','button'].indexOf(el.parent) >= 0) {
 		if ((el.obj.isMonth || false)) {
@@ -5720,7 +5720,7 @@ function resolvVisibled(id, cla='') {
 			}
 			$("#label_"+id).css('display', (arguments[1] || 'none'));
 			return el.el.css('display', (arguments[1] || 'none') );
-		} else { 
+		} else {
 			return el.el.css('display', (arguments[1] || 'none') );
 		}
 	}
@@ -5757,7 +5757,7 @@ function resolvIcon(icon) {
 	}) || '';
 
 	return (
-		classFa != '' ? 'fa fa-' + icon 
+		classFa != '' ? 'fa fa-' + icon
 		: icon
 	);
 }
@@ -5795,7 +5795,7 @@ function jsonToString(obj, tab=0, indent=false) {
 			+ (isObj ? "\"" + keys[i] + "\":" : '')
 
 		switch (typeof(obj[keys[i]])) {
-			case 'number': 
+			case 'number':
 			case 'boolean': text += obj[keys[i]]; 								break;
 			case 'string': 	text += "\"" + obj[keys[i]] + "\""; 				break;
 			case 'object': 	text += jsonToString(obj[keys[i]],tab+1,indent); 	break;
@@ -5921,8 +5921,8 @@ function resolvConfig(options, tab=0, isRegister=false) {
 	for (var i = 0; i < keys.length; i++) {
 		try {
 			// html += document['resolv' + capitalize(keys[i])](options[keys[i]]);
-			html += !isNaN(keys[i]) 
-				? resolvConfig(options[keys[i]], tab) 
+			html += !isNaN(keys[i])
+				? resolvConfig(options[keys[i]], tab)
 				: resolvGlobalParam(options[keys[i]], tab, window['resolv' + capitalize(keys[i])](options[keys[i]], tab));
 		} catch(e) {
 			console.error(e);
@@ -5966,7 +5966,7 @@ function resolvPath(id, obj=objRefConfig_Global) {
 
 function desregistrarConfig(id) {
 	var path = resolvPath(id);
-	if (path.length) { 
+	if (path.length) {
 		path.splice(path.length-1,1);
 		path.forEach(function(p,i) {
 			if (p.indexOf('menu') == 0) path[i] = 'menu';

@@ -81,8 +81,8 @@ function resolvButton(options, tab=0) {
 					// + 		(accesskey 				   == '' ? '' : " accesskey='" + accesskey + "'")
 					+ 		((options.title 	|| '') == '' && accesskey == '' ? '' : ''
 								+ 	" title='"
-								+ 		(options.title || '') 
-								+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n') 
+								+ 		(options.title || '')
+								+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n')
 								+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
 								+ 	"'"
 							)

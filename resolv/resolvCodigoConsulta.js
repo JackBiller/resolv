@@ -84,8 +84,8 @@ function resolvCodigoConsulta(options, tab=0) {
 
 	if (accesskey != '') {
 		descRef = (
-			options.dist.indexOf('C') >= 0 ? 'C' 
-			: (options.dist.indexOf('S') >= 0 ? 'S' 
+			options.dist.indexOf('C') >= 0 ? 'C'
+			: (options.dist.indexOf('S') >= 0 ? 'S'
 			: 'D'
 		));
 	}
@@ -278,7 +278,7 @@ function resolvCodigoConsulta(options, tab=0) {
 		)
 		// +t(tab+1)	+ 			`${options.ajax}({`
 		+t(tab+1)	+ (typeof(options.ajax) == 'string'
-						? options.ajax 
+						? options.ajax
 						: `window[(function() { var func = ${String(options.ajax)}; return func(); })()]`
 					) + `({`
 		+t(tab+2)	+ 				`param: {`

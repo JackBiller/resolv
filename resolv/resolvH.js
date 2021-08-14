@@ -14,7 +14,7 @@ function resolvH(options, tab=0) {
 		}
 	*/
 	var html = ''
-		+t(tab)		+ 	"<h" + (options.num || 1) 
+		+t(tab)		+ 	"<h" + (options.num || 1)
 					+ 		((options.style || '') == '' ? '' : " style='" + resolvStyle(options.style) + "'")
 					+ 	">"
 		+t(tab+1)	+ 		(options.text || '')

@@ -1,7 +1,7 @@
 
 function resolvPreview(options={}, tab=0) {
 	/*
-		options: { 
+		options: {
 			descForm: '' 					-- Parâmetro Identificador
 			ctx: '' 						-- Conteúdo do Preview
 			pathAce: './lib/ace' 			-- Caminho para lib do editor ace

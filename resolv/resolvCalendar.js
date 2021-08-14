@@ -1,6 +1,6 @@
 
 
-function resolvCalendar(options) { 
+function resolvCalendar(options) {
 	/*
 		options: {
 			descForm: '' 						-- Parâmetro de identificação
@@ -34,7 +34,7 @@ function resolvCalendar(options) {
 	var events = [];
 	for (var i = 0; i < (options.events || []).length; i++) {
 		events.push({});
-		Object.keys(options.events[i]).forEach(function(e) { 
+		Object.keys(options.events[i]).forEach(function(e) {
 			events[i][e] = options.events[i][e];
 		});
 	}
@@ -43,7 +43,7 @@ function resolvCalendar(options) {
 	var time = (options.minTime || [])[0]
 	, 	type = (options.minTime || [])[1]
 
-	if ((options.minTime || '') != '') { 
+	if ((options.minTime || '') != '') {
 		minTime = function(start, end, time, type) {
 			if (moment(end).diff(moment(start), type) < time)
 				return moment(start).add(time, type).format('Y-MM-DD HH:mm').replace(' ','T');
@@ -88,7 +88,7 @@ function resolvCalendar(options) {
 		+t(1)+ 		"try { $('#" + options.descForm + "Calendar').fullCalendar('destroy'); } catch(error) {}"
 		+t(1)+ 		"$('#" + options.descForm + "Calendar').fullCalendar({"
 		+t(2)+ 			"themeSystem: 'bootstrap3'," // 'bootstrap4',
-		+t(2)+ 			"header: {" 
+		+t(2)+ 			"header: {"
 		+t(3)+ 				"left: '',"
 		+t(3)+ 				"center: 'title',"
 		+t(3)+ 				"right: ''"
@@ -201,7 +201,7 @@ function resolvCalendar(options) {
 		+t(4)+ 					"$el.popover({"
 		+t(5)+ 						"title: eventObj.descricao,"
 		+t(5)+ 						"trigger: 'hover',"
-		+t(5)+ 						"container: 'body'," 
+		+t(5)+ 						"container: 'body',"
 		+t(5)+ 						"placement: 'top',"
 		+t(4)+ 					"});"
 		+t(4)+ 					"return false;"
@@ -285,7 +285,7 @@ function CheckLumaColor(c) {
 	var color = toHex(c);
 	if (color) c = color;
 
-	var c = c.replace('#', '');  // strip # 
+	var c = c.replace('#', '');  // strip #
 	var rgb = parseInt(c, 16);   // convert rrggbb to decimal
 	var r = (rgb >> 16) & 0xff;  // extract red
 	var g = (rgb >>  8) & 0xff;  // extract green

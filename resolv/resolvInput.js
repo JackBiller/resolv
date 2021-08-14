@@ -67,7 +67,7 @@ function resolvInput(options,tab=0) {
 					region: '' 					-- Região onde está os arquivos
 				}
 				fileName: '' 					-- Nome do arquivo a ser salvo (padrão é vir o nome original)
-				param: { } 						-- Parâmetros adicionais para enviar no ajax 
+				param: { } 						-- Parâmetros adicionais para enviar no ajax
 				no_alert: (0|1) 				-- Não mostra um alerta quando termina de enviar o arquivo
 				onsend: function() 				-- Validar se pode ou não enviar aquivo
 				ondone: function(options, data) -- Dispara quando termina de enviar o arquivo
@@ -208,7 +208,7 @@ function resolvInputIn(options,tab=0) {
 
 	var title = ''
 		+ ((options.title || '') == '' && accesskey == '' ? '' : ''
-			+ 	" title='" 
+			+ 	" title='"
 			+ 		(options.title || '')
 			+ 		((options.title || '') == '' || accesskey == '' ? '' : '\n')
 			+ 		(accesskey == '' ? '' : 'Alt + ' + accesskey)
@@ -322,7 +322,7 @@ function resolvInputIn(options,tab=0) {
 			}).join('')
 		// ******************************************************
 
-		+ (!options.ck_blur || !options.requiredFull 
+		+ (!options.ck_blur || !options.requiredFull
 			? ``
 			+ 	` onblur="resolvEvento('onblur','${(options.id || options.name || '')}');"`
 			: (options.ck_blur = false, ``)
@@ -330,7 +330,7 @@ function resolvInputIn(options,tab=0) {
 			+ 		`resolvEvento('onblur','${(options.id || options.name || '')}');`
 			+ 	`"`
 		)
-		+ ((options.onchange || '') != '' || options.type != 'color' 
+		+ ((options.onchange || '') != '' || options.type != 'color'
 			? ``
 			+ 	` onchange="resolvEvento('onchange','${(options.id || options.name || '')}');"`
 			: ''
@@ -347,7 +347,7 @@ function resolvInputIn(options,tab=0) {
 		+ 	">"
 		+ 	((options.isTextarea || false) ? `${(options.value || '')}</textarea>` : `` )
 		+ 	((options.enum || '') == '' ? `` : ``
-			+ t(tab+1) 	+ 		Object.keys(options.enum).map(function(value) { 
+			+ t(tab+1) 	+ 		Object.keys(options.enum).map(function(value) {
 									return `<option value="${value}">${options.enum[value]}</option>`;
 								}).join(t(tab+1))
 			+ t(tab) 	+ 	`</select>`
@@ -601,7 +601,7 @@ function resolvInputIn(options,tab=0) {
 		+ (!options.requiredFull ? `` : ``
 			+ t(tab+1) 	+ 	`function check${random}() {`
 			+ t(tab+2) 	+ 		`var op = arguments.length > 0 ? arguments[0] : 'check';`
-			// + (typeof(options.required) == 'function' 
+			// + (typeof(options.required) == 'function'
 			// 	? t(tab+2) + "return (" + String(options.required) + "());"
 			// 	: t(tab+2) + "return (resolvVal(\"" + options.id + "\") == '' ? 'Informe " + options.text + "' : true);"
 			// )

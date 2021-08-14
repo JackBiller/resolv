@@ -1,45 +1,45 @@
 
 Melhorias da abstração resolv:
-	- Implementar função de parametros obrigatórios, para dar uma mensagem na tela e não resolver objeto
-		ex: // função informa que o parametro id é obrigatorio para resolver objeto do tipo input
+	- Implementar função de parâmetros obrigatórios, para dar uma mensagem na tela e não resolver objeto
+		ex: // função informa que o parâmetro id é obrigatório para resolver objeto do tipo input
 			function checkInput(){ return [ 'id' ]; }
-			// no resolvConfig, se for resolver parametro input e não tiver o ID, da mensagem
+			// no resolvConfig, se for resolver parâmetro input e não tiver o ID, da mensagem
 	- ResolvVal aceitar o objeto de configuração para retorna o valor
-	- ResolvGrid, parametro para comportar ajax e montagem de grades dinamicamente
-		- conter os parametros do ajax
+	- ResolvGrid, parâmetro para comportar ajax e montagem de grades dinamicamente
+		- conter os parâmetros do ajax
 		- pensar no esquema de funções separadas uma para buscar dados e outra para montar a grade
-		- opções para tratamento dos dados, criar parametros, fazer calculos etc. (similar ao que vi ter que ter no grafico)
+		- opções para tratamento dos dados, criar parâmetros, fazer cálculos etc. (similar ao que vi ter que ter no grafico)
 		- opção de vincular com legenda para fazer filtros
 		- O que da para automatizar?
 			- tela de loading e controle de visualização
 			- se tem que esperar algum evento
-			- se começa com texto generico, e voltar para ele no sirealize
+			- se começa com texto generico, e voltar para ele no serialize
 		OBS: Objetivo diminuir o arquivo script.js
 	- ResolvLayout, trazer configurações prontas de layout das telas, montar um template com links de referencias
-		- link para setar dependencias
-			Ex: // libHead -- conmentario a ser substituidos pelos links das bibliotecas que a tela for usar 
+		- link para setar dependências
+			Ex: // libHead -- comentário a ser substituídos pelos links das bibliotecas que a tela for usar
 		- gerar arquivo dinamicamente
 		- opções globais, (
-			novo, salvar, cancelar, encerrar, reabrir, imprimir, 
-			primeiro, anterior, proximo, ultimo, 
-			exportar, autorizar, 
+			novo, salvar, cancelar, encerrar, reabrir, imprimir,
+			primeiro, anterior, proximo, ultimo,
+			exportar, autorizar,
 
-			CDI 
-			| Novo, Salvar, Excluir 
-			| Atualizar, Fechar (Janela) 
-			| Imprimir 
-			| Primeiro, Anterior, Proximo, Último 
-			| Pesquisa 
+			CDI
+			| Novo, Salvar, Excluir
+			| Atualizar, Fechar (Janela)
+			| Imprimir
+			| Primeiro, Anterior, Proximo, Último
+			| Pesquisa
 			| Agenda, Logoff, Suporte
 		)
 	- Opções de backend, montar roteiro de funções e querys com regras a serem seguidas
 		- cogitar opção  de usar Node.js , PHP ou até C#
 		- vai trabalhar com arquivos gerados automaticamente
-	- Verificar quais dependencias está faltando
+	- Verificar quais dependências está faltando
 
 
-Referencia funções de acoplamento: 
-	resolvVal 
-	resolvEl 
-	resolvDisabled 
-	? focusInput 
+Referencia funções de acoplamento:
+	resolvVal
+	resolvEl
+	resolvDisabled
+	? focusInput

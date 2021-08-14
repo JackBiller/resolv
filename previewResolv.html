@@ -28,7 +28,7 @@
 	</div>
 </body>
 <style>
-	.container { 
+	.container {
 		margin-top: 15px;
 	}
 </style>
@@ -36,19 +36,19 @@
 
 	var selectedMenu = localStorage.selectedMenu ? localStorage.getItem('selectedMenu') : 0;
 
-	var previewLivre = resolvDefaultPreveiw('previewLivre', { 
+	var previewLivre = resolvDefaultPreveiw('previewLivre', {
 		input: { text: 'Livre para testes' }
 	});
 
-	var previewInput = resolvDefaultPreveiw('previewInput', { 
+	var previewInput = resolvDefaultPreveiw('previewInput', {
 		input: {
 			accesskey: 't', text: 'Test', id: 'focarInput',
 			title: 'Teste input'
 		}
 	});
 
-	var previewCodigoConsulta1 = resolvDefaultPreveiw('previewCodigoConsulta1', { 
-		codigoConsulta: { 
+	var previewCodigoConsulta1 = resolvDefaultPreveiw('previewCodigoConsulta1', {
+		codigoConsulta: {
 			codigo: { text: 'Default', input: 'codigo' },
 			desc: { text: 'Decrição', input: 'desc' },
 			descForm: 'descForm1',
@@ -56,8 +56,8 @@
 			param: { 'testeApiDados': true },
 			required: true,
 			accesskey: 'e',
-			grade: { 
-				inputs: [ 
+			grade: {
+				inputs: [
 					{ head: 'id' 		, param: 'id' 		, format: {} },
 					{ head: 'codigo' 	, param: 'codigo' 	, format: {} },
 					{ head: 'desc' 		, param: 'desc' 	},
@@ -66,8 +66,8 @@
 		}
 	});
 
-	var previewCodigoConsulta2 = resolvDefaultPreveiw('previewCodigoConsulta2', { 
-		codigoConsulta: { 
+	var previewCodigoConsulta2 = resolvDefaultPreveiw('previewCodigoConsulta2', {
+		codigoConsulta: {
 			select: { text: 'Select Combo', value: 'id', desc: 'desc' },
 			dist: 'S', xs: '12',
 			descForm: 'descForm2',
@@ -77,7 +77,7 @@
 		}
 	});
 
-	var previewCodigoConsulta3 = resolvDefaultPreveiw('previewCodigoConsulta3', { 
+	var previewCodigoConsulta3 = resolvDefaultPreveiw('previewCodigoConsulta3', {
 		codigoConsulta: {
 			codigo: { text: 'teste', input: 'codigo' },
 			desc: { text: 'Somente Descrição', input: 'desc' },
@@ -97,14 +97,14 @@
 		}
 	});
 
-	var previewButton = resolvDefaultPreveiw('previewButton', { 
-		button: { 
+	var previewButton = resolvDefaultPreveiw('previewButton', {
+		button: {
 			accesskey: 's', desc: 'Teste', icon: 'times', class: 'btn btn-danger', title: 'Teste alt'
 			, click: () => { alert('teste'); }
 		}
 	});
 
-	var previewMenu = resolvDefaultPreveiw('previewMenu', { 
+	var previewMenu = resolvDefaultPreveiw('previewMenu', {
 		menu: {
 			descForm: 'teste',
 			abas: [
@@ -123,59 +123,59 @@
 		menu: { descForm: 'menuTeste'
 			, isLateral: true, no_link: true, selected: selectedMenu
 			, abas: [
-			{ text: 'Livre', ctx: [ 
+			{ text: 'Livre', ctx: [
 				{ h2: { text: 'Livre' } },
 				{ preview: { descForm: 'previewLivre', ctx: previewLivre
-					, onBuild: function() { 
+					, onBuild: function() {
 						localStorage.setItem('previewLivre', resolvVal('previewLivre'))
 					}
 				} },
 				{ br: { num: 3 } }
 			] },
-			{ text: 'Input', ctx: [ 
+			{ text: 'Input', ctx: [
 				{ h2: { text: 'Input' } },
 				{ preview: { descForm: 'previewInput', ctx: previewInput
-					, onBuild: function() { 
+					, onBuild: function() {
 						localStorage.setItem('previewInput', resolvVal('previewInput'))
 					}
 				} },
 				{ br: { num: 3 } }
 			] },
-			{ text: 'Código Consulta', ctx: [ 
+			{ text: 'Código Consulta', ctx: [
 				{ h2: { text: 'Código Consulta' } },
 				{ h3: { text: 'Config C-B-D (Default)' } },
 				{ preview: { descForm: 'previewCodigoConsulta1', ctx: previewCodigoConsulta1
-					, onBuild: function() { 
+					, onBuild: function() {
 						localStorage.setItem('previewCodigoConsulta1', resolvVal('previewCodigoConsulta1'))
 					}
 				} },
 				{ h3: { text: 'Config S' } },
 				{ preview: { descForm: 'previewCodigoConsulta2', ctx: previewCodigoConsulta2
-					, onBuild: function() { 
+					, onBuild: function() {
 						localStorage.setItem('previewCodigoConsulta2', resolvVal('previewCodigoConsulta2'))
 					}
 				} },
 				{ h3: { text: 'Config D-B' } },
 				{ preview: { descForm: 'previewCodigoConsulta3', ctx: previewCodigoConsulta3
-					, onBuild: function() { 
+					, onBuild: function() {
 						localStorage.setItem('previewCodigoConsulta3', resolvVal('previewCodigoConsulta3'))
 					}
 				} },
 				{ br: { num: 3 } }
 			] },
-			{ text: 'Button', ctx: [ 
+			{ text: 'Button', ctx: [
 				{ h2: { text: 'Button' } },
 				{ preview: { descForm: 'previewButton', ctx: previewButton
-					, onBuild: function() { 
+					, onBuild: function() {
 						localStorage.setItem('previewButton', resolvVal('previewButton'))
 					}
 				} },
 				{ br: { num: 3 } }
 			] },
-			{ text: 'Menu', ctx: [ 
+			{ text: 'Menu', ctx: [
 				{ h2: { text: 'Menu' } },
 				{ preview: { descForm: 'previewMenu', ctx: previewMenu
-					, onBuild: function() { 
+					, onBuild: function() {
 						localStorage.setItem('previewMenu', resolvVal('previewMenu'))
 					}
 				} },
@@ -184,33 +184,33 @@
 		] }
 	}, 2, true));
 
-	function resolvDefaultPreveiw(id, obj) { 
+	function resolvDefaultPreveiw(id, obj) {
 		var preview, isLocalStorage;
 		eval(`isLocalStorage = localStorage.${id};`);
 
-		if (isLocalStorage) { 
-			try { 
+		if (isLocalStorage) {
+			try {
 				eval(`preview = ${localStorage.getItem(id)};`)
-			} catch(e) { 
+			} catch(e) {
 				preview = obj;
 			}
-		} else { 
+		} else {
 			preview = obj;
 		}
 		return preview;
 	}
 
-	function ajax(options) { 
+	function ajax(options) {
 		$.ajax({
 			url: options.url || 'controller.php',
 			type: options.type || 'POST',
 			dataType: options.dataType || 'text',
 			data: options.param || {},
 			error: options.error || function() { }
-		}).done(function(data) { 
-			try { 
+		}).done(function(data) {
+			try {
 				(options.done || function() {})(data);
-			} catch(e) { 
+			} catch(e) {
 				console.error(e);
 			}
 		});
@@ -221,11 +221,11 @@
 	});
 </script>
 <style>
-.imagemFile_resolvInput { 
+.imagemFile_resolvInput {
 	border: dashed 1px black;
 	text-align: center;
 }
-.dragging_resolvInput { 
+.dragging_resolvInput {
 	opacity: 0.6;
 	background-color: rgba(255, 255, 0, .3);
 }

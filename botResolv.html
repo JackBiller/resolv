@@ -33,21 +33,21 @@
 
 <script>
 	var runBot = false;
-	function startBot() { 
-		if (!runBot) { 
+	function startBot() {
+		if (!runBot) {
 			setTimeout(() => { startBot() }, 100);
 			return ;
 		}
 		req();
 	}
-	function req(force=false) { 
+	function req(force=false) {
 		ajax({
 			param: {
 				'atualizarArquivoConfig': true,
 				'force_set': force ? true : '',
 			},
 			error: function() { $('#lastUpdate').val('Falha ao fazer a requisição!'); },
-			done: function(data) { 
+			done: function(data) {
 				// console.log(data);
 
 				data = data + "<br>" + $("#logs").html()
@@ -62,21 +62,21 @@
 	}
 	startBot();
 
-	function openPreview() { 
+	function openPreview() {
 		window.open("./previewResolv.html");
 	}
 
-	function ajax(options) { 
+	function ajax(options) {
 		$.ajax({
 			url: options.url || 'controller.php',
 			type: options.type || 'POST',
 			dataType: options.dataType || 'text',
 			data: options.param || {},
 			error: options.error || function() { }
-		}).done(function(data) { 
-			try { 
+		}).done(function(data) {
+			try {
 				(options.done || function() {})(data);
-			} catch(e) { 
+			} catch(e) {
 				console.error(e);
 			}
 		});

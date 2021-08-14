@@ -1,7 +1,7 @@
 
 /*
-	Dependências 
-	
+	Dependências
+
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="print">
 	<link rel="stylesheet" type="text/css" href="../lb/bootstrap/css/bootstrap.css" media="screen">
@@ -326,7 +326,7 @@ function resolvGrade(data, option) {
 						)
 						+ 	">"
 
-						+ ((input.tooltip || '') == '' 
+						+ ((input.tooltip || '') == ''
 							? valPrint  					// não é tooltip
 							: (ck_tooltip = true, '') 		// caso for tooltip
 							+ 	`<div data-toggle='tooltip' data-html='true'`
@@ -468,9 +468,9 @@ function resolvGrade(data, option) {
 	// Setinhas da grade
 	if ((option.trClick || '') != '') {
 		window['tableEventKeyboard' + option.descForm] = function(e, whichkey) {
-			if ($("#divTable" + option.descForm).find('input').is(":focus") 
+			if ($("#divTable" + option.descForm).find('input').is(":focus")
 				|| $("#divTable" + option.descForm).find('.pagination').find('a').is(':focus')
-			) { 
+			) {
 				if (whichkey == 38 || whichkey == 40 || whichkey == 13) {
 					e.preventDefault();
 					var elTable = $("#divTable" + option.descForm);
@@ -487,7 +487,7 @@ function resolvGrade(data, option) {
 							if ($(pagination).find('.previous').attr('class').indexOf('disabled') < 0) {
 								$(pagination).find(".previous").click();
 								indice = $(elTable).find('tr.cursorClick').length-1;
-							} else { 
+							} else {
 								indice = 0;
 							}
 						}
@@ -566,7 +566,7 @@ function resolvGrade(data, option) {
 			)
 			+		`});`
 			+ 	"</"+"script>"
-	} else { 
+	} else {
 		$((option.div || '')).html(grade);
 
 		if (ck_tooltip) $('[data-toggle="tooltip"]').tooltip();
@@ -590,7 +590,7 @@ function resolvGrade(data, option) {
 			, 'scrollX': (ck_tooltip || (option.no_scrollX || '') != '' || (objParamGrade.no_scrollX || '') != '' ? '' : ''
 				+ "'" + (option.scrollX || objParamGrade.isMobile_Global ? "100%" : false) + "'"
 			)
-			, 'search': { 
+			, 'search': {
 				'search': (option.search || '')
 			}
 			, 'initComplete': option.initComplete
@@ -805,7 +805,7 @@ function resolveParam(data, format, options) {
 	return param;
 }
 
-// resolveParamSetFunc("#0param0#", {setFunc: 'teste'}, 0) 
+// resolveParamSetFunc("#0param0#", {setFunc: 'teste'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123)'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste);'}, 0)
 // resolveParamSetFunc("#0param0#", {setFunc: 'teste(123...456) ? "continua" : "ou não";'}, 0)
@@ -831,7 +831,7 @@ function resolveParamSetFunc(val, options, indice) {
 		setFunc = setFunc.join('');
 		isParamPre = true;
 	}
-	
+
 	if (!isEtc && setFunc.indexOf(')') != -1) {
 		if (isParamPre) pre_param += "(" + setFunc.split(')')[0];
 		else 			pre_param += setFunc.split(')')[0] + "(";
