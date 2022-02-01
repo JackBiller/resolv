@@ -3330,6 +3330,15 @@ function resolvInput(options,tab=0) {
 			enum: { 							-- Indica que o campo será um select com opções pré-definidas
 				value: desc 					-- Ex: <option value="value">desc</option>
 			}
+			enumAjax: { 						-- Indica que o campo será um select com opções dinâmicas
+				url: '' 						-- opcional, quando o caminho for diferente do padrão
+				param: {} 						-- parâmetros da requisição
+				value: '' 						-- value do options do select
+				desc: '' 						-- descrição do options do select
+				default: { 						-- Valor padrão a ser selecionado
+					value: desc
+				}
+			}
 			mask: '' 							-- Usar Mascara no campo
 			no_mask_money: (0/1) 				-- Desabilitar o prefixo do campo money
 			maskOption: {} 						-- Opções para usar com a mescara
@@ -3402,6 +3411,8 @@ function resolvInputIn(options,tab=0) {
 	if ((options.value || ``) == `` && defaultImg != ``) options.value = defaultImg.path;
 	if ((options.onclick || ``) == `` && (options.click || ``) != ``) options.onclick = options.click;
 	if ((options.numKeyVerifAlt || ``) == ``) options.numKeyVerifAlt = (options.text || ``).length;
+
+	if ((options.enumAjax || ``) != `` && (options.enum || ``) == ``) options.enum = {'0':'Carregando...'};
 
 	var isToggle = (options.toggle || '') != '' && (options.id || '') != '';
 	var group = options.group || '';
@@ -3541,6 +3552,11 @@ function resolvInputIn(options,tab=0) {
 					+ (opt != `onblur` || !options.ck_blur || !options.requiredFull ? `` : (options.ck_blur = false, ``)
 						+ onblurRequired
 					)
+					+ (opt != `onchange` || (options.id || '') == '' || ((options.enumAjax || {}).default || '') == '' ? `` : ''
+						+ 	`$('#${options.id}')`
+						+ 	`.find('option[value=${Object.keys(options.enumAjax.default)[0] || ''}]')`
+						+ 	`.remove();`
+					)
 					+ (opt != `onchange` || options.type != 'color' ? `` : ''
 						+ 	`$(\\"#refTextColor${random}\\").val(`
 						+ 		`$(\\"*[data-customerid='input${random}']\\").val()`
@@ -3563,16 +3579,27 @@ function resolvInputIn(options,tab=0) {
 			+ 		`resolvEvento('onblur','${(options.id || options.name || '')}');`
 			+ 	`"`
 		)
-		+ ((options.onchange || '') != '' || options.type != 'color'
-			? ``
-			+ 	` onchange="resolvEvento('onchange','${(options.id || options.name || '')}');"`
-			: ''
-			+ 	` onchange="`
-			+ 		`$('#refTextColor${random}\\').val(`
-			+ 			`$(\`*[data-customerid='input${random}']\`).val()`
-			+ 		`);`
-			+ 		`resolvEvento('onchange','${(options.id || options.name || '')}');`
-			+ 	`"`
+		+ ((options.onchange || '') != '' ? '' : ''
+			+ ((options.type == 'color')
+				? ``
+				+ 	` onchange="`
+				+ 		`$('#refTextColor${random}\\').val(`
+				+ 			`$(\`*[data-customerid='input${random}']\`).val()`
+				+ 		`);`
+				+ 		`resolvEvento('onchange','${(options.id || options.name || '')}');`
+				+ 	`"`
+				: ((options.id || '') != '' && ((options.enumAjax || {}).default || '') != ''
+					? ''
+					+ 	` onchange="`
+					+ 		`$('#${options.id}')`
+					+ 		`.find('option[value=${Object.keys(options.enumAjax.default)[0] || ''}]')`
+					+ 		`.remove();`
+					+ 		`resolvEvento('onchange','${(options.id || options.name || '')}');`
+					+ 	`"`
+					: ''
+					+ 	` onchange="resolvEvento('onchange','${(options.id || options.name || '')}');"`
+				)
+			)
 		)
 
 		+ 		((options.disabled 	|| ``) == `` ? `` : ` disabled`)
@@ -4085,6 +4112,44 @@ function resolvInputIn(options,tab=0) {
 			+ t(tab+2)	+ 		`fileInput${options.id}.files = e.dataTransfer.files;`
 			+ t(tab+2)	+ 		`$(fileInput${options.id}).change();`
 			+ t(tab+1)	+ 	`});`
+		)
+		// ***************************************************************************
+
+
+
+		// ****  verificar se vai carregar options do select (param enumAjax) ****
+		+ ((options.id || '') == '' || (options.enumAjax || '') == '' ? '' : ''
+			+ t(tab+1)	+ 	`function loadEnumAjax${options.id} () {`
+			+ t(tab+2)	+ 		`ajax({`
+			+ ((options.enumAjax.url || '') == '' ? '' : ''
+				+ t(tab+3)	+ 		`url: "` + options.enumAjax.url + `",`
+			)
+			+ t(tab+3)	+ 			`param: ` + JSON.stringify(options.enumAjax.param || {}) + `,`
+			+ t(tab+3)	+ 			`done: function(data) {`
+			+ t(tab+4)	+ 				`console.log(data);`
+			+ t(tab+4)	+ 				`data = JSON.parse(data);`
+			+ t(tab+4)	+ 				`console.log(data);`
+			+ t(tab+4)	+ 				`$("#${options.id}").html(`
+			+ ((options.enumAjax.default || '') == '' ? '' : ''
+				+ t(tab+5)
+				+ '`'
+				+ Object.keys(options.enumAjax.default).map(function(key) {
+					return '<option value="' + key + '">'
+						+ 		options.enumAjax.default[key]
+						+ 	'</option>'
+				}).join('')
+				+ 	'` +'
+			)
+			+ t(tab+5)	+ 					`data.map(function(dt) {`
+			+ t(tab+6)	+ 						`return '<option value="' + dt.${options.enumAjax.value} + '">`
+						+ 							`' + dt.${options.enumAjax.desc} + '`
+						+ 						`</option>'`
+			+ t(tab+5)	+ 					`}).join('')`
+			+ t(tab+4)	+ 				`);`
+			+ t(tab+3)	+ 			`}`
+			+ t(tab+2)	+ 		`})`
+			+ t(tab+1)	+ 	`}`
+			+ t(tab+1)	+ 	`loadEnumAjax${options.id}();`
 		)
 		// ***************************************************************************
 
