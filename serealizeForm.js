@@ -7,7 +7,7 @@ function serealizeForm(obj,options={}) {
 	/*
 		options: {
 			options do valid 		-- Opções descritas na função returnInputValid()
-			onlyValue: (0|1) 	-- Buscar somente valores do formulário
+			onlyValue: (0|1) 		-- Buscar somente valores do formulário
 			onlyValuePre: (0|1) 	-- Buscar valores predefinido no formulário
 		}
 	*/
@@ -188,7 +188,7 @@ function returnInputValid(inputs,options={}) {
 						case 'input':
 						case 'select':
 						case 'textarea':
-							valid = $("#" + inputs[i].id).val() != '';
+							valid = ($("#" + inputs[i].id).val() || '') != '';
 							break;
 						case 'codigoConsulta':
 							valid = $("#" + inputs[i].descForm).find('.id').find('input').val() != '';
