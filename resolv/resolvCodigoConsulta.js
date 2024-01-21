@@ -32,6 +32,7 @@ function resolvCodigoConsulta(options, tab=0) {
 			}
 		]
 		OR param: { key: value } 	-- key é o nome do parâmetro e value é a função de callback ou o parâmetro (''|function)
+		done: function(data) 		-- função de retorno do ajax
 		styleLabel: {} 				-- objeto css para personalizar label tanto do código quanto da descrição
 		trigger: function			-- função disparada quando selecionar um registro
 		grade: objResolvGrade 		-- é a grade que vai ser montada no modal para selecionar por descrição,
@@ -290,6 +291,8 @@ function resolvCodigoConsulta(options, tab=0) {
 		+t(tab+3)	+ 					`console.log(data);`
 		+t(tab+3)	+ 					`${capitalize(options.descForm)}Select_Global = [];`
 		+t(tab+3)	+ 					`if (data.length != 0 && data[0].debug == "OK") {`
+		+t(tab+4)	+ 						`var func = ${options.done || function(){}};`
+		+t(tab+4)	+ 						`func(data);`
 		+t(tab+4)	+ 						`${capitalize(options.descForm)}Select_Global = data;`
 		+t(tab+4)	+ 						`var grade = ''`
 		+t(tab+5)	+ 							`+ 	\`<select class="form-control codigoConsulta"\``

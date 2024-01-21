@@ -293,3 +293,15 @@ function returnFromEl(obj, types) {
 	}
 	return inputs;
 }
+
+function setMask(dt, mask) {
+	var result = '';
+	dt = dt.split('');
+	for (var i = 0; i < mask.length; i++) {
+		result += (mask[i] == '0'
+			? dt.splice(0,1)
+			: mask[i]
+		);
+	}
+	return result;
+}

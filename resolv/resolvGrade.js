@@ -334,10 +334,10 @@ function resolvGrade(data, option) {
 								? ''
 								+ 	` data-placement='bottom'`
 								// + 	` title='${(input.tooltip(data[i], input) || '').replace(/\"/g, '\\\"')}'`
-								+ 	` title='${(input.tooltip(data[i], input) || '')}'`
+								+ 	` title='${(input.tooltip(data[i], input, i) || '')}'`
 								: ''
 								+ 	` data-placement='${(input.tooltip.pos || 'bottom')}'`
-								+ 	` title='${(input.tooltip.html(data[i], input) || '')}'`
+								+ 	` title='${(input.tooltip.html(data[i], input, i) || '')}'`
 							)
 							+ 	`>`
 							+ 		valPrint
@@ -427,7 +427,12 @@ function resolvGrade(data, option) {
 			+ 	`</table>`
 
 		// grade = '<div style="overflow-x:auto;" id="divTable' + option.descForm + '">' + grade + '</div>'
-		grade = '<div style="overflow-x: scroll;" id="divTable' + option.descForm + '">' + grade + '</div>'
+		grade = '<div '
+			+ 	(option.inputs.find(function(iTest) { return (iTest.tooltip || '') != '' }) != undefined
+				? ''
+				: 'style="overflow-x: scroll;"'
+			)
+			+ 		' id="divTable' + option.descForm + '">' + grade + '</div>'
 	} else {
 		grade = `<b>Debug != OK</b>`;
 	}

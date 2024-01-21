@@ -221,7 +221,12 @@ function resolvVal(id) {
 			if ((value || '') == '') {
 				$("#"+id+'Datepicker').val('');
 			} else {
-				$("#"+id+'Datepicker').datepicker('setDate', new Date(value+'-02'));
+				if (moment(value)._f.indexOf('D') >= 0) {
+					value = moment(value).format('YYYY-MM');
+				}
+				// $("#"+id+'Datepicker').datepicker('setDate', new Date(value+'-02'));
+				$("#"+id+'Datepicker').val(moment(value).format('MM/YYYY'));
+				// $("#"+id).val(value);
 			}
 		}
 
@@ -744,6 +749,72 @@ function numberTextOrder(num, dec=0) {
 		return numForm;
 	}
 	return action(num) + '.' + action(dec);
+}
+
+function validCPF_CNPJ(cpf_cnpj) {
+	var Soma, Resto;
+	Soma = 0;
+	if (cpf_cnpj.length != 11 && cpf_cnpj.length != 14) return 'Informe CPF ou CNPJ corretamente!';
+
+	if (cpf_cnpj.length == 11) {
+		if (cpf_cnpj == "00000000000") return 'CPF inválido!';
+
+		for (i=1; i<=9; i++) Soma = Soma + parseInt(cpf_cnpj.substring(i-1, i)) * (11 - i);
+		Resto = (Soma * 10) % 11;
+
+		if ((Resto == 10) || (Resto == 11))  Resto = 0;
+		if (Resto != parseInt(cpf_cnpj.substring(9, 10)) ) return 'CPF inválido!';
+
+		Soma = 0;
+		for (i = 1; i <= 10; i++) Soma = Soma + parseInt(cpf_cnpj.substring(i-1, i)) * (12 - i);
+		Resto = (Soma * 10) % 11;
+
+		if ((Resto == 10) || (Resto == 11))  Resto = 0;
+		if (Resto != parseInt(cpf_cnpj.substring(10, 11) ) ) return 'CPF inválido!';
+		return true;
+	} else if(cpf_cnpj.length == 14) {
+		if (cpf_cnpj == "00000000000000" ||
+			cpf_cnpj == "11111111111111" ||
+			cpf_cnpj == "22222222222222" ||
+			cpf_cnpj == "33333333333333" ||
+			cpf_cnpj == "44444444444444" ||
+			cpf_cnpj == "55555555555555" ||
+			cpf_cnpj == "66666666666666" ||
+			cpf_cnpj == "77777777777777" ||
+			cpf_cnpj == "88888888888888" ||
+			cpf_cnpj == "99999999999999"
+		)
+			return 'CNPJ inválido!';
+
+		// Valida DVs
+		var tamanho = cpf_cnpj.length - 2
+		var numeros = cpf_cnpj.substring(0,tamanho);
+		var digitos = cpf_cnpj.substring(tamanho);
+		var soma = 0;
+		var pos = tamanho - 7;
+		for (i = tamanho; i >= 1; i--) {
+			soma += numeros.charAt(tamanho - i) * pos--;
+			if (pos < 2) pos = 9;
+		}
+		resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+		if (resultado != digitos.charAt(0)) return 'CNPJ inválido!';
+
+		tamanho = tamanho + 1;
+		numeros = cpf_cnpj.substring(0,tamanho);
+		soma = 0;
+		pos = tamanho - 7;
+		for (i = tamanho; i >= 1; i--) {
+		soma += numeros.charAt(tamanho - i) * pos--;
+		if (pos < 2)
+				pos = 9;
+		}
+		resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+		if (resultado != digitos.charAt(1)) return 'CNPJ inválido!';
+
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /* Envetos de teclado */
