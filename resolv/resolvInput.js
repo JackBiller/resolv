@@ -836,7 +836,7 @@ function resolvInputIn(options, tab = 0) {
 				+ t(tab + 3) + `fileName: '${options.upload.fileName}',`
 			)
 			+ ((options.upload.param || '') == '' ? '' : ''
-				+ t(tab + 3) + `param: ${jsonToStringParam(options.upload.param, tab + 3, returnObjIndentado_Global)},`
+				+ t(tab + 3) + `param: ${jsonToString(options.upload.param, tab + 3, returnObjIndentado_Global)},`
 			)
 			+ ((options.upload.aws || '') == '' ? '' : ''
 				+ t(tab + 3) + `aws: ${jsonToStringParam(options.upload.aws, tab + 3, returnObjIndentado_Global)},`
@@ -1168,6 +1168,14 @@ function sendBase64(options) {
 
 function doneSendBase64(options) {
 	$(options.div).html('Salvando Arquivo...');
+
+	var keys = Object.keys(options.param);
+	for (var i = 0; i < keys.length; i++) {
+		if (typeof options.param[keys[i]] == 'function') {
+			options.param[keys[i]] = options.param[keys[i]]();
+		}
+	}
+
 	ajax({
 		// url: (options.url || '../controller/controller.php'),
 		param: $.extend({
