@@ -866,14 +866,23 @@ function resolvInputIn(options, tab = 0) {
 			+ `${(options.fileType || '').indexOf('img') >= 0 ? `, '${options.id}preview'` : ''}`
 			+ `);`
 			+ t(tab + 3) + `$("#${options.id}_desc_file").html('');`
-			+ `${(options.defaultImgPdf || '') == '' ? `` : ``
+			+ `${(options.defaultImgPdf || options.defaultImgCSV || '') == '' ? `` : ``
 				+ t(tab + 3) + `setTimeout(() => {`
 				+ t(tab + 4) + `var base64Foto${options.id} = base64Foto_Global.find(function(b) {`
 				+ t(tab + 5) + `return b.id = '${options.id}';`
 				+ t(tab + 4) + `});`
+			}`
+			+ `${(options.defaultImgPdf || '') == '' ? `` : ``
 				+ t(tab + 4) + `if (base64Foto${options.id} != undefined && base64Foto${options.id}.ext == 'pdf') {`
 				+ t(tab + 5) + `$("#${options.id}preview").attr("src","${options.defaultImgPdf}");`
 				+ t(tab + 4) + `}`
+			}`
+			+ `${(options.defaultImgCSV || '') == '' ? `` : ``
+				+ t(tab + 4) + `if (base64Foto${options.id} != undefined && base64Foto${options.id}.ext == 'csv') {`
+				+ t(tab + 5) + `$("#${options.id}preview").attr("src","${options.defaultImgCSV}");`
+				+ t(tab + 4) + `}`
+			}`
+			+ `${(options.defaultImgPdf || options.defaultImgCSV || '') == '' ? `` : ``
 				+ t(tab + 3) + `}, 300);`
 			}`
 			+ t(tab + 2) + `});`
